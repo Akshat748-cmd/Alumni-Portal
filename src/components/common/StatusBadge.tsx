@@ -9,6 +9,7 @@ export type StatusVariant =
   | "pending"
   | "rejected"
   | "gold"
+  | "navy"
   | "neutral"
   | "Open"
   | "In Review"
@@ -57,9 +58,15 @@ export function StatusBadge({
           dot: "bg-blue-500",
           text: label || "Open",
         };
+      case "navy":
+        return {
+          bg: "bg-navy-950 text-[#F3DC9C] border-navy-800 font-semibold",
+          dot: "bg-gold-400",
+          text: label || status,
+        };
       case "gold":
         return {
-          bg: "bg-gold-500/15 text-gold-700 border-gold-500/40",
+          bg: "bg-gold-500/15 text-gold-700 dark:text-gold-300 border-gold-500/40",
           dot: "bg-gold-500",
           text: label || "Featured",
         };

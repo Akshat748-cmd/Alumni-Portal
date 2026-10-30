@@ -161,14 +161,9 @@ export default function ExploreDomainsPage() {
                           <Icon className="h-6 w-6" strokeWidth={1.75} />
                         </div>
 
-                        <div className="text-right">
-                          <div className="font-serif text-2xl sm:text-3xl font-bold text-navy-950 leading-none">
-                            <CountUp end={dom.sampleCount} />
-                          </div>
-                          <span className="text-[11px] uppercase font-bold text-muted tracking-wider">
-                            Alumni
-                          </span>
-                        </div>
+                        <span className="inline-flex items-center rounded-full bg-navy-950 px-2.5 py-0.5 text-xs font-semibold text-[#F3DC9C] border border-navy-800 shadow-xs">
+                          <CountUp end={dom.sampleCount} /> Active
+                        </span>
                       </div>
 
                       {/* Domain Title */}

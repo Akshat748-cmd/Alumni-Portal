@@ -122,7 +122,7 @@ export default function CareerHubPage() {
                       <div>
                         <div className="flex items-center justify-between mb-6">
                           <div className="h-12 w-12 rounded-2xl bg-navy-950 flex items-center justify-center text-gold-400 shadow-md">
-                            <Icon className="h-6 w-6" />
+                            <Icon className="h-6 w-6 text-gold-400" />
                           </div>
                           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gold-500/15 text-navy-900 border border-gold-500/30">
                             {pillar.badge}

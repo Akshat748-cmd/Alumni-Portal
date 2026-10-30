@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -45,13 +46,15 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
-  const [windowWidth, setWindowWidth] = useState<number>(typeof window !== "undefined" ? window.innerWidth : 1440);
+  const [mounted, setMounted] = useState(false);
+  const [windowWidth, setWindowWidth] = useState<number>(1440);
 
   const headerRef = useRef<HTMLElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
 
   // Resize handler for responsive nav calculation & closing mobile menu on >= 1024px
   useEffect(() => {
+    setMounted(true);
     const handleResize = () => {
       const width = window.innerWidth;
       setWindowWidth(width);
@@ -99,12 +102,13 @@ export function Header() {
   // At 1150px to 1299px: 5 items fit + More
   // At 1024px to 1149px: 4 items fit + More
   const visibleCount = useMemo(() => {
+    if (!mounted) return 8; // Match SSR to avoid hydration mismatch
     if (windowWidth >= 1440) return 8;
     if (windowWidth >= 1300) return 6;
     if (windowWidth >= 1150) return 5;
     if (windowWidth >= 1024) return 4;
     return 8;
-  }, [windowWidth]);
+  }, [mounted, windowWidth]);
 
   const visibleNavItems = useMemo(
     () => regularNavItems.slice(0, visibleCount),
@@ -342,15 +346,17 @@ export function Header() {
                     align="end"
                     className="w-56 bg-navy-900 border-navy-700 text-ivory p-1.5 rounded-xl shadow-xl z-50"
                   >
-                    <DropdownMenuLabel className="font-normal px-2 py-1.5">
-                      <div className="text-xs font-bold text-ivory">{currentUser.name}</div>
-                      <div className="text-[11px] text-ivory/60 truncate">{currentUser.email}</div>
-                      {currentUser.batch && (
-                        <div className="text-[10px] text-gold-400 mt-0.5">
-                          Class of {currentUser.batch} • {currentUser.course}
-                        </div>
-                      )}
-                    </DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel className="font-normal px-2 py-1.5">
+                        <div className="text-xs font-bold text-ivory">{currentUser.name}</div>
+                        <div className="text-[11px] text-ivory/60 truncate">{currentUser.email}</div>
+                        {currentUser.batch && (
+                          <div className="text-[10px] text-gold-400 mt-0.5">
+                            Class of {currentUser.batch} • {currentUser.course}
+                          </div>
+                        )}
+                      </DropdownMenuLabel>
+                    </DropdownMenuGroup>
                     <DropdownMenuSeparator className="bg-navy-800" />
 
                     <DropdownMenuItem className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs p-0">

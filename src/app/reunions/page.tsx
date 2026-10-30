@@ -259,7 +259,15 @@ export default function ReunionsOverviewPage() {
                       alt={event.title}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
-                    <div className="absolute top-3 left-3 bg-navy-950/80 backdrop-blur-sm text-white px-2.5 py-1 rounded text-xs font-semibold capitalize">
+                    <div className="absolute top-3 left-3 rounded-lg bg-navy-950/95 border border-gold-500/40 px-3 py-1.5 text-center backdrop-blur-md shadow-md">
+                      <span className="block text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
+                        {new Date(event.date).toLocaleString("default", { month: "short" }).toUpperCase()}
+                      </span>
+                      <span className="block text-xl font-serif font-bold text-white leading-none mt-0.5">
+                        {new Date(event.date).getDate()}
+                      </span>
+                    </div>
+                    <div className="absolute bottom-3 left-3 bg-navy-950/80 backdrop-blur-sm text-[#F3DC9C] px-2.5 py-1 rounded text-xs font-semibold capitalize border border-navy-800">
                       {event.type}
                     </div>
                     {event.isVirtual && (

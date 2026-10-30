@@ -429,11 +429,11 @@ export default function HomePage() {
                         overlay
                         containerClassName="w-full h-full"
                       />
-                      <div className="absolute top-3 left-3 rounded-lg bg-navy-950/90 border border-gold-500/40 px-3 py-1 text-center backdrop-blur-md">
-                        <span className="block text-[10px] font-bold text-gold-400 uppercase tracking-widest">
-                          {new Date(evt.date).toLocaleString("default", { month: "short" })}
+                      <div className="absolute top-3 left-3 rounded-lg bg-navy-950/95 border border-gold-500/40 px-3 py-1.5 text-center backdrop-blur-md shadow-md">
+                        <span className="block text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
+                          {new Date(evt.date).toLocaleString("default", { month: "short" }).toUpperCase()}
                         </span>
-                        <span className="block text-lg font-serif font-bold text-ivory leading-none">
+                        <span className="block text-xl font-serif font-bold text-white leading-none mt-0.5">
                           {new Date(evt.date).getDate()}
                         </span>
                       </div>
@@ -617,7 +617,7 @@ export default function HomePage() {
                     <span className="h-8 w-8 rounded-lg bg-gold-500/15 text-gold-600 flex items-center justify-center font-serif font-bold text-sm">
                       {dom.name[0]}
                     </span>
-                    <span className="rounded-full bg-navy-950 px-2.5 py-0.5 text-xs font-bold text-gold-400">
+                    <span className="inline-flex items-center rounded-full bg-navy-950 px-2.5 py-0.5 text-xs font-semibold text-[#F3DC9C] border border-navy-800">
                       <CountUp end={dom.sampleCount} /> Active
                     </span>
                   </div>

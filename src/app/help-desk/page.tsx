@@ -169,7 +169,7 @@ export default function HelpDeskPage() {
                       <div>
                         <div className="flex items-center justify-between mb-5">
                           <div className="h-12 w-12 rounded-2xl bg-navy-950 flex items-center justify-center text-gold-400 shadow-md">
-                            <Icon className="h-6 w-6" />
+                            <Icon className="h-6 w-6 text-gold-400" />
                           </div>
                           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-navy-50 text-navy-900 border border-navy-200">
                             {cat.badge}
