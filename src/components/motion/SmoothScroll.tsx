@@ -25,34 +25,17 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       touchMultiplier: 1.5,
     });
 
-    // Make lenis globally accessible for overlay lock/unlock if needed
     (window as any).__lenis__ = lenis;
 
-    // Stop Lenis when an overlay is open, resume when closed
-    const observer = new MutationObserver(() => {
-      const isOverlayOpen =
-        document.body.getAttribute("data-overlay-open") === "true" ||
-        document.querySelector('[role="dialog"]') !== null ||
-        document.querySelector('[data-slot="sheet-overlay"]') !== null;
-
-      if (isOverlayOpen) {
-        lenis.stop();
-      } else {
-        lenis.start();
-      }
-    });
-
-    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-
+    let animId: number;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      animId = requestAnimationFrame(raf);
     }
 
-    const animId = requestAnimationFrame(raf);
+    animId = requestAnimationFrame(raf);
 
     return () => {
-      observer.disconnect();
       cancelAnimationFrame(animId);
       lenis.destroy();
       delete (window as any).__lenis__;
@@ -61,4 +44,3 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
-

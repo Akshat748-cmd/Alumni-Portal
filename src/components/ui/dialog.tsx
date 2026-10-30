@@ -47,18 +47,6 @@ function DialogContent({
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
 }) {
-  React.useEffect(() => {
-    document.body.setAttribute("data-overlay-open", "true");
-    return () => {
-      setTimeout(() => {
-        const remaining = document.querySelectorAll('[data-slot="dialog-content"], [data-slot="sheet-content"]');
-        if (remaining.length === 0) {
-          document.body.removeAttribute("data-overlay-open");
-        }
-      }, 50);
-    };
-  }, []);
-
   return (
     <DialogPortal>
       <DialogOverlay />

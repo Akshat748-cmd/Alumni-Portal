@@ -77,11 +77,10 @@ export function Footer() {
 
   useEffect(() => {
     const checkOverlay = () => {
-      const hasOverlay =
-        document.body.getAttribute("data-overlay-open") === "true" ||
-        document.querySelector('[role="dialog"]') !== null ||
-        document.querySelector('[data-slot="sheet-overlay"]') !== null;
-      setIsOverlayOpen(hasOverlay);
+      const openOverlay = document.querySelector(
+        '[data-state="open"][data-slot="dialog-content"], [data-state="open"][data-slot="sheet-content"], [data-slot="dialog-overlay"][data-state="open"], [data-slot="sheet-overlay"][data-state="open"]'
+      );
+      setIsOverlayOpen(openOverlay !== null);
     };
 
     checkOverlay();
