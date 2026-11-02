@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -22,7 +22,6 @@ import {
   Building2,
   Quote,
 } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -49,14 +48,68 @@ import { INITIAL_SUCCESS_STORIES } from "@/data/spotlight";
 
 export default function HomePage() {
   const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: false,
-    align: "start",
-    slidesToScroll: 1,
-  });
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
-  const scrollNext = () => emblaApi && emblaApi.scrollNext();
+  // Mouse drag-to-scroll support for desktop
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
+
+  const checkScroll = useCallback(() => {
+    if (!carouselRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+    setCanScrollLeft(scrollLeft > 15);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 15);
+  }, []);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [checkScroll]);
+
+  const scrollPrev = () => {
+    if (carouselRef.current) {
+      const card = carouselRef.current.querySelector<HTMLElement>("[data-event-card]");
+      const scrollAmount = card ? card.offsetWidth + 24 : carouselRef.current.clientWidth * 0.85;
+      carouselRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  const scrollNext = () => {
+    if (carouselRef.current) {
+      const card = carouselRef.current.querySelector<HTMLElement>("[data-event-card]");
+      const scrollAmount = card ? card.offsetWidth + 24 : carouselRef.current.clientWidth * 0.85;
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!carouselRef.current) return;
+    isDragging.current = true;
+    startX.current = e.pageX - carouselRef.current.offsetLeft;
+    scrollLeftStart.current = carouselRef.current.scrollLeft;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !carouselRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - carouselRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.3;
+    carouselRef.current.scrollLeft = scrollLeftStart.current - walk;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,7 +178,7 @@ export default function HomePage() {
   ];
 
   const bulletinHighlights = INITIAL_BULLETIN.slice(0, 3);
-  const eventHighlights = INITIAL_EVENTS.slice(0, 5);
+  const eventHighlights = INITIAL_EVENTS;
   const heroStory = INITIAL_SUCCESS_STORIES[0];
   const sideStories = INITIAL_SUCCESS_STORIES.slice(1, 3);
 
@@ -382,101 +435,130 @@ export default function HomePage() {
             <SectionHeader
               eyebrow="Gatherings & Conclaves"
               title="Upcoming Reunions & Workshops"
-              subtitle="Swipe to browse scheduled regional chapter meets, webinars, and batch anniversaries."
+              subtitle="Scroll or swipe left-right to browse scheduled regional chapter meets, webinars, and batch anniversaries."
               align="left"
               className="mb-0"
             />
 
             {/* Carousel navigation buttons */}
-            <div className="flex items-center gap-2 shrink-0">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={scrollPrev}
-                className="h-10 w-10 rounded-xl border-line text-navy-950 hover:bg-gold-500/10 cursor-pointer"
-                aria-label="Previous events"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={scrollNext}
-                className="h-10 w-10 rounded-xl border-line text-navy-950 hover:bg-gold-500/10 cursor-pointer"
-                aria-label="Next events"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-xs text-muted hidden sm:inline-block">
+                Scroll or swipe
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={scrollPrev}
+                  disabled={!canScrollLeft}
+                  className="h-10 w-10 rounded-xl border-line text-navy-950 hover:bg-gold-500/10 disabled:opacity-30 cursor-pointer transition-opacity"
+                  aria-label="Previous events"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={scrollNext}
+                  disabled={!canScrollRight}
+                  className="h-10 w-10 rounded-xl border-line text-navy-950 hover:bg-gold-500/10 disabled:opacity-30 cursor-pointer transition-opacity"
+                  aria-label="Next events"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
           </div>
 
-          {/* Embla Carousel Viewport */}
-          <div className="overflow-hidden -mx-4 px-4" ref={emblaRef}>
-            <div className="flex gap-6">
-              {eventHighlights.map((evt) => (
-                <div
-                  key={evt.id}
-                  className="flex-[0_0_88%] sm:flex-[0_0_55%] lg:flex-[0_0_36%] min-w-0"
-                >
-                  <div className="flex flex-col h-full rounded-xl border border-line bg-card shadow-navy-soft overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-navy-hover">
-                    {/* Event Image Banner with Date Badge */}
-                    <div className="relative h-48 w-full overflow-hidden bg-navy-950">
-                      <ImageWithFallback
-                        src={evt.imageUrl}
-                        alt={evt.title}
-                        aspectRatio="16/9"
-                        fill
-                        overlay
-                        containerClassName="w-full h-full"
-                      />
-                      <div className="absolute top-3 left-3 rounded-lg bg-navy-950/95 border border-gold-500/40 px-3 py-1.5 text-center backdrop-blur-md shadow-md">
-                        <span className="block text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
-                          {new Date(evt.date).toLocaleString("default", { month: "short" }).toUpperCase()}
-                        </span>
-                        <span className="block text-xl font-serif font-bold text-white leading-none mt-0.5">
-                          {new Date(evt.date).getDate()}
-                        </span>
+          {/* Smooth Scrollable Carousel Viewport */}
+          <div
+            ref={carouselRef}
+            data-lenis-prevent
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-6 pb-4 -mx-4 px-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
+          >
+            {eventHighlights.map((evt) => (
+              <div
+                key={evt.id}
+                data-event-card
+                className="flex-[0_0_88%] sm:flex-[0_0_calc((100%-24px)/2)] lg:flex-[0_0_calc((100%-48px)/3)] min-w-0 snap-start"
+              >
+                <div className="flex flex-col h-full rounded-xl border border-line bg-card shadow-navy-soft overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-navy-hover">
+                  {/* Event Image Banner with Date Badge */}
+                  <div className="relative h-48 w-full overflow-hidden bg-navy-950">
+                    <ImageWithFallback
+                      src={evt.imageUrl}
+                      alt={evt.title}
+                      aspectRatio="16/9"
+                      fill
+                      overlay
+                      containerClassName="w-full h-full"
+                    />
+                    <div className="absolute top-3 left-3 rounded-lg bg-navy-950/95 border border-gold-500/40 px-3 py-1.5 text-center backdrop-blur-md shadow-md">
+                      <span className="block text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
+                        {new Date(evt.date).toLocaleString("default", { month: "short" }).toUpperCase()}
+                      </span>
+                      <span className="block text-xl font-serif font-bold text-white leading-none mt-0.5">
+                        {new Date(evt.date).getDate()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Event Body */}
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs text-muted mb-2">
+                        <Clock className="h-3.5 w-3.5 text-gold-600" />
+                        <span>{evt.time}</span>
                       </div>
+
+                      <h4 className="font-serif text-base font-bold text-navy-950 line-clamp-2 leading-snug mb-2">
+                        {evt.title}
+                      </h4>
+
+                      <div className="flex items-start gap-1.5 text-xs text-ink/75 mb-3 line-clamp-1">
+                        <MapPin className="h-3.5 w-3.5 text-gold-600 shrink-0 mt-0.5" />
+                        <span>{evt.location}</span>
+                      </div>
+
+                      <p className="text-xs text-muted line-clamp-2 leading-relaxed">
+                        {evt.description}
+                      </p>
                     </div>
 
-                    {/* Event Body */}
-                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                      <div>
-                        <div className="flex items-center gap-2 text-xs text-muted mb-2">
-                          <Clock className="h-3.5 w-3.5 text-gold-600" />
-                          <span>{evt.time}</span>
-                        </div>
-
-                        <h4 className="font-serif text-base font-bold text-navy-950 line-clamp-2 leading-snug mb-2">
-                          {evt.title}
-                        </h4>
-
-                        <div className="flex items-start gap-1.5 text-xs text-ink/75 mb-3 line-clamp-1">
-                          <MapPin className="h-3.5 w-3.5 text-gold-600 shrink-0 mt-0.5" />
-                          <span>{evt.location}</span>
-                        </div>
-
-                        <p className="text-xs text-muted line-clamp-2 leading-relaxed">
-                          {evt.description}
-                        </p>
-                      </div>
-
-                      <div className="pt-4 border-t border-line flex items-center justify-between gap-3">
-                        <span className="text-xs text-muted font-mono">
-                          {evt.attendeeCount} Registered
-                        </span>
-                        <Link
-                          href="/reunions/register"
-                          className="inline-flex items-center justify-center h-8 px-3.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-gold-300 text-xs font-semibold transition-colors"
-                        >
-                          Register Online
-                        </Link>
-                      </div>
+                    <div className="pt-4 border-t border-line flex items-center justify-between gap-3">
+                      <span className="text-xs text-muted font-mono">
+                        {evt.attendeeCount} Registered
+                      </span>
+                      <Link
+                        href="/reunions/register"
+                        className="inline-flex items-center justify-center h-8 px-3.5 rounded-lg bg-navy-900 hover:bg-navy-800 text-gold-300 text-xs font-semibold transition-colors"
+                      >
+                        Register Online
+                      </Link>
                     </div>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom helper & view all link */}
+          <div className="mt-8 flex items-center justify-between text-xs text-muted flex-wrap gap-3">
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-2 w-2 rounded-full bg-gold-500 animate-pulse" />
+              <span>Showing all {eventHighlights.length} upcoming gatherings • Scroll or use arrows to view all</span>
             </div>
+            <Link
+              href="/reunions/upcoming"
+              className="text-xs font-bold text-navy-950 hover:text-gold-600 inline-flex items-center gap-1 transition-colors group"
+            >
+              <span>View Full Event Calendar</span>
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
       </section>
