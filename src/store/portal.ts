@@ -12,6 +12,17 @@ import {
   GiveBackSubmission,
   ApprovalStatus,
   DomainCategory,
+  StudentUser,
+  JobApplication,
+  ApplicationStatus,
+  ReferralRequest,
+  ReferralStatus,
+  ChatMessage,
+  ChatConversation,
+  PortalNotification,
+  ChatReport,
+  JobStatus,
+  PortalUserRole,
 } from "@/data/types";
 import { INITIAL_ALUMNI } from "@/data/alumni";
 import { INITIAL_EVENTS } from "@/data/events";
@@ -20,6 +31,17 @@ import { INITIAL_BULLETIN } from "@/data/bulletin";
 import { INITIAL_SUCCESS_STORIES, INITIAL_BUSINESSES } from "@/data/spotlight";
 import { INITIAL_MENTORS } from "@/data/career";
 import { FOOTER_SOCIAL_LINKS } from "@/data/nav";
+import {
+  DEMO_ALUMNUS,
+  DEMO_STUDENT,
+  INITIAL_STUDENTS,
+  INITIAL_APPLICATIONS,
+  INITIAL_REFERRALS,
+  INITIAL_CONVERSATIONS,
+  INITIAL_MESSAGES,
+  INITIAL_NOTIFICATIONS,
+  INITIAL_CHAT_REPORTS,
+} from "@/data/opportunitiesNetwork";
 
 export type SubmittableItemType =
   | "alumni"
@@ -58,12 +80,16 @@ export interface CurrentUser {
   id: string;
   name: string;
   email: string;
-  role: "alumni" | "admin" | "guest";
+  role: "alumni" | "admin" | "guest" | "alumnus" | "student";
   batch?: number;
   course?: string;
   avatarUrl?: string;
   company?: string;
   designation?: string;
+  skills?: string[];
+  resumeFileName?: string;
+  enrollmentNumber?: string;
+  yearOfStudy?: string;
 }
 
 export interface SocialLink {
@@ -312,6 +338,17 @@ interface PortalState {
   // Published Content Layer (for Admin additions & edits)
   publishedContent: PublishedContentState;
 
+  // Phase 6: Opportunities Network State
+  students: StudentUser[];
+  jobApplications: JobApplication[];
+  referrals: ReferralRequest[];
+  conversations: ChatConversation[];
+  messages: Record<string, ChatMessage[]>;
+  notifications: PortalNotification[];
+  savedJobIds: string[];
+  blockedUserIds: string[];
+  chatReports: ChatReport[];
+
   // Auth / session state
   currentUser: CurrentUser | null;
   isAdminAuthenticated: boolean;
@@ -331,16 +368,38 @@ interface PortalState {
   setAdminAuthenticated: (val: boolean) => void;
   updateSocialLinks: (links: SocialLink[]) => void;
   resetDemo: () => void;
+
+  // Phase 6 Actions
+  registerStudent: (student: Omit<StudentUser, "id" | "joinedDate" | "isActive">) => StudentUser;
+  applyToJob: (params: { jobId: string; coverNote: string; resumeFileName?: string; askReferral?: boolean }) => { success: boolean; application?: JobApplication; error?: string };
+  withdrawApplication: (applicationId: string) => void;
+  setApplicationStatus: (applicationId: string, status: ApplicationStatus, note?: string) => void;
+  requestReferral: (params: { jobId: string; referrerId: string; message: string; resumeFileName?: string }) => { success: boolean; referral?: ReferralRequest; error?: string };
+  respondReferral: (referralId: string, action: "accept" | "decline" | "referred", declineReason?: string) => void;
+  offerReferral: (applicationId: string) => void;
+  startConversation: (targetUserId: string, jobContext?: { jobId: string; jobTitle: string; company: string }, initialMessage?: string) => string;
+  sendMessage: (conversationId: string, text: string) => void;
+  markConversationRead: (conversationId: string) => void;
+  reportConversation: (conversationId: string, reportedUserId: string, reason: string, note: string) => void;
+  blockUser: (userId: string) => void;
+  unblockUser: (userId: string) => void;
+  addNotification: (notif: Omit<PortalNotification, "id" | "createdAt" | "read">) => void;
+  markNotificationsRead: () => void;
+  markNotificationAsRead: (id: string) => void;
+  closePosting: (jobId: string, reason?: string) => void;
+  reopenPosting: (jobId: string) => void;
+  removePosting: (jobId: string, reason?: string) => void;
+  deactivateStudent: (studentId: string) => void;
+  reactivateStudent: (studentId: string) => void;
+  toggleSaveJob: (jobId: string) => void;
+  switchDemoUser: (role: "alumnus" | "student") => void;
+  updateStudentProfile: (patch: Partial<StudentUser>) => void;
+  dismissReport: (reportId: string) => void;
+  warnUserReport: (reportId: string) => void;
+  blockUserReport: (reportId: string) => void;
 }
 
-const DEFAULT_CURRENT_USER: CurrentUser = {
-  id: "alm-1",
-  name: "Vikramaditya Rathore",
-  email: "vikram.rathore@acmecorp.mock",
-  role: "alumni",
-  batch: 2008,
-  course: "MBA (Finance & Strategy)",
-};
+const DEFAULT_CURRENT_USER: CurrentUser = DEMO_ALUMNUS;
 
 export const usePortalStore = create<PortalState>()(
   persist(
@@ -352,6 +411,17 @@ export const usePortalStore = create<PortalState>()(
       stories: INITIAL_SUCCESS_STORIES,
       businesses: INITIAL_BUSINESSES,
       mentors: INITIAL_MENTORS,
+
+      // Phase 6 Opportunities Network Initial State
+      students: INITIAL_STUDENTS,
+      jobApplications: INITIAL_APPLICATIONS,
+      referrals: INITIAL_REFERRALS,
+      conversations: INITIAL_CONVERSATIONS,
+      messages: INITIAL_MESSAGES,
+      notifications: INITIAL_NOTIFICATIONS,
+      savedJobIds: ["job-1", "job-9"],
+      blockedUserIds: [],
+      chatReports: INITIAL_CHAT_REPORTS,
       tickets: [
         {
           id: "tkt-1",
@@ -516,10 +586,35 @@ export const usePortalStore = create<PortalState>()(
               applicationLinkOrEmail: item.applicationLinkOrEmail || item.link || "careers@poddar.mock",
               postedDate: timestamp,
               deadline: item.deadline || "2026-12-31",
-              status: "pending",
+              status: "live", // LIVE IMMEDIATELY for Opportunities Network
+              workMode: item.workMode || "Hybrid",
+              openings: item.openings || 1,
+              salaryRange: item.salaryRange,
+              skills: item.skills || [],
+              whoCanApply: item.whoCanApply || "Both",
+              applyMethod: item.applyMethod || "portal",
+              canRefer: item.canRefer ?? true,
+              referralSlots: item.referralSlots ?? 2,
+              posterId: item.posterId || get().currentUser?.id || "alm-1",
+              viewsCount: 1,
               ...item,
             };
-            set({ jobs: [newItem, ...get().jobs] });
+            set({
+              jobs: [newItem, ...get().jobs],
+              notifications: [
+                {
+                  id: "notif-post-" + Date.now(),
+                  userId: get().currentUser?.id || "alm-1",
+                  title: "Opportunity Live!",
+                  message: `Your job posting '${newItem.title}' at ${newItem.company} is live immediately on Career Hub.`,
+                  type: "job",
+                  link: `/career-hub/jobs`,
+                  read: false,
+                  createdAt: new Date().toISOString(),
+                },
+                ...get().notifications,
+              ],
+            });
             finalPayload = newItem;
             break;
           }
@@ -1035,6 +1130,811 @@ export const usePortalStore = create<PortalState>()(
       setAdminAuthenticated: (val) => set({ isAdminAuthenticated: val }),
       updateSocialLinks: (links) => set({ socialLinks: links }),
 
+      // ==========================================
+      // Phase 6: Opportunities Network Actions
+      // ==========================================
+      registerStudent: (studentData) => {
+        const id = "stu-" + Date.now();
+        const today = new Date().toISOString().split("T")[0];
+        const newStudent: StudentUser = {
+          ...studentData,
+          id,
+          joinedDate: today,
+          isActive: true,
+        };
+        const studentUser: CurrentUser = {
+          id: newStudent.id,
+          name: newStudent.name,
+          email: newStudent.email,
+          role: "student",
+          course: newStudent.course,
+          batch: 2026,
+          skills: newStudent.skills,
+          resumeFileName: newStudent.resumeFileName,
+          enrollmentNumber: newStudent.enrollmentNumber,
+          yearOfStudy: newStudent.yearOfStudy,
+        };
+        set({
+          students: [newStudent, ...get().students],
+          currentUser: studentUser,
+          isAdminAuthenticated: false,
+          notifications: [
+            {
+              id: "notif-" + Date.now(),
+              userId: id,
+              title: "Welcome to Poddar Opportunities Network!",
+              message: "Your student account is active immediately. You can now explore live opportunities, apply, and connect with alumni.",
+              type: "system",
+              link: "/career-hub/jobs",
+              read: false,
+              createdAt: new Date().toISOString(),
+            },
+            ...get().notifications,
+          ],
+        });
+        return newStudent;
+      },
+
+      applyToJob: ({ jobId, coverNote, resumeFileName, askReferral }) => {
+        const user = get().currentUser;
+        if (!user) {
+          return { success: false, error: "Please log in or register to apply." };
+        }
+        const job = get().jobs.find((j) => j.id === jobId);
+        if (!job) {
+          return { success: false, error: "Opportunity not found." };
+        }
+        if (job.status === "closed" || job.status === "removed") {
+          return { success: false, error: "This opportunity is no longer accepting applications." };
+        }
+        if (job.posterId === user.id) {
+          return { success: false, error: "You cannot apply to your own posting." };
+        }
+        const isStudent = user.role === "student";
+        if (job.whoCanApply === "Students" && !isStudent) {
+          return { success: false, error: "This posting is reserved for current students only." };
+        }
+        if (job.whoCanApply === "Alumni" && isStudent) {
+          return { success: false, error: "This posting is reserved for verified alumni only." };
+        }
+        const existing = get().jobApplications.find(
+          (a) => a.jobId === jobId && a.applicantId === user.id && a.status !== "Withdrawn"
+        );
+        if (existing) {
+          return { success: false, error: "You have already applied for this position." };
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+        const appId = "app-" + Date.now();
+        const resume = resumeFileName || user.resumeFileName || "Profile_Summary.pdf";
+
+        let refRequestId: string | undefined = undefined;
+        if (askReferral && job.posterId && job.canRefer && (job.referralSlots ?? 0) > 0) {
+          refRequestId = "ref-" + Date.now();
+          const newRef: ReferralRequest = {
+            id: refRequestId,
+            jobId,
+            jobTitle: job.title,
+            company: job.company,
+            requesterId: user.id,
+            requesterName: user.name,
+            requesterRole: isStudent ? "student" : "alumnus",
+            requesterCourseOrCompany: user.course || user.company || "Poddar Institutions",
+            referrerId: job.posterId,
+            referrerName: job.postedByAlumniName,
+            message: `Referral requested alongside application for ${job.title}: "${coverNote.slice(0, 140)}..."`,
+            resumeFileName: resume,
+            status: "Requested",
+            createdAt: today,
+            updatedAt: today,
+            history: [{ status: "Requested", date: today }],
+          };
+          set({ referrals: [newRef, ...get().referrals] });
+        }
+
+        const newApp: JobApplication = {
+          id: appId,
+          jobId,
+          jobTitle: job.title,
+          company: job.company,
+          applicantId: user.id,
+          applicantName: user.name,
+          applicantRole: isStudent ? "student" : "alumnus",
+          applicantCourseOrCompany: user.course || user.company || "Poddar Institutions",
+          applicantEmail: user.email,
+          coverNote,
+          resumeFileName: resume,
+          appliedDate: today,
+          status: "Applied",
+          statusHistory: [{ status: "Applied", date: today, note: "Application submitted through Opportunities Network." }],
+          referralRequestId: refRequestId,
+        };
+
+        const newNotifs: PortalNotification[] = [
+          {
+            id: "notif-app-" + Date.now(),
+            userId: user.id,
+            title: "Application Submitted Successfully",
+            message: `Your application for ${job.title} at ${job.company} has been delivered.`,
+            type: "application",
+            link: "/dashboard/applications",
+            read: false,
+            createdAt: new Date().toISOString(),
+          },
+        ];
+
+        if (job.posterId) {
+          newNotifs.push({
+            id: "notif-poster-" + Date.now(),
+            userId: job.posterId,
+            title: "New Application Received",
+            message: `${user.name} applied for ${job.title}.`,
+            type: "application",
+            link: `/dashboard/postings/${job.id}`,
+            read: false,
+            createdAt: new Date().toISOString(),
+          });
+        }
+
+        set({
+          jobApplications: [newApp, ...get().jobApplications],
+          notifications: [...newNotifs, ...get().notifications],
+        });
+
+        return { success: true, application: newApp };
+      },
+
+      withdrawApplication: (applicationId) => {
+        const today = new Date().toISOString().split("T")[0];
+        set({
+          jobApplications: get().jobApplications.map((a) =>
+            a.id === applicationId
+              ? {
+                  ...a,
+                  status: "Withdrawn",
+                  statusHistory: [...a.statusHistory, { status: "Withdrawn", date: today, note: "Withdrawn by applicant." }],
+                }
+              : a
+          ),
+        });
+      },
+
+      setApplicationStatus: (applicationId, status, note) => {
+        const today = new Date().toISOString().split("T")[0];
+        const app = get().jobApplications.find((a) => a.id === applicationId);
+        if (!app) return;
+
+        const notif: PortalNotification = {
+          id: "notif-status-" + Date.now(),
+          userId: app.applicantId,
+          title: `Application Update: ${status}`,
+          message: `Your application for ${app.jobTitle} at ${app.company} has moved to ${status}.${note ? ` Note: ${note}` : ""}`,
+          type: "application",
+          link: "/dashboard/applications",
+          read: false,
+          createdAt: new Date().toISOString(),
+        };
+
+        set({
+          jobApplications: get().jobApplications.map((a) =>
+            a.id === applicationId
+              ? {
+                  ...a,
+                  status,
+                  statusHistory: [...a.statusHistory, { status, date: today, note }],
+                }
+              : a
+          ),
+          notifications: [notif, ...get().notifications],
+        });
+      },
+
+      requestReferral: ({ jobId, referrerId, message, resumeFileName }) => {
+        const user = get().currentUser;
+        if (!user) return { success: false, error: "Please log in to request a referral." };
+        if (referrerId === user.id) return { success: false, error: "You cannot request a referral from yourself." };
+
+        const job = get().jobs.find((j) => j.id === jobId);
+        if (!job) return { success: false, error: "Job opportunity not found." };
+
+        const existing = get().referrals.find(
+          (r) => r.jobId === jobId && r.requesterId === user.id && r.referrerId === referrerId && (r.status === "Requested" || r.status === "Accepted")
+        );
+        if (existing) {
+          return { success: false, error: "You already have an active referral request for this position." };
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+        const refId = "ref-" + Date.now();
+        const isStudent = user.role === "student";
+
+        const newRef: ReferralRequest = {
+          id: refId,
+          jobId,
+          jobTitle: job.title,
+          company: job.company,
+          requesterId: user.id,
+          requesterName: user.name,
+          requesterRole: isStudent ? "student" : "alumnus",
+          requesterCourseOrCompany: user.course || user.company || "Poddar Institutions",
+          referrerId,
+          referrerName: job.postedByAlumniName,
+          message,
+          resumeFileName: resumeFileName || user.resumeFileName || "Candidate_Resume.pdf",
+          status: "Requested",
+          createdAt: today,
+          updatedAt: today,
+          history: [{ status: "Requested", date: today }],
+        };
+
+        const notif: PortalNotification = {
+          id: "notif-ref-" + Date.now(),
+          userId: referrerId,
+          title: "New Referral Request",
+          message: `${user.name} requested an internal referral for ${job.title}.`,
+          type: "referral",
+          link: "/dashboard/referrals",
+          read: false,
+          createdAt: new Date().toISOString(),
+        };
+
+        set({
+          referrals: [newRef, ...get().referrals],
+          notifications: [notif, ...get().notifications],
+        });
+
+        return { success: true, referral: newRef };
+      },
+
+      respondReferral: (referralId, action, declineReason) => {
+        const today = new Date().toISOString().split("T")[0];
+        const ref = get().referrals.find((r) => r.id === referralId);
+        if (!ref) return;
+
+        let newStatus: ReferralStatus = "Accepted";
+        let statusNote = "";
+
+        if (action === "accept") {
+          newStatus = "Accepted";
+          statusNote = "Referral request accepted. Direct chat initiated.";
+
+          get().startConversation(
+            ref.requesterId,
+            { jobId: ref.jobId, jobTitle: ref.jobTitle, company: ref.company },
+            `Hi ${ref.requesterName}, I have accepted your referral request for ${ref.jobTitle} at ${ref.company}. Let's chat here!`
+          );
+        } else if (action === "referred") {
+          newStatus = "Referred";
+          statusNote = "Official internal referral submitted to talent acquisition.";
+
+          set({
+            jobs: get().jobs.map((j) =>
+              j.id === ref.jobId && (j.referralSlots ?? 0) > 0
+                ? { ...j, referralSlots: (j.referralSlots ?? 1) - 1 }
+                : j
+            ),
+            jobApplications: get().jobApplications.map((a) =>
+              a.jobId === ref.jobId && a.applicantId === ref.requesterId
+                ? { ...a, referredBy: ref.referrerName }
+                : a
+            ),
+          });
+        } else if (action === "decline") {
+          newStatus = "Declined";
+          statusNote = declineReason || "Referral declined.";
+        }
+
+        const notif: PortalNotification = {
+          id: "notif-ref-resp-" + Date.now(),
+          userId: ref.requesterId,
+          title: `Referral ${newStatus}!`,
+          message: `${ref.referrerName} marked your referral request for ${ref.jobTitle} as ${newStatus}.${declineReason ? ` Reason: ${declineReason}` : ""}`,
+          type: "referral",
+          link: "/dashboard/referrals",
+          read: false,
+          createdAt: new Date().toISOString(),
+        };
+
+        set({
+          referrals: get().referrals.map((r) =>
+            r.id === referralId
+              ? {
+                  ...r,
+                  status: newStatus,
+                  declineReason: action === "decline" ? declineReason : r.declineReason,
+                  updatedAt: today,
+                  history: [...r.history, { status: newStatus, date: today, note: statusNote }],
+                }
+              : r
+          ),
+          notifications: [notif, ...get().notifications],
+        });
+      },
+
+      offerReferral: (applicationId) => {
+        const app = get().jobApplications.find((a) => a.id === applicationId);
+        if (!app) return;
+        const user = get().currentUser;
+        const referrerName = user?.name || "Alumnus Referrer";
+
+        set({
+          jobApplications: get().jobApplications.map((a) =>
+            a.id === applicationId ? { ...a, referredBy: referrerName } : a
+          ),
+          notifications: [
+            {
+              id: "notif-offer-ref-" + Date.now(),
+              userId: app.applicantId,
+              title: "Referral Endorsement Added!",
+              message: `${referrerName} added an internal referral endorsement to your application for ${app.jobTitle}.`,
+              type: "referral",
+              link: "/dashboard/applications",
+              read: false,
+              createdAt: new Date().toISOString(),
+            },
+            ...get().notifications,
+          ],
+        });
+      },
+
+      startConversation: (targetUserId, jobContext, initialMessage) => {
+        const current = get().currentUser;
+        if (!current) return "";
+
+        const targetStudent = get().students.find((s) => s.id === targetUserId);
+        const currentIsStudent = current.role === "student";
+        if (currentIsStudent && targetStudent) {
+          throw new Error("Student-to-student messaging is not permitted on the Opportunities Network.");
+        }
+
+        const existing = get().conversations.find((c) =>
+          c.participantIds.includes(current.id) && c.participantIds.includes(targetUserId)
+        );
+
+        if (existing) {
+          if (initialMessage) {
+            get().sendMessage(existing.id, initialMessage);
+          }
+          return existing.id;
+        }
+
+        const targetAlum = get().alumni.find((a) => a.id === targetUserId);
+        const targetName = targetStudent?.name || targetAlum?.name || "Member";
+        const targetRole = targetStudent ? "student" : "alumnus";
+        const targetCourseOrCompany = targetStudent?.course || targetAlum?.company || "Poddar Community";
+
+        const convId = "conv-" + Date.now();
+        const now = new Date().toISOString();
+
+        const newConv: ChatConversation = {
+          id: convId,
+          participantIds: [current.id, targetUserId],
+          participants: [
+            {
+              id: current.id,
+              name: current.name,
+              role: currentIsStudent ? "student" : "alumnus",
+              courseOrCompany: current.course || current.company,
+            },
+            {
+              id: targetUserId,
+              name: targetName,
+              role: targetRole,
+              courseOrCompany: targetCourseOrCompany,
+            },
+          ],
+          jobContext,
+          lastMessage: initialMessage || "Conversation started",
+          lastMessageAt: now,
+          unreadCount: {
+            [targetUserId]: initialMessage ? 1 : 0,
+            [current.id]: 0,
+          },
+        };
+
+        const initialMsgs: ChatMessage[] = initialMessage
+          ? [
+              {
+                id: "msg-" + Date.now(),
+                conversationId: convId,
+                senderId: current.id,
+                senderName: current.name,
+                senderRole: currentIsStudent ? "student" : "alumnus",
+                text: initialMessage,
+                createdAt: now,
+                read: false,
+              },
+            ]
+          : [];
+
+        set({
+          conversations: [newConv, ...get().conversations],
+          messages: {
+            ...get().messages,
+            [convId]: initialMsgs,
+          },
+        });
+
+        if (initialMessage) {
+          setTimeout(() => {
+            const replies = [
+              "Thank you for reaching out! I have received your message and will get back to you shortly.",
+              "Glad to connect on the Poddar Network! How can I assist you with this opportunity?",
+              "Thanks for contacting me. Let me review the details and get back to you soon.",
+            ];
+            const randomReply = replies[Math.floor(Math.random() * replies.length)];
+            const replyMsg: ChatMessage = {
+              id: "msg-sim-" + Date.now(),
+              conversationId: convId,
+              senderId: targetUserId,
+              senderName: targetName,
+              senderRole: targetRole,
+              text: randomReply,
+              createdAt: new Date().toISOString(),
+              read: false,
+            };
+            set({
+              messages: {
+                ...get().messages,
+                [convId]: [...(get().messages[convId] || []), replyMsg],
+              },
+              conversations: get().conversations.map((c) =>
+                c.id === convId
+                  ? {
+                      ...c,
+                      lastMessage: randomReply,
+                      lastMessageAt: new Date().toISOString(),
+                      unreadCount: { ...c.unreadCount, [current.id]: (c.unreadCount[current.id] || 0) + 1 },
+                    }
+                  : c
+              ),
+              notifications: [
+                {
+                  id: "notif-msg-" + Date.now(),
+                  userId: current.id,
+                  title: `New Message from ${targetName}`,
+                  message: randomReply,
+                  type: "message",
+                  link: `/messages?conv=${convId}`,
+                  read: false,
+                  createdAt: new Date().toISOString(),
+                },
+                ...get().notifications,
+              ],
+            });
+          }, 2000);
+        }
+
+        return convId;
+      },
+
+      sendMessage: (conversationId, text) => {
+        const current = get().currentUser;
+        if (!current) return;
+        const conv = get().conversations.find((c) => c.id === conversationId);
+        if (!conv || conv.isBlocked) return;
+
+        const otherParticipant = conv.participants.find((p) => p.id !== current.id);
+        const otherId = otherParticipant?.id || "";
+        const now = new Date().toISOString();
+
+        const userMsg: ChatMessage = {
+          id: "msg-" + Date.now(),
+          conversationId,
+          senderId: current.id,
+          senderName: current.name,
+          senderRole: current.role === "student" ? "student" : "alumnus",
+          text,
+          createdAt: now,
+          read: true,
+        };
+
+        set({
+          messages: {
+            ...get().messages,
+            [conversationId]: [...(get().messages[conversationId] || []), userMsg],
+          },
+          conversations: get().conversations.map((c) =>
+            c.id === conversationId
+              ? {
+                  ...c,
+                  lastMessage: text,
+                  lastMessageAt: now,
+                  unreadCount: { ...c.unreadCount, [otherId]: (c.unreadCount[otherId] || 0) + 1 },
+                }
+              : c
+          ),
+        });
+
+        setTimeout(() => {
+          const cannedResponses = [
+            "Thank you for sharing! I have noted your details and will coordinate with the team.",
+            "Sounds good! Feel free to review the role requirements, and we can discuss any specific questions.",
+            "Understood. Let me check the schedule and follow up with the next steps shortly.",
+            "Great connecting on the Opportunities Network! Let me know if you need any additional guidance.",
+          ];
+          const responseText = cannedResponses[Math.floor(Math.random() * cannedResponses.length)];
+          const replyMsg: ChatMessage = {
+            id: "msg-reply-" + Date.now(),
+            conversationId,
+            senderId: otherId,
+            senderName: otherParticipant?.name || "Alumnus",
+            senderRole: otherParticipant?.role || "alumnus",
+            text: responseText,
+            createdAt: new Date().toISOString(),
+            read: false,
+          };
+
+          set({
+            messages: {
+              ...get().messages,
+              [conversationId]: [...(get().messages[conversationId] || []), replyMsg],
+            },
+            conversations: get().conversations.map((c) =>
+              c.id === conversationId
+                ? {
+                    ...c,
+                    lastMessage: responseText,
+                    lastMessageAt: new Date().toISOString(),
+                    unreadCount: { ...c.unreadCount, [current.id]: (c.unreadCount[current.id] || 0) + 1 },
+                  }
+                : c
+            ),
+            notifications: [
+              {
+                id: "notif-msg-" + Date.now(),
+                userId: current.id,
+                title: `New Message from ${otherParticipant?.name || "Member"}`,
+                message: responseText,
+                type: "message",
+                link: `/messages?conv=${conversationId}`,
+                read: false,
+                createdAt: new Date().toISOString(),
+              },
+              ...get().notifications,
+            ],
+          });
+        }, 1800);
+      },
+
+      markConversationRead: (conversationId) => {
+        const current = get().currentUser;
+        if (!current) return;
+        set({
+          conversations: get().conversations.map((c) =>
+            c.id === conversationId
+              ? {
+                  ...c,
+                  unreadCount: { ...c.unreadCount, [current.id]: 0 },
+                }
+              : c
+          ),
+        });
+      },
+
+      reportConversation: (conversationId, reportedUserId, reason, note) => {
+        const current = get().currentUser;
+        if (!current) return;
+        const conv = get().conversations.find((c) => c.id === conversationId);
+        const msgs = get().messages[conversationId] || [];
+        const reportedUser = conv?.participants.find((p) => p.id === reportedUserId);
+
+        const newReport: ChatReport = {
+          id: "rep-" + Date.now(),
+          conversationId,
+          reportedById: current.id,
+          reportedByName: current.name,
+          reportedUserId,
+          reportedUserName: reportedUser?.name || "Reported User",
+          reason,
+          note,
+          createdAt: new Date().toISOString(),
+          status: "open",
+          transcriptPreview: msgs.slice(-5).map((m) => ({
+            sender: m.senderName,
+            text: m.text,
+            time: new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          })),
+        };
+
+        set({
+          chatReports: [newReport, ...get().chatReports],
+          notifications: [
+            {
+              id: "notif-rep-" + Date.now(),
+              userId: current.id,
+              title: "Report Submitted",
+              message: "Thank you for alerting us. The administrator will review this conversation transcript.",
+              type: "system",
+              read: false,
+              createdAt: new Date().toISOString(),
+            },
+            ...get().notifications,
+          ],
+        });
+      },
+
+      blockUser: (userId) => {
+        set({
+          blockedUserIds: [...new Set([...get().blockedUserIds, userId])],
+          conversations: get().conversations.map((c) =>
+            c.participantIds.includes(userId)
+              ? { ...c, isBlocked: true, blockedById: get().currentUser?.id }
+              : c
+          ),
+        });
+      },
+
+      unblockUser: (userId) => {
+        set({
+          blockedUserIds: get().blockedUserIds.filter((id) => id !== userId),
+          conversations: get().conversations.map((c) =>
+            c.participantIds.includes(userId)
+              ? { ...c, isBlocked: false, blockedById: undefined }
+              : c
+          ),
+        });
+      },
+
+      addNotification: (notif) => {
+        const newN: PortalNotification = {
+          ...notif,
+          id: "notif-" + Date.now(),
+          createdAt: new Date().toISOString(),
+          read: false,
+        };
+        set({ notifications: [newN, ...get().notifications] });
+      },
+
+      markNotificationsRead: () => {
+        const user = get().currentUser;
+        if (!user) return;
+        set({
+          notifications: get().notifications.map((n) =>
+            n.userId === user.id ? { ...n, read: true } : n
+          ),
+        });
+      },
+
+      markNotificationAsRead: (id) => {
+        set({
+          notifications: get().notifications.map((n) =>
+            n.id === id ? { ...n, read: true } : n
+          ),
+        });
+      },
+
+      closePosting: (jobId, reason) => {
+        const job = get().jobs.find((j) => j.id === jobId);
+        if (!job) return;
+        set({
+          jobs: get().jobs.map((j) => (j.id === jobId ? { ...j, status: "closed" as JobStatus } : j)),
+          notifications: job.posterId
+            ? [
+                {
+                  id: "notif-close-" + Date.now(),
+                  userId: job.posterId,
+                  title: "Posting Closed",
+                  message: `Your job posting '${job.title}' has been marked closed.${reason ? ` Reason: ${reason}` : ""}`,
+                  type: "job",
+                  link: "/dashboard/postings",
+                  read: false,
+                  createdAt: new Date().toISOString(),
+                },
+                ...get().notifications,
+              ]
+            : get().notifications,
+        });
+      },
+
+      reopenPosting: (jobId) => {
+        set({
+          jobs: get().jobs.map((j) => (j.id === jobId ? { ...j, status: "live" as JobStatus } : j)),
+        });
+      },
+
+      removePosting: (jobId, reason) => {
+        const job = get().jobs.find((j) => j.id === jobId);
+        if (!job) return;
+        set({
+          jobs: get().jobs.map((j) => (j.id === jobId ? { ...j, status: "removed" as JobStatus } : j)),
+          notifications: job.posterId
+            ? [
+                {
+                  id: "notif-remove-" + Date.now(),
+                  userId: job.posterId,
+                  title: "Posting Removed by Admin",
+                  message: `Your job posting '${job.title}' was removed by administrator.${reason ? ` Reason: ${reason}` : ""}`,
+                  type: "system",
+                  link: "/dashboard/postings",
+                  read: false,
+                  createdAt: new Date().toISOString(),
+                },
+                ...get().notifications,
+              ]
+            : get().notifications,
+        });
+      },
+
+      deactivateStudent: (studentId) => {
+        set({
+          students: get().students.map((s) => (s.id === studentId ? { ...s, isActive: false } : s)),
+        });
+      },
+
+      reactivateStudent: (studentId) => {
+        set({
+          students: get().students.map((s) => (s.id === studentId ? { ...s, isActive: true } : s)),
+        });
+      },
+
+      toggleSaveJob: (jobId) => {
+        const saved = get().savedJobIds;
+        if (saved.includes(jobId)) {
+          set({ savedJobIds: saved.filter((id) => id !== jobId) });
+        } else {
+          set({ savedJobIds: [...saved, jobId] });
+        }
+      },
+
+      switchDemoUser: (role) => {
+        if (role === "student") {
+          set({ currentUser: DEMO_STUDENT, isAdminAuthenticated: false });
+        } else {
+          set({ currentUser: DEMO_ALUMNUS, isAdminAuthenticated: false });
+        }
+      },
+
+      updateStudentProfile: (patch) => {
+        const cur = get().currentUser;
+        if (!cur) return;
+        set({
+          currentUser: { ...cur, ...patch },
+          students: get().students.map((s) => (s.id === cur.id ? { ...s, ...patch } : s)),
+        });
+      },
+
+      dismissReport: (reportId) => {
+        set({
+          chatReports: get().chatReports.map((r) =>
+            r.id === reportId ? { ...r, status: "dismissed" as const, actionTaken: "Dismissed by admin after review." } : r
+          ),
+        });
+      },
+
+      warnUserReport: (reportId) => {
+        const rep = get().chatReports.find((r) => r.id === reportId);
+        if (!rep) return;
+        set({
+          chatReports: get().chatReports.map((r) =>
+            r.id === reportId ? { ...r, status: "actioned" as const, actionTaken: "Formal warning notification sent to user." } : r
+          ),
+          notifications: [
+            {
+              id: "notif-warn-" + Date.now(),
+              userId: rep.reportedUserId,
+              title: "Institutional Moderation Notice",
+              message: "A chat conversation was flagged and reviewed. Please adhere strictly to Poddar Opportunities Network community guidelines.",
+              type: "system",
+              read: false,
+              createdAt: new Date().toISOString(),
+            },
+            ...get().notifications,
+          ],
+        });
+      },
+
+      blockUserReport: (reportId) => {
+        const rep = get().chatReports.find((r) => r.id === reportId);
+        if (!rep) return;
+        get().blockUser(rep.reportedUserId);
+        set({
+          chatReports: get().chatReports.map((r) =>
+            r.id === reportId ? { ...r, status: "actioned" as const, actionTaken: "User chat privileges blocked." } : r
+          ),
+        });
+      },
+
       resetDemo: () =>
         set({
           alumni: INITIAL_ALUMNI,
@@ -1044,6 +1944,15 @@ export const usePortalStore = create<PortalState>()(
           stories: INITIAL_SUCCESS_STORIES,
           businesses: INITIAL_BUSINESSES,
           mentors: INITIAL_MENTORS,
+          students: INITIAL_STUDENTS,
+          jobApplications: INITIAL_APPLICATIONS,
+          referrals: INITIAL_REFERRALS,
+          conversations: INITIAL_CONVERSATIONS,
+          messages: INITIAL_MESSAGES,
+          notifications: INITIAL_NOTIFICATIONS,
+          savedJobIds: ["job-1", "job-9"],
+          blockedUserIds: [],
+          chatReports: INITIAL_CHAT_REPORTS,
           tickets: [
             {
               id: "tkt-1",
@@ -1089,6 +1998,19 @@ export const usePortalStore = create<PortalState>()(
     {
       name: "poddar_alumni_portal_state_v1",
       storage: createJSONStorage(() => localStorage),
+      merge: (persistedState: any, currentState) => ({
+        ...currentState,
+        ...persistedState,
+        students: persistedState?.students?.length ? persistedState.students : currentState.students,
+        jobApplications: persistedState?.jobApplications?.length ? persistedState.jobApplications : currentState.jobApplications,
+        referrals: persistedState?.referrals?.length ? persistedState.referrals : currentState.referrals,
+        conversations: persistedState?.conversations?.length ? persistedState.conversations : currentState.conversations,
+        messages: persistedState?.messages ? persistedState.messages : currentState.messages,
+        notifications: persistedState?.notifications?.length ? persistedState.notifications : currentState.notifications,
+        savedJobIds: persistedState?.savedJobIds || currentState.savedJobIds,
+        blockedUserIds: persistedState?.blockedUserIds || currentState.blockedUserIds,
+        chatReports: persistedState?.chatReports?.length ? persistedState.chatReports : currentState.chatReports,
+      }),
     }
   )
 );

@@ -109,6 +109,39 @@ This script is designed for presenting the interactive prototype to the Poddar G
 
 ---
 
+## ⏱️ Minute 5:00 – 8:00: Opportunities Network Bonus Module (Interactive Loop)
+**Target Routes**: `/career-hub`, `/career-hub/jobs`, `/dashboard`, `/messages`, `/admin?tab=live_postings`
+
+### What to say:
+> "Now let us experience the standout feature of this release: the Opportunities Network. This creates a living loop where alumni post real vacancies and offer internal referral slots, while enrolled students apply directly, get endorsed, and chat in real-time."
+
+### Click-through actions:
+1. **Show Opportunities Network Entry Cards** (`/career-hub`):
+   - Point out the top 3 featured cards with the gold **New** badges (*Jobs & Internships*, *Post an Opportunity*, *Applications & Referrals*).
+2. **Switch Persona to Student (Aarav Mehta)**:
+   - Click the user avatar in the header or on `/dashboard`, select **Switch to Student (Aarav)**.
+   - Show the Student Career Dashboard with active application counters, referral requests, and unread chats.
+3. **Apply & Request Referral as Student** (`/career-hub/jobs`):
+   - Browse the jobs list; point out the **Referral Slots Available** badges and **Eligibility** tags.
+   - Click **Apply** on a role (e.g. *Associate Full Stack Engineer* at *Apex Capital Advisory*).
+   - Show the Apply Dialog with the pre-attached resume, cover note counter, and checked box: *"Also request internal referral from Vikramaditya Rathore"*. Click **Submit Application**.
+4. **Switch Persona to Alumnus (Vikramaditya Rathore)**:
+   - In the header dropdown, click **Switch to Alumnus (Vikramaditya)**.
+   - Click the notification bell to see the real-time alert: *"New Application Received from Aarav Mehta"*.
+   - Open `/dashboard/postings` and click **Review Applicants** for that job.
+   - Change Aarav's status from **Applied** to **Interviewing**. Click **Endorse Referral**.
+5. **Demonstrate Simulated Chat** (`/messages`):
+   - Open the conversation with Aarav Mehta.
+   - Type: `"Hello Aarav, I reviewed your GitHub projects and was impressed. When are you free for a virtual technical round?"`
+   - Press Enter. Watch the typing indicator appear and a contextual simulated reply arrive within 1.8 seconds!
+   - Highlight the top banner: *"Evaluation Mode: replies are simulated for evaluation."*
+6. **Secretariat Moderation of Opportunities & Safety** (`/admin`):
+   - Show `/admin?tab=live_postings` to demonstrate one-click closing and removal of postings.
+   - Show `/admin?tab=students` with one-click student deactivation.
+   - Show `/admin?tab=chat_reports` and click **View Transcript** to audit flagged peer messages.
+
+---
+
 ## Key Talking Points for Board Questions
 - **Is this mobile responsive?** "Yes, 100% mobile-first. Tables automatically convert to stacked touch-friendly cards on smartphones, inputs are sized at 16px to prevent iOS auto-zoom, and all tap targets exceed the 44px minimum accessibility guideline."
 - **How does this connect to our real database in the future?** "The application utilizes a clean Data Access Layer (`src/lib/api.ts`) and unified state store (`src/store/portal.ts`). Swapping the current mock store with REST or GraphQL endpoints requires zero UI redesign."

@@ -122,7 +122,31 @@ In accordance with institutional guidelines, all unverified external claims have
 
 ---
 
-## 5. Running the Project
+## 5. Phase 6: Opportunities Network (Interactive Hiring, Referrals & Chat Loop)
+
+The Opportunities Network bonus module introduces an end-to-end interactive loop between alumni hiring leaders and enrolled students:
+- **Instant Student Activation**: Enrolled students register at `/join/auth` with immediate portal activation (no admin bottleneck) and never appear in the public alumni directory.
+- **Immediate Opportunity Publishing**: Alumni list full-time roles and internships at `/career-hub/post` with immediate deployment (`status: "live"`), internal referral quota allocation, and salary bands.
+- **Direct Candidate Applications**: Students and alumni apply at `/career-hub/jobs` with cover notes, resume attachments, and simultaneous internal referral requests.
+- **Role-Aware Dashboard & Pipeline**:
+  - `/dashboard`: Comprehensive hub with role-based StatCards and 1-click evaluator persona switcher.
+  - `/dashboard/applications`: Candidate application status progression tracker with timeline history and recruiter messaging.
+  - `/dashboard/postings`: Alumnus listings manager with live applicant counters.
+  - `/dashboard/postings/[id]`: Candidate applicant screening panel with real-time status update dropdowns and endorsement triggers.
+  - `/dashboard/referrals`: Two-tab referral management center (Requests I Made vs Requests I Received) with instant accept, mark referred, or feedback decline.
+  - `/dashboard/profile`: Student & alumnus profile editor with skills tags and unblock manager.
+- **Real-Time Simulated Chat** (`/messages`):
+  - Two-pane desktop / two-screen mobile interface using dvh height.
+  - Simulated alumni & student responses triggered with typing indicators within 1.8 seconds.
+  - Strict safety protocol: Student-to-student chat is prohibited (assumption); one-click block/unblock; safety report modal dispatching transcripts to Secretariat queue.
+- **Secretariat Moderation Controls** (`/admin`):
+  - `Live Postings`: Real-time audit of live listings with one-click Close and Remove controls.
+  - `Students Registry`: Registered student member roster with one-click safety Deactivation / Reactivation.
+  - `Chat Reports Desk`: Transcript inspection and disciplinary user warnings or account blocks.
+
+---
+
+## 6. Running the Project
 
 ```bash
 # Install dependencies

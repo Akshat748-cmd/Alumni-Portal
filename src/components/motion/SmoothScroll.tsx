@@ -7,9 +7,27 @@ import Lenis from "lenis";
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
+  // Reset scroll to top on every route change
   useEffect(() => {
-    // Never run Lenis on /admin routes or when reduced motion is requested
-    if (pathname.startsWith("/admin")) return;
+    if (typeof window !== "undefined") {
+      const lenis = (window as any).__lenis__;
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      }
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    // Never run Lenis on /admin or /messages routes or when reduced motion is requested
+    if (pathname.startsWith("/admin") || pathname.startsWith("/messages")) {
+      if ((window as any).__lenis__) {
+        (window as any).__lenis__.destroy();
+        delete (window as any).__lenis__;
+      }
+      window.scrollTo(0, 0);
+      return;
+    }
 
     // Only enable on desktop pointer: fine devices, never mobile
     const mediaQuery = window.matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)");

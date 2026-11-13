@@ -17,6 +17,9 @@ import { AdminGiveBackQueue } from "@/components/admin/AdminGiveBackQueue";
 import { AdminContentManager } from "@/components/admin/AdminContentManager";
 import { AdminSocialManager } from "@/components/admin/AdminSocialManager";
 import { AdminResetModal } from "@/components/admin/AdminResetModal";
+import { AdminLivePostings } from "@/components/admin/AdminLivePostings";
+import { AdminStudents } from "@/components/admin/AdminStudents";
+import { AdminChatReports } from "@/components/admin/AdminChatReports";
 import { usePortalStore } from "@/store/portal";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
@@ -31,7 +34,7 @@ function AdminPanelContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [resetModalOpen, setResetModalOpen] = useState(false);
 
-  const { submittedQueue, tickets } = usePortalStore();
+  const { submittedQueue, tickets, jobs, students, chatReports } = usePortalStore();
 
   // Sync state if URL query param changes
   React.useEffect(() => {
@@ -78,6 +81,8 @@ function AdminPanelContent() {
     (q) => (q.type === "give-back-offer" || q.type === "giveBack" || q.type === "event-registration") && q.status === "pending"
   ).length;
 
+  const pendingChatReports = (chatReports || []).filter((r) => r.status === "open" || (r.status as string) === "pending").length;
+
   const totalPending =
     pendingProfiles +
     pendingAchievements +
@@ -85,7 +90,8 @@ function AdminPanelContent() {
     pendingMentorship +
     openTickets +
     pendingBusinesses +
-    pendingGiveback;
+    pendingGiveback +
+    pendingChatReports;
 
   const counts: Record<string, number> = {
     profiles: pendingProfiles,
@@ -95,6 +101,9 @@ function AdminPanelContent() {
     tickets: openTickets,
     businesses: pendingBusinesses,
     giveback: pendingGiveback,
+    live_postings: (jobs || []).length,
+    students: (students || []).length,
+    chat_reports: pendingChatReports,
   };
 
   const tabLabels: Record<string, string> = {
@@ -102,6 +111,9 @@ function AdminPanelContent() {
     profiles: "Alumni Profiles Moderation",
     achievements: "Achievements & Spotlight",
     opportunities: "Career Opportunities & Jobs",
+    live_postings: "Opportunities Network Live Postings",
+    students: "Enrolled Students Registry",
+    chat_reports: "Chat Safety & Reports Desk",
     mentorship: "Mentorship Programme Desk",
     queries: "Help Desk Support Inquiries",
     businesses: "Alumni Business Directory",
@@ -164,6 +176,12 @@ function AdminPanelContent() {
             {activeTab === "achievements" && <AdminAchievementsQueue />}
 
             {activeTab === "opportunities" && <AdminOpportunitiesQueue />}
+
+            {activeTab === "live_postings" && <AdminLivePostings />}
+
+            {activeTab === "students" && <AdminStudents />}
+
+            {activeTab === "chat_reports" && <AdminChatReports />}
 
             {activeTab === "mentorship" && <AdminMentorshipQueue />}
 

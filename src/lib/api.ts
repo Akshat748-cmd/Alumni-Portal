@@ -152,3 +152,20 @@ export const ContentApi = {
   },
 };
 
+export const OpportunitiesNetworkApi = {
+  getLiveJobs(): JobOpportunity[] {
+    if (typeof window === "undefined") {
+      return INITIAL_JOBS.filter((j) => j.status === "live" || j.status === "approved");
+    }
+    const storeJobs = usePortalStore.getState().jobs || [];
+    return storeJobs.filter((j) => j.status === "live" || j.status === "approved");
+  },
+
+  getJobById(id: string): JobOpportunity | undefined {
+    if (typeof window === "undefined") {
+      return INITIAL_JOBS.find((j) => j.id === id);
+    }
+    return usePortalStore.getState().jobs.find((j) => j.id === id);
+  },
+};
+

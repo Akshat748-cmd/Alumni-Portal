@@ -55,6 +55,8 @@ export interface PortalEvent {
   status: ApprovalStatus;
 }
 
+export type JobStatus = ApprovalStatus | "live" | "closed" | "removed";
+
 export interface JobOpportunity {
   id: string;
   title: string;
@@ -70,7 +72,17 @@ export interface JobOpportunity {
   applicationLinkOrEmail: string;
   postedDate: string;
   deadline: string;
-  status: ApprovalStatus;
+  status: JobStatus;
+  workMode?: "Remote" | "Hybrid" | "On-site";
+  openings?: number;
+  salaryRange?: string;
+  skills?: string[];
+  whoCanApply?: "Students" | "Alumni" | "Both";
+  applyMethod?: "portal" | "external";
+  canRefer?: boolean;
+  referralSlots?: number;
+  posterId?: string;
+  viewsCount?: number;
 }
 
 export interface BulletinItem {
@@ -201,4 +213,162 @@ export interface GiveBackSubmission {
   createdAt: string;
   status: ApprovalStatus;
 }
+
+// ==========================================
+// Phase 6: Opportunities Network Types
+// ==========================================
+
+export type PortalUserRole = "alumnus" | "student" | "admin" | "alumni" | "guest";
+
+export interface StudentUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  enrollmentNumber: string;
+  course: string;
+  yearOfStudy: string;
+  skills: string[];
+  linkedinUrl?: string;
+  avatarUrl?: string;
+  joinedDate: string;
+  isActive: boolean;
+  resumeFileName?: string;
+  bio?: string;
+}
+
+export type WorkMode = "Remote" | "Hybrid" | "On-site";
+export type WhoCanApply = "Students" | "Alumni" | "Both";
+export type ApplyMethod = "portal" | "external";
+
+export interface CurrentUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "alumni" | "alumnus" | "student" | "admin" | "guest";
+  batch?: number;
+  course?: string;
+  avatarUrl?: string;
+  company?: string;
+  designation?: string;
+  skills?: string[];
+  resumeFileName?: string;
+  enrollmentNumber?: string;
+  yearOfStudy?: string;
+}
+
+export type ApplicationStatus =
+  | "Applied"
+  | "Shortlisted"
+  | "Interview"
+  | "Interviewing"
+  | "Selected"
+  | "Offered"
+  | "Not selected"
+  | "Rejected"
+  | "Reviewed"
+  | "Withdrawn";
+
+export interface JobApplication {
+  id: string;
+  jobId: string;
+  jobTitle: string;
+  company: string;
+  applicantId: string;
+  applicantName: string;
+  applicantRole: "student" | "alumnus";
+  applicantCourseOrCompany: string;
+  applicantEmail: string;
+  coverNote: string;
+  resumeFileName: string;
+  appliedDate: string;
+  status: ApplicationStatus;
+  statusHistory: Array<{ status: ApplicationStatus; date: string; note?: string }>;
+  referredBy?: string;
+  referralRequestId?: string;
+}
+
+export type ReferralStatus = "Requested" | "Accepted" | "Referred" | "Declined";
+
+export interface ReferralRequest {
+  id: string;
+  jobId: string;
+  jobTitle: string;
+  company: string;
+  requesterId: string;
+  requesterName: string;
+  requesterRole: "student" | "alumnus";
+  requesterCourseOrCompany: string;
+  referrerId: string;
+  referrerName: string;
+  message: string;
+  resumeFileName?: string;
+  status: ReferralStatus;
+  createdAt: string;
+  updatedAt: string;
+  declineReason?: string;
+  history: Array<{ status: ReferralStatus; date: string; note?: string }>;
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderRole: "student" | "alumnus";
+  text: string;
+  createdAt: string;
+  read: boolean;
+}
+
+export interface ChatConversation {
+  id: string;
+  participantIds: string[];
+  participants: Array<{
+    id: string;
+    name: string;
+    role: "student" | "alumnus";
+    avatarUrl?: string;
+    courseOrCompany?: string;
+  }>;
+  jobContext?: {
+    jobId: string;
+    jobTitle: string;
+    company: string;
+  };
+  lastMessage?: string;
+  lastMessageAt?: string;
+  unreadCount: Record<string, number>;
+  isBlocked?: boolean;
+  blockedById?: string;
+}
+
+export interface PortalNotification {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: "application" | "referral" | "message" | "job" | "system";
+  link?: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface ChatReport {
+  id: string;
+  conversationId: string;
+  reportedById: string;
+  reportedByName: string;
+  reporterName?: string;
+  reportedUserId: string;
+  reportedUserName: string;
+  reason: string;
+  note?: string;
+  notes?: string;
+  createdAt: string;
+  status: "open" | "dismissed" | "actioned" | "pending" | "warned" | "user_blocked";
+  actionTaken?: string;
+  transcriptPreview?: Array<{ sender: string; text: string; time: string }>;
+}
+
 

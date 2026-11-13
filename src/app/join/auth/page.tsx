@@ -18,12 +18,16 @@ import {
   Sparkles,
   LogOut,
   User,
+  Zap,
+  CheckCircle2,
+  Lock,
 } from "lucide-react";
 import { PageHero } from "@/components/common/PageHero";
 import { fireConfettiBurst } from "@/components/motion/ConfettiBurst";
 import { AvatarInitials } from "@/components/common/AvatarInitials";
 import { usePortalStore } from "@/store/portal";
-import { DomainCategory } from "@/data/types";
+import { DomainCategory, CurrentUser } from "@/data/types";
+import { DEMO_ALUMNUS, DEMO_STUDENT } from "@/data/opportunitiesNetwork";
 
 const DOMAINS: DomainCategory[] = [
   "IT & Technology",
@@ -48,15 +52,37 @@ const COURSES = [
   "Other Degree / Diploma",
 ];
 
+const STUDENT_YEARS = [
+  "1st Year",
+  "2nd Year",
+  "3rd Year",
+  "4th Year (Final Year)",
+  "Postgraduate Finalist",
+];
+
+const COMMON_SKILLS = [
+  "React",
+  "Node.js",
+  "TypeScript",
+  "Python",
+  "SQL / PostgreSQL",
+  "UI/UX Design",
+  "Financial Analysis",
+  "Digital Marketing",
+  "Business Strategy",
+  "Content Writing",
+];
+
 const BATCH_YEARS = Array.from({ length: 22 }, (_, i) => 2026 - i);
 
 export default function AuthPage() {
   const router = useRouter();
-  const { currentUser, login, logout, submitItem } = usePortalStore();
+  const { currentUser, login, logout, submitItem, registerStudent, switchDemoUser } = usePortalStore();
 
   const [activeTab, setActiveTab] = useState<"register" | "login">("register");
+  const [registerRole, setRegisterRole] = useState<"alumnus" | "student">("student");
 
-  // Registration form state
+  // Alumnus registration form state
   const [regName, setRegName] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPhone, setRegPhone] = useState("");
@@ -69,18 +95,32 @@ export default function AuthPage() {
   const [selectedDomains, setSelectedDomains] = useState<DomainCategory[]>(["IT & Technology"]);
   const [regConsent, setRegConsent] = useState(false);
 
+  // Student registration form state
+  const [stuName, setStuName] = useState("");
+  const [stuEmail, setStuEmail] = useState("");
+  const [stuPhone, setStuPhone] = useState("");
+  const [stuEnrollment, setStuEnrollment] = useState("");
+  const [stuCourse, setStuCourse] = useState(COURSES[0]);
+  const [stuYear, setStuYear] = useState(STUDENT_YEARS[2]);
+  const [stuSkills, setStuSkills] = useState<string[]>(["React", "TypeScript"]);
+  const [stuCustomSkill, setStuCustomSkill] = useState("");
+  const [stuLinkedIn, setStuLinkedIn] = useState("");
+  const [stuConsent, setStuConsent] = useState(false);
+
   // Field touch/dirty tracking
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [regSubmitted, setRegSubmitted] = useState(false);
   const [registeredId, setRegisteredId] = useState<string | null>(null);
+  const [registeredType, setRegisteredType] = useState<"alumnus" | "student">("student");
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState("vikram.rathore@acmecorp.mock");
   const [loginPassword, setLoginPassword] = useState("alumni2026");
+  const [loginRole, setLoginRole] = useState<"alumnus" | "student">("alumnus");
   const [loginError, setLoginError] = useState("");
 
-  // Validation checks
+  // Validation checks for Alumnus
   const isNameValid = regName.trim().length >= 3;
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmail.trim());
   const isPhoneValid = regPhone.replace(/\D/g, "").length >= 10;
@@ -93,17 +133,39 @@ export default function AuthPage() {
   const isDomainValid = selectedDomains.length > 0;
   const isConsentValid = regConsent;
 
+  // Validation checks for Student
+  const isStuNameValid = stuName.trim().length >= 3;
+  const isStuEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(stuEmail.trim());
+  const isStuPhoneValid = stuPhone.replace(/\D/g, "").length >= 10;
+  const isStuEnrollValid = stuEnrollment.trim().length >= 4;
+  const isStuSkillsValid = stuSkills.length >= 1;
+  const isStuLinkedInValid =
+    stuLinkedIn.trim().length === 0 ||
+    /^https?:\/\/(www\.)?linkedin\.com\/.*$/i.test(stuLinkedIn.trim());
+  const isStuConsentValid = stuConsent;
+
   // Active validation error messages
-  const errors: string[] = [];
-  if (!isNameValid) errors.push("Full name must be at least 3 characters");
-  if (!isEmailValid) errors.push("Valid email address is required");
-  if (!isPhoneValid) errors.push("Valid phone number is required (at least 10 digits)");
-  if (!isCompanyValid) errors.push("Current organization / enterprise is required");
-  if (!isDesignationValid) errors.push("Current professional title is required");
-  if (!isCityValid) errors.push("City is required");
-  if (!isLinkedInValid) errors.push("LinkedIn URL must start with http:// or https://linkedin.com/");
-  if (!isDomainValid) errors.push("Select at least 1 industry domain tag");
-  if (!isConsentValid) errors.push("You must acknowledge the alumni directory consent");
+  const alumnusErrors: string[] = [];
+  if (!isNameValid) alumnusErrors.push("Full name must be at least 3 characters");
+  if (!isEmailValid) alumnusErrors.push("Valid email address is required");
+  if (!isPhoneValid) alumnusErrors.push("Valid phone number is required (at least 10 digits)");
+  if (!isCompanyValid) alumnusErrors.push("Current organization / enterprise is required");
+  if (!isDesignationValid) alumnusErrors.push("Current professional title is required");
+  if (!isCityValid) alumnusErrors.push("City is required");
+  if (!isLinkedInValid) alumnusErrors.push("LinkedIn URL must start with http:// or https://linkedin.com/");
+  if (!isDomainValid) alumnusErrors.push("Select at least 1 industry domain tag");
+  if (!isConsentValid) alumnusErrors.push("You must acknowledge the alumni directory consent");
+
+  const studentErrors: string[] = [];
+  if (!isStuNameValid) studentErrors.push("Full name must be at least 3 characters");
+  if (!isStuEmailValid) studentErrors.push("Valid email address is required");
+  if (!isStuPhoneValid) studentErrors.push("Valid phone number is required (at least 10 digits)");
+  if (!isStuEnrollValid) studentErrors.push("College enrollment / roll number is required (min 4 characters)");
+  if (!isStuSkillsValid) studentErrors.push("Please select or add at least 1 key skill");
+  if (!isStuLinkedInValid) studentErrors.push("LinkedIn URL must start with http:// or https://linkedin.com/");
+  if (!isStuConsentValid) studentErrors.push("You must agree to student platform terms");
+
+  const activeErrors = registerRole === "alumnus" ? alumnusErrors : studentErrors;
 
   const toggleDomain = (domain: DomainCategory) => {
     if (selectedDomains.includes(domain)) {
@@ -117,6 +179,24 @@ export default function AuthPage() {
     }
   };
 
+  const toggleStudentSkill = (skill: string) => {
+    if (stuSkills.includes(skill)) {
+      setStuSkills(stuSkills.filter((s) => s !== skill));
+    } else {
+      setStuSkills([...stuSkills, skill]);
+    }
+  };
+
+  const handleAddCustomSkill = (e: React.KeyboardEvent | React.MouseEvent) => {
+    if ("key" in e && e.key !== "Enter") return;
+    e.preventDefault();
+    const trimmed = stuCustomSkill.trim();
+    if (trimmed && !stuSkills.includes(trimmed)) {
+      setStuSkills([...stuSkills, trimmed]);
+      setStuCustomSkill("");
+    }
+  };
+
   const markTouched = (field: string) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
   };
@@ -125,34 +205,61 @@ export default function AuthPage() {
     e.preventDefault();
     setSubmitAttempted(true);
 
-    if (errors.length > 0) {
-      toast.error(`Please correct the ${errors.length} highlighted error(s) before submitting.`);
-      return;
+    if (registerRole === "student") {
+      if (studentErrors.length > 0) {
+        toast.error(`Please correct the ${studentErrors.length} highlighted error(s) before submitting.`);
+        return;
+      }
+
+      // Instant Student Registration (Opportunities Network bonus module - no admin gate!)
+      const newStudent = registerStudent({
+        name: stuName.trim(),
+        email: stuEmail.trim(),
+        phone: stuPhone.trim(),
+        enrollmentNumber: stuEnrollment.trim().toUpperCase(),
+        course: stuCourse,
+        yearOfStudy: stuYear,
+        skills: stuSkills,
+        linkedinUrl: stuLinkedIn.trim() || undefined,
+        resumeFileName: `${stuName.trim().replace(/\s+/g, "_")}_Resume.pdf`,
+      });
+
+      setRegisteredType("student");
+      setRegisteredId(newStudent.id);
+      setRegSubmitted(true);
+      fireConfettiBurst();
+      toast.success("Student account activated instantly! Welcome to Opportunities Network.");
+    } else {
+      if (alumnusErrors.length > 0) {
+        toast.error(`Please correct the ${alumnusErrors.length} highlighted error(s) before submitting.`);
+        return;
+      }
+
+      const payload = {
+        name: regName.trim(),
+        email: regEmail.trim(),
+        phone: regPhone.trim(),
+        course: regCourse,
+        batch: Number(regBatch),
+        company: regCompany.trim(),
+        designation: regDesignation.trim(),
+        city: regCity.trim(),
+        country: "India",
+        domain: selectedDomains[0],
+        domainTags: selectedDomains,
+        expertiseTags: selectedDomains,
+        linkedInUrl: regLinkedIn.trim() || `https://linkedin.com/in/mock-${regName.toLowerCase().replace(/\s+/g, "-")}`,
+        bio: `${regDesignation.trim()} at ${regCompany.trim()}, ${regCourse} Class of ${regBatch}.`,
+        consentGranted: true,
+      };
+
+      const id = submitItem("registration", payload);
+      setRegisteredType("alumnus");
+      setRegisteredId(id);
+      setRegSubmitted(true);
+      fireConfettiBurst();
+      toast.success("Alumni registration received! Sent to the Secretariat moderation queue.");
     }
-
-    const payload = {
-      name: regName.trim(),
-      email: regEmail.trim(),
-      phone: regPhone.trim(),
-      course: regCourse,
-      batch: Number(regBatch),
-      company: regCompany.trim(),
-      designation: regDesignation.trim(),
-      city: regCity.trim(),
-      country: "India",
-      domain: selectedDomains[0],
-      domainTags: selectedDomains,
-      expertiseTags: selectedDomains,
-      linkedInUrl: regLinkedIn.trim() || `https://linkedin.com/in/mock-${regName.toLowerCase().replace(/\s+/g, "-")}`,
-      bio: `${regDesignation.trim()} at ${regCompany.trim()}, ${regCourse} Class of ${regBatch}.`,
-      consentGranted: true,
-    };
-
-    const id = submitItem("registration", payload);
-    setRegisteredId(id);
-    setRegSubmitted(true);
-    fireConfettiBurst();
-    toast.success("Registration received! Sent to the Secretariat moderation queue.");
   };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -168,26 +275,39 @@ export default function AuthPage() {
       return;
     }
 
-    // Demo authentication: accept any credentials, construct/find user
-    login({
-      id: `usr-${Date.now()}`,
-      name: loginEmail.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Alumni Member",
-      email: loginEmail.trim(),
-      role: "alumni",
-      batch: 2018,
-      course: "MBA (Finance & Strategy)",
-    });
+    if (loginRole === "student") {
+      login({
+        id: "stu-" + Date.now(),
+        name: loginEmail.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Student Member",
+        email: loginEmail.trim(),
+        role: "student",
+        course: "BCA (Computer Applications)",
+        yearOfStudy: "3rd Year",
+        skills: ["React", "TypeScript", "Node.js"],
+        resumeFileName: "Candidate_Resume_2026.pdf",
+      });
+      toast.success("Signed in as Student! Welcome to Opportunities Network.");
+    } else {
+      login({
+        id: `usr-${Date.now()}`,
+        name: loginEmail.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Alumni Member",
+        email: loginEmail.trim(),
+        role: "alumni",
+        batch: 2018,
+        course: "MBA (Finance & Strategy)",
+      });
+      toast.success("Signed in as Alumnus! Welcome back to Poddar Alumni Portal.");
+    }
 
-    toast.success("Signed in successfully! Welcome back to Poddar Alumni Portal.");
-    router.push("/join/profile");
+    router.push("/dashboard");
   };
 
   return (
     <div className="min-h-screen bg-ivory text-ink">
       <PageHero
-        eyebrow="ALUMNI IDENTITY GATEWAY"
-        title="Alumni Registration & Sign In"
-        subtitle="Access your verified alumni credentials, update your professional footprint, and tap into global opportunities."
+        eyebrow="OPPORTUNITIES NETWORK & ALUMNI GATEWAY"
+        title="Portal Access & Registration"
+        subtitle="Connect alumni and students across career postings, verified referrals, 1-on-1 messaging, and mentorship."
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Join the Network", href: "/join" },
@@ -211,52 +331,102 @@ export default function AuthPage() {
                 You Are Currently Signed In
               </h2>
               <p className="text-sm text-muted mb-8">
-                Your portal session is active. You can review your profile information or explore the global verified directory.
+                Your portal session is active as{" "}
+                <span className="font-semibold text-navy-900 capitalize">
+                  {currentUser.role === "student" ? "Student Member" : "Verified Alumnus"}
+                </span>.
               </p>
 
               <div className="flex items-center justify-center gap-4 p-4 rounded-2xl bg-ivory/80 border border-line max-w-md mx-auto mb-8 text-left">
                 <AvatarInitials name={currentUser.name} src={currentUser.avatarUrl} size="lg" />
-                <div>
-                  <div className="text-base font-bold text-navy-950">{currentUser.name}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-base font-bold text-navy-950 truncate">{currentUser.name}</div>
                   <div className="text-xs text-muted truncate">{currentUser.email}</div>
-                  {currentUser.batch && (
-                    <div className="text-xs font-semibold text-gold-600 mt-0.5">
-                      Class of {currentUser.batch} • {currentUser.course || "Verified Alumnus"}
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 mt-1">
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                        currentUser.role === "student"
+                          ? "bg-amber-100 text-amber-900 border border-amber-300"
+                          : "bg-navy-900 text-gold-300 border border-gold-400/40"
+                      }`}
+                    >
+                      {currentUser.role === "student" ? "Student" : "Alumnus"}
+                    </span>
+                    {currentUser.course && (
+                      <span className="text-xs text-muted truncate">{currentUser.course}</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                 <Link
-                  href="/join/profile"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-navy-950 text-gold-300 font-semibold text-sm hover:bg-navy-900 transition-colors shadow-md"
+                  href="/dashboard"
+                  className="px-4 py-3 rounded-xl bg-navy-950 text-gold-300 font-semibold text-xs sm:text-sm hover:bg-navy-900 transition-colors shadow-md text-center"
                 >
-                  <User className="h-4 w-4" />
-                  <span>Update My Profile</span>
+                  My Dashboard
                 </Link>
                 <Link
-                  href="/directory/search"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-sm hover:bg-navy-50 transition-colors"
+                  href="/career-hub/jobs"
+                  className="px-4 py-3 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-xs sm:text-sm hover:bg-navy-50 transition-colors text-center"
                 >
-                  <Briefcase className="h-4 w-4" />
-                  <span>Browse Directory</span>
+                  Jobs & Internships
                 </Link>
+                <Link
+                  href="/messages"
+                  className="px-4 py-3 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-xs sm:text-sm hover:bg-navy-50 transition-colors text-center"
+                >
+                  Direct Messages
+                </Link>
+              </div>
+
+              <div className="pt-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-muted">Switch Role:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      switchDemoUser("alumnus");
+                      toast.success("Switched to Demo Alumnus (Vikramaditya)");
+                    }}
+                    className={`px-2.5 py-1 rounded-lg border text-xs font-semibold ${
+                      currentUser.role !== "student"
+                        ? "bg-navy-950 text-gold-300 border-navy-950"
+                        : "bg-white text-navy-900 border-line hover:bg-navy-50"
+                    }`}
+                  >
+                    Alumnus Demo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      switchDemoUser("student");
+                      toast.success("Switched to Demo Student (Aarav)");
+                    }}
+                    className={`px-2.5 py-1 rounded-lg border text-xs font-semibold ${
+                      currentUser.role === "student"
+                        ? "bg-amber-600 text-white border-amber-600"
+                        : "bg-white text-navy-900 border-line hover:bg-navy-50"
+                    }`}
+                  >
+                    Student Demo
+                  </button>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
                     logout();
                     toast.info("Logged out from Poddar Alumni Network");
                   }}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-red-50 text-red-700 border border-red-200 font-semibold text-sm hover:bg-red-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors font-medium"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-3.5 w-3.5" />
                   <span>Sign Out</span>
                 </button>
               </div>
             </motion.div>
           ) : regSubmitted ? (
-            /* REGISTRATION SUCCESS STATE WITH CONFETTI */
+            /* REGISTRATION SUCCESS STATE */
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -267,65 +437,63 @@ export default function AuthPage() {
                   <Sparkles className="h-10 w-10 text-emerald-600" />
                 </div>
                 <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-3">
-                  Enrollment Submitted
+                  {registeredType === "student" ? "Instant Activation Confirmed" : "Enrollment Submitted"}
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-serif font-bold text-navy-950 mb-3">
-                  Welcome to the Poddar Alumni Family!
+                  {registeredType === "student"
+                    ? "Welcome to Poddar Opportunities Network!"
+                    : "Welcome to the Poddar Alumni Family!"}
                 </h2>
                 <p className="text-sm sm:text-base text-muted max-w-xl mx-auto mb-6 leading-relaxed">
-                  Your profile has been transmitted to the Poddar Alumni Secretariat. To maintain directory authenticity, newly registered profiles undergo automated roster cross-verification and admin approval within 24–48 hours.
+                  {registeredType === "student"
+                    ? "Your student account is active immediately. You can now apply directly to openings posted by alumni, request verified job referrals, and start conversations."
+                    : "Your profile has been transmitted to the Poddar Alumni Secretariat. To maintain directory authenticity, newly registered alumni profiles undergo verification within 24–48 hours."}
                 </p>
 
-                {registeredId && (
-                  <div className="inline-block px-4 py-2 rounded-xl bg-navy-50 border border-navy-200 text-xs text-navy-900 font-mono mb-8">
-                    Application Tracking Reference: <span className="font-bold text-gold-600">{registeredId}</span>
+                {registeredType === "student" ? (
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <Link
+                      href="/dashboard"
+                      className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-colors shadow-md inline-flex items-center justify-center gap-2"
+                    >
+                      <span>Go to My Dashboard</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <Link
+                      href="/career-hub/jobs"
+                      className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-sm hover:bg-navy-50 transition-colors inline-flex items-center justify-center gap-2"
+                    >
+                      <Briefcase className="h-4 w-4" />
+                      <span>Browse Opportunities</span>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRegSubmitted(false);
+                        setSubmitAttempted(false);
+                        setActiveTab("login");
+                      }}
+                      className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-colors shadow-md"
+                    >
+                      Go to Sign In
+                    </button>
+                    <Link
+                      href="/directory/search"
+                      className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-sm hover:bg-navy-50 transition-colors"
+                    >
+                      Explore Public Directory
+                    </Link>
                   </div>
                 )}
-
-                <div className="p-4 rounded-2xl bg-ivory border border-line text-left max-w-md mx-auto mb-8 space-y-2 text-xs text-muted">
-                  <div className="flex justify-between">
-                    <span className="font-semibold text-navy-950">Name:</span>
-                    <span>{regName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-semibold text-navy-950">Batch & Course:</span>
-                    <span>{regBatch} • {regCourse}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-semibold text-navy-950">Organization:</span>
-                    <span>{regCompany} ({regDesignation})</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-semibold text-navy-950">Moderation Status:</span>
-                    <span className="font-bold text-amber-600">Pending Admin Verification</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRegSubmitted(false);
-                      setSubmitAttempted(false);
-                      setActiveTab("login");
-                    }}
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-colors shadow-md"
-                  >
-                    Go to Sign In
-                  </button>
-                  <Link
-                    href="/directory/search"
-                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-sm hover:bg-navy-50 transition-colors"
-                  >
-                    Explore Public Directory
-                  </Link>
-                </div>
               </div>
             </motion.div>
           ) : (
             /* TABBED AUTH CONTAINER */
             <div className="bg-white rounded-3xl border border-line shadow-xl overflow-hidden">
-              {/* TAB SELECTOR */}
+              {/* TAB SELECTOR: REGISTER VS LOGIN */}
               <div className="grid grid-cols-2 p-2 bg-ivory/80 border-b border-line">
                 <button
                   type="button"
@@ -337,13 +505,7 @@ export default function AuthPage() {
                   }`}
                 >
                   <UserPlus className="h-4 w-4" />
-                  <span>Register as Alumnus</span>
-                  {activeTab === "register" && (
-                    <motion.div
-                      layoutId="activeTabIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold-400 rounded-full"
-                    />
-                  )}
+                  <span>Register Account</span>
                 </button>
                 <button
                   type="button"
@@ -355,556 +517,610 @@ export default function AuthPage() {
                   }`}
                 >
                   <LogIn className="h-4 w-4" />
-                  <span>Existing Member Sign In</span>
-                  {activeTab === "login" && (
-                    <motion.div
-                      layoutId="activeTabIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gold-400 rounded-full"
-                    />
-                  )}
+                  <span>Member Sign In</span>
                 </button>
               </div>
 
               <div className="p-6 sm:p-10">
                 <AnimatePresence mode="wait">
                   {activeTab === "register" ? (
-                    /* REGISTRATION FORM */
-                    <motion.form
-                      key="register-form"
+                    /* REGISTRATION FLOW */
+                    <motion.div
+                      key="register-flow"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 10 }}
                       transition={{ duration: 0.2 }}
-                      onSubmit={handleRegisterSubmit}
-                      noValidate
                       className="space-y-6"
                     >
-                      <div className="border-b border-line pb-4">
-                        <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
-                          Verified Alumni Registration Form
-                        </h2>
-                        <p className="text-xs sm:text-sm text-muted mt-1">
-                          Complete this form to create your official listing. Verified profiles receive priority career referrals and networking invites.
-                        </p>
+                      {/* ROLE SELECTOR: STUDENT VS ALUMNUS */}
+                      <div className="p-1.5 rounded-2xl bg-ivory border border-line">
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRegisterRole("student");
+                              setSubmitAttempted(false);
+                            }}
+                            className={`p-3 rounded-xl text-left transition-all flex items-center gap-3 ${
+                              registerRole === "student"
+                                ? "bg-white shadow-sm border border-amber-300 text-navy-950 ring-2 ring-amber-400/20"
+                                : "text-muted hover:text-navy-950"
+                            }`}
+                          >
+                            <div className="p-2 rounded-lg bg-amber-50 text-amber-700">
+                              <GraduationCap className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-sm text-navy-950 flex items-center gap-1.5">
+                                <span>College Student</span>
+                                <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                                  Instant
+                                </span>
+                              </div>
+                              <div className="text-xs text-muted">Apply to jobs & request referrals</div>
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRegisterRole("alumnus");
+                              setSubmitAttempted(false);
+                            }}
+                            className={`p-3 rounded-xl text-left transition-all flex items-center gap-3 ${
+                              registerRole === "alumnus"
+                                ? "bg-white shadow-sm border border-navy-950 text-navy-950 ring-2 ring-navy-900/10"
+                                : "text-muted hover:text-navy-950"
+                            }`}
+                          >
+                            <div className="p-2 rounded-lg bg-navy-50 text-navy-900">
+                              <Briefcase className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-sm text-navy-950">Poddar Alumnus</div>
+                              <div className="text-xs text-muted">Post jobs & join alumni directory</div>
+                            </div>
+                          </button>
+                        </div>
                       </div>
 
-                      {/* SUMMARY OF ERRORS (IF SUBMIT ATTEMPTED WITH ERRORS) */}
-                      {submitAttempted && errors.length > 0 && (
+                      {/* SUMMARY OF ERRORS (IF SUBMIT ATTEMPTED) */}
+                      {submitAttempted && activeErrors.length > 0 && (
                         <div
                           role="alert"
-                          aria-live="assertive"
                           className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs space-y-1.5"
                         >
                           <div className="flex items-center gap-2 font-bold text-sm text-red-900">
                             <AlertCircle className="h-4 w-4 text-red-600" />
-                            <span>Please review the following requirements ({errors.length}):</span>
+                            <span>Please review the following requirements ({activeErrors.length}):</span>
                           </div>
                           <ul className="list-disc pl-6 space-y-1">
-                            {errors.map((err, i) => (
+                            {activeErrors.map((err, i) => (
                               <li key={i}>{err}</li>
                             ))}
                           </ul>
                         </div>
                       )}
 
-                      {/* SECTION 1: PERSONAL & CONTACT */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {/* FULL NAME */}
-                        <div>
-                          <label
-                            htmlFor="regName"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Full Name *
-                          </label>
-                          <div className="relative">
-                            <input
-                              id="regName"
-                              type="text"
-                              value={regName}
-                              onChange={(e) => setRegName(e.target.value)}
-                              onBlur={() => markTouched("name")}
-                              placeholder="e.g. Vikramaditya Rathore"
-                              aria-invalid={submitAttempted && !isNameValid}
-                              aria-describedby={submitAttempted && !isNameValid ? "regName-err" : undefined}
-                              className={`w-full h-12 px-4 rounded-xl border text-base transition-all focus:outline-none focus:ring-2 ${
-                                (touched.name || submitAttempted)
-                                  ? isNameValid
-                                    ? "border-emerald-500 focus:ring-emerald-500/20"
-                                    : "border-red-500 focus:ring-red-500/20"
-                                  : "border-line focus:ring-gold-500/40"
-                              }`}
-                            />
-                            {(touched.name || submitAttempted) && (
-                              <div className="absolute right-3.5 top-3.5">
-                                {isNameValid ? (
-                                  <Check className="h-5 w-5 text-emerald-600" />
-                                ) : (
-                                  <X className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          {submitAttempted && !isNameValid && (
-                            <p id="regName-err" className="text-xs text-red-600 mt-1">
-                              Name must be at least 3 characters.
+                      {/* STUDENT FORM */}
+                      {registerRole === "student" ? (
+                        <form onSubmit={handleRegisterSubmit} noValidate className="space-y-5">
+                          <div className="border-b border-line pb-3">
+                            <h3 className="text-lg font-serif font-bold text-navy-950 flex items-center gap-2">
+                              <span>Student Registration</span>
+                              <span className="text-xs font-normal text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                                Instant Access • No Admin Waiting
+                              </span>
+                            </h3>
+                            <p className="text-xs text-muted mt-0.5">
+                              Enrolled students gain immediate access to search jobs, apply with resumes, and connect with alumni mentors.
                             </p>
-                          )}
-                        </div>
-
-                        {/* EMAIL ADDRESS */}
-                        <div>
-                          <label
-                            htmlFor="regEmail"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Email Address *
-                          </label>
-                          <div className="relative">
-                            <input
-                              id="regEmail"
-                              type="email"
-                              value={regEmail}
-                              onChange={(e) => setRegEmail(e.target.value)}
-                              onBlur={() => markTouched("email")}
-                              placeholder="e.g. vikram@example.com"
-                              aria-invalid={submitAttempted && !isEmailValid}
-                              aria-describedby={submitAttempted && !isEmailValid ? "regEmail-err" : undefined}
-                              className={`w-full h-12 px-4 rounded-xl border text-base transition-all focus:outline-none focus:ring-2 ${
-                                (touched.email || submitAttempted)
-                                  ? isEmailValid
-                                    ? "border-emerald-500 focus:ring-emerald-500/20"
-                                    : "border-red-500 focus:ring-red-500/20"
-                                  : "border-line focus:ring-gold-500/40"
-                              }`}
-                            />
-                            {(touched.email || submitAttempted) && (
-                              <div className="absolute right-3.5 top-3.5">
-                                {isEmailValid ? (
-                                  <Check className="h-5 w-5 text-emerald-600" />
-                                ) : (
-                                  <X className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            )}
                           </div>
-                          {submitAttempted && !isEmailValid && (
-                            <p id="regEmail-err" className="text-xs text-red-600 mt-1">
-                              Please enter a valid email format.
-                            </p>
-                          )}
-                        </div>
 
-                        {/* PHONE NUMBER */}
-                        <div>
-                          <label
-                            htmlFor="regPhone"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Phone Number *
-                          </label>
-                          <div className="relative">
-                            <input
-                              id="regPhone"
-                              type="tel"
-                              value={regPhone}
-                              onChange={(e) => setRegPhone(e.target.value)}
-                              onBlur={() => markTouched("phone")}
-                              placeholder="e.g. +91 98290 12345"
-                              aria-invalid={submitAttempted && !isPhoneValid}
-                              aria-describedby={submitAttempted && !isPhoneValid ? "regPhone-err" : undefined}
-                              className={`w-full h-12 px-4 rounded-xl border text-base transition-all focus:outline-none focus:ring-2 ${
-                                (touched.phone || submitAttempted)
-                                  ? isPhoneValid
-                                    ? "border-emerald-500 focus:ring-emerald-500/20"
-                                    : "border-red-500 focus:ring-red-500/20"
-                                  : "border-line focus:ring-gold-500/40"
-                              }`}
-                            />
-                            {(touched.phone || submitAttempted) && (
-                              <div className="absolute right-3.5 top-3.5">
-                                {isPhoneValid ? (
-                                  <Check className="h-5 w-5 text-emerald-600" />
-                                ) : (
-                                  <X className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            )}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Full Name *
+                              </label>
+                              <input
+                                type="text"
+                                value={stuName}
+                                onChange={(e) => setStuName(e.target.value)}
+                                onBlur={() => markTouched("stuName")}
+                                placeholder="e.g. Aarav Mehta"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Institutional or Personal Email *
+                              </label>
+                              <input
+                                type="email"
+                                value={stuEmail}
+                                onChange={(e) => setStuEmail(e.target.value)}
+                                onBlur={() => markTouched("stuEmail")}
+                                placeholder="e.g. aarav.mehta@students.poddar.mock"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                              />
+                            </div>
                           </div>
-                          {submitAttempted && !isPhoneValid && (
-                            <p id="regPhone-err" className="text-xs text-red-600 mt-1">
-                              Enter a valid 10+ digit contact number.
-                            </p>
-                          )}
-                        </div>
 
-                        {/* CITY / LOCATION */}
-                        <div>
-                          <label
-                            htmlFor="regCity"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Current City *
-                          </label>
-                          <div className="relative">
-                            <input
-                              id="regCity"
-                              type="text"
-                              value={regCity}
-                              onChange={(e) => setRegCity(e.target.value)}
-                              onBlur={() => markTouched("city")}
-                              placeholder="e.g. Jaipur, Bengaluru, Dubai"
-                              aria-invalid={submitAttempted && !isCityValid}
-                              aria-describedby={submitAttempted && !isCityValid ? "regCity-err" : undefined}
-                              className={`w-full h-12 px-4 rounded-xl border text-base transition-all focus:outline-none focus:ring-2 ${
-                                (touched.city || submitAttempted)
-                                  ? isCityValid
-                                    ? "border-emerald-500 focus:ring-emerald-500/20"
-                                    : "border-red-500 focus:ring-red-500/20"
-                                  : "border-line focus:ring-gold-500/40"
-                              }`}
-                            />
-                            {(touched.city || submitAttempted) && (
-                              <div className="absolute right-3.5 top-3.5">
-                                {isCityValid ? (
-                                  <Check className="h-5 w-5 text-emerald-600" />
-                                ) : (
-                                  <X className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            )}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Phone Number *
+                              </label>
+                              <input
+                                type="tel"
+                                value={stuPhone}
+                                onChange={(e) => setStuPhone(e.target.value)}
+                                onBlur={() => markTouched("stuPhone")}
+                                placeholder="+91 98290 11223"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                College Enrollment / Roll Number *
+                              </label>
+                              <input
+                                type="text"
+                                value={stuEnrollment}
+                                onChange={(e) => setStuEnrollment(e.target.value)}
+                                onBlur={() => markTouched("stuEnroll")}
+                                placeholder="e.g. POD-2023-CS042"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-mono text-xs"
+                              />
+                            </div>
                           </div>
-                          {submitAttempted && !isCityValid && (
-                            <p id="regCity-err" className="text-xs text-red-600 mt-1">
-                              City is required for chapter mapping.
-                            </p>
-                          )}
-                        </div>
-                      </div>
 
-                      {/* SECTION 2: ACADEMIC CREDENTIALS */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                        {/* COURSE */}
-                        <div>
-                          <label
-                            htmlFor="regCourse"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Academic Program / Course *
-                          </label>
-                          <select
-                            id="regCourse"
-                            value={regCourse}
-                            onChange={(e) => setRegCourse(e.target.value)}
-                            className="w-full h-12 px-4 rounded-xl border border-line bg-white text-base text-navy-950 focus:outline-none focus:ring-2 focus:ring-gold-500/40"
-                          >
-                            {COURSES.map((course) => (
-                              <option key={course} value={course}>
-                                {course}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        {/* BATCH YEAR */}
-                        <div>
-                          <label
-                            htmlFor="regBatch"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Graduation Batch Year *
-                          </label>
-                          <select
-                            id="regBatch"
-                            value={regBatch}
-                            onChange={(e) => setRegBatch(e.target.value)}
-                            className="w-full h-12 px-4 rounded-xl border border-line bg-white text-base text-navy-950 focus:outline-none focus:ring-2 focus:ring-gold-500/40"
-                          >
-                            {BATCH_YEARS.map((yr) => (
-                              <option key={yr} value={yr}>
-                                Class of {yr}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* SECTION 3: PROFESSIONAL DETAILS */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                        {/* COMPANY */}
-                        <div>
-                          <label
-                            htmlFor="regCompany"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Current Organization / Company *
-                          </label>
-                          <div className="relative">
-                            <input
-                              id="regCompany"
-                              type="text"
-                              value={regCompany}
-                              onChange={(e) => setRegCompany(e.target.value)}
-                              onBlur={() => markTouched("company")}
-                              placeholder="e.g. Apex Tech Solutions"
-                              aria-invalid={submitAttempted && !isCompanyValid}
-                              aria-describedby={submitAttempted && !isCompanyValid ? "regCompany-err" : undefined}
-                              className={`w-full h-12 px-4 rounded-xl border text-base transition-all focus:outline-none focus:ring-2 ${
-                                (touched.company || submitAttempted)
-                                  ? isCompanyValid
-                                    ? "border-emerald-500 focus:ring-emerald-500/20"
-                                    : "border-red-500 focus:ring-red-500/20"
-                                  : "border-line focus:ring-gold-500/40"
-                              }`}
-                            />
-                            {(touched.company || submitAttempted) && (
-                              <div className="absolute right-3.5 top-3.5">
-                                {isCompanyValid ? (
-                                  <Check className="h-5 w-5 text-emerald-600" />
-                                ) : (
-                                  <X className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* DESIGNATION */}
-                        <div>
-                          <label
-                            htmlFor="regDesignation"
-                            className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                          >
-                            Current Role / Title *
-                          </label>
-                          <div className="relative">
-                            <input
-                              id="regDesignation"
-                              type="text"
-                              value={regDesignation}
-                              onChange={(e) => setRegDesignation(e.target.value)}
-                              onBlur={() => markTouched("designation")}
-                              placeholder="e.g. Senior Software Architect"
-                              aria-invalid={submitAttempted && !isDesignationValid}
-                              aria-describedby={submitAttempted && !isDesignationValid ? "regDesignation-err" : undefined}
-                              className={`w-full h-12 px-4 rounded-xl border text-base transition-all focus:outline-none focus:ring-2 ${
-                                (touched.designation || submitAttempted)
-                                  ? isDesignationValid
-                                    ? "border-emerald-500 focus:ring-emerald-500/20"
-                                    : "border-red-500 focus:ring-red-500/20"
-                                  : "border-line focus:ring-gold-500/40"
-                              }`}
-                            />
-                            {(touched.designation || submitAttempted) && (
-                              <div className="absolute right-3.5 top-3.5">
-                                {isDesignationValid ? (
-                                  <Check className="h-5 w-5 text-emerald-600" />
-                                ) : (
-                                  <X className="h-5 w-5 text-red-500" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* LINKEDIN URL */}
-                      <div>
-                        <label
-                          htmlFor="regLinkedIn"
-                          className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                        >
-                          LinkedIn Profile URL (Optional)
-                        </label>
-                        <div className="relative">
-                          <input
-                            id="regLinkedIn"
-                            type="url"
-                            value={regLinkedIn}
-                            onChange={(e) => setRegLinkedIn(e.target.value)}
-                            onBlur={() => markTouched("linkedin")}
-                            placeholder="https://linkedin.com/in/your-profile"
-                            aria-invalid={submitAttempted && !isLinkedInValid}
-                            aria-describedby={submitAttempted && !isLinkedInValid ? "regLinkedIn-err" : undefined}
-                            className={`w-full h-12 px-4 rounded-xl border text-base transition-all focus:outline-none focus:ring-2 ${
-                              (touched.linkedin || submitAttempted) && regLinkedIn.trim()
-                                ? isLinkedInValid
-                                  ? "border-emerald-500 focus:ring-emerald-500/20"
-                                  : "border-red-500 focus:ring-red-500/20"
-                                : "border-line focus:ring-gold-500/40"
-                            }`}
-                          />
-                        </div>
-                        {submitAttempted && !isLinkedInValid && (
-                          <p id="regLinkedIn-err" className="text-xs text-red-600 mt-1">
-                            URL must start with http:// or https://linkedin.com/
-                          </p>
-                        )}
-                      </div>
-
-                      {/* DOMAIN / FIELD TAG CHIPS (MULTI-SELECT) */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider">
-                            Industry Domains / Areas of Expertise * (Select 1 or more)
-                          </label>
-                          <span className="text-xs text-gold-700 font-semibold">
-                            {selectedDomains.length} selected
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {DOMAINS.map((domain) => {
-                            const isSelected = selectedDomains.includes(domain);
-                            return (
-                              <button
-                                key={domain}
-                                type="button"
-                                onClick={() => toggleDomain(domain)}
-                                className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                                  isSelected
-                                    ? "bg-navy-950 text-gold-300 border border-gold-500/50 shadow-sm"
-                                    : "bg-ivory text-muted border border-line hover:border-gold-500/40 hover:text-navy-950"
-                                }`}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Enrolled Course / Degree *
+                              </label>
+                              <select
+                                value={stuCourse}
+                                onChange={(e) => setStuCourse(e.target.value)}
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/30"
                               >
-                                {isSelected ? (
-                                  <Check className="h-3.5 w-3.5 text-gold-400" />
-                                ) : (
-                                  <span className="h-1.5 w-1.5 rounded-full bg-line" />
-                                )}
-                                <span>{domain}</span>
+                                {COURSES.map((c) => (
+                                  <option key={c} value={c}>{c}</option>
+                                ))}
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Current Year of Study *
+                              </label>
+                              <select
+                                value={stuYear}
+                                onChange={(e) => setStuYear(e.target.value)}
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                              >
+                                {STUDENT_YEARS.map((y) => (
+                                  <option key={y} value={y}>{y}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
+                          {/* KEY SKILLS CHIPS */}
+                          <div>
+                            <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                              Core Technical / Professional Skills *
+                            </label>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {COMMON_SKILLS.map((sk) => {
+                                const active = stuSkills.includes(sk);
+                                return (
+                                  <button
+                                    key={sk}
+                                    type="button"
+                                    onClick={() => toggleStudentSkill(sk)}
+                                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                                      active
+                                        ? "bg-navy-950 text-gold-300 shadow-sm"
+                                        : "bg-ivory border border-line text-navy-800 hover:bg-navy-50"
+                                    }`}
+                                  >
+                                    {active ? "✓ " : "+ "}
+                                    {sk}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={stuCustomSkill}
+                                onChange={(e) => setStuCustomSkill(e.target.value)}
+                                onKeyDown={handleAddCustomSkill}
+                                placeholder="Add custom skill (e.g. Flutter, Figma, PyTorch) and press Enter"
+                                className="flex-1 h-10 px-3.5 rounded-xl border border-line text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                              />
+                              <button
+                                type="button"
+                                onClick={handleAddCustomSkill}
+                                className="px-4 h-10 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-xs hover:bg-navy-50"
+                              >
+                                Add
                               </button>
-                            );
-                          })}
-                        </div>
-                        {submitAttempted && !isDomainValid && (
-                          <p className="text-xs text-red-600 mt-1.5">
-                            Please select at least one industry domain.
-                          </p>
-                        )}
-                      </div>
+                            </div>
+                            <div className="mt-2 text-[11px] text-muted">
+                              Selected ({stuSkills.length}): {stuSkills.join(", ") || "None"}
+                            </div>
+                          </div>
 
-                      {/* CONSENT CHECKBOX */}
-                      <div className="p-4 rounded-2xl bg-ivory/80 border border-line">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={regConsent}
-                            onChange={(e) => setRegConsent(e.target.checked)}
-                            className="h-5 w-5 mt-0.5 rounded border-line text-navy-950 focus:ring-gold-500"
-                          />
-                          <span className="text-xs text-navy-900 leading-relaxed">
-                            I confirm that I am a graduate of Poddar Group of Institutions and consent to the publication of my professional details in the verified alumni directory for networking and mentorship purposes.
-                          </span>
-                        </label>
-                        {submitAttempted && !isConsentValid && (
-                          <p className="text-xs text-red-600 mt-2 font-medium">
-                            Consent is required to list your profile in the institutional directory.
-                          </p>
-                        )}
-                      </div>
+                          <div>
+                            <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                              LinkedIn Profile URL (Optional)
+                            </label>
+                            <input
+                              type="url"
+                              value={stuLinkedIn}
+                              onChange={(e) => setStuLinkedIn(e.target.value)}
+                              placeholder="https://linkedin.com/in/aarav-mehta-mock"
+                              className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                            />
+                          </div>
 
-                      {/* SUBMIT BUTTON (STICKY ON MOBILE) */}
-                      <div className="pt-2">
-                        <button
-                          type="submit"
-                          className="w-full h-12 sm:h-14 rounded-xl bg-gradient-to-r from-gold-300 via-gold-500 to-gold-600 text-navy-950 font-bold text-sm sm:text-base shadow-lg hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <UserPlus className="h-5 w-5" />
-                          <span>Submit Alumni Registration</span>
-                        </button>
-                        <p className="text-center text-[11px] text-muted mt-2.5">
-                          Submissions are reviewed by the Poddar Alumni Secretariat within 24 hours.
-                        </p>
-                      </div>
-                    </motion.form>
+                          {/* CONSENT */}
+                          <div className="p-4 rounded-xl bg-ivory border border-line">
+                            <label className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={stuConsent}
+                                onChange={(e) => setStuConsent(e.target.checked)}
+                                className="mt-1 h-4 w-4 rounded border-line text-navy-950 focus:ring-gold-500"
+                              />
+                              <span className="text-xs text-muted leading-relaxed">
+                                I confirm I am a currently enrolled student at Poddar Group of Institutions. I acknowledge that student accounts can apply to career opportunities and request referrals from verified alumni, and do not appear in the public alumni directory.
+                              </span>
+                            </label>
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="w-full h-13 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <Zap className="h-4 w-4 text-gold-400" />
+                            <span>Activate Student Account Instantly</span>
+                            <ArrowRight className="h-4 w-4" />
+                          </button>
+                        </form>
+                      ) : (
+                        /* ALUMNUS FORM */
+                        <form onSubmit={handleRegisterSubmit} noValidate className="space-y-6">
+                          <div className="border-b border-line pb-3">
+                            <h3 className="text-lg font-serif font-bold text-navy-950">
+                              Verified Alumni Registration
+                            </h3>
+                            <p className="text-xs text-muted mt-0.5">
+                              Poddar alumni directory listings undergo automated roster verification within 24–48 hours.
+                            </p>
+                          </div>
+
+                          {/* PERSONAL */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Full Name *
+                              </label>
+                              <input
+                                type="text"
+                                value={regName}
+                                onChange={(e) => setRegName(e.target.value)}
+                                onBlur={() => markTouched("name")}
+                                placeholder="e.g. Vikramaditya Rathore"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Official or Personal Email *
+                              </label>
+                              <input
+                                type="email"
+                                value={regEmail}
+                                onChange={(e) => setRegEmail(e.target.value)}
+                                onBlur={() => markTouched("email")}
+                                placeholder="e.g. vikram@acmecorp.mock"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              />
+                            </div>
+                          </div>
+
+                          {/* ACADEMICS */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Degree / Program *
+                              </label>
+                              <select
+                                value={regCourse}
+                                onChange={(e) => setRegCourse(e.target.value)}
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              >
+                                {COURSES.map((c) => (
+                                  <option key={c} value={c}>{c}</option>
+                                ))}
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Graduation Year *
+                              </label>
+                              <select
+                                value={regBatch}
+                                onChange={(e) => setRegBatch(e.target.value)}
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              >
+                                {BATCH_YEARS.map((y) => (
+                                  <option key={y} value={y}>{y}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
+                          {/* PROFESSIONAL */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Organization *
+                              </label>
+                              <input
+                                type="text"
+                                value={regCompany}
+                                onChange={(e) => setRegCompany(e.target.value)}
+                                onBlur={() => markTouched("company")}
+                                placeholder="e.g. Apex Advisory"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Designation / Role *
+                              </label>
+                              <input
+                                type="text"
+                                value={regDesignation}
+                                onChange={(e) => setRegDesignation(e.target.value)}
+                                onBlur={() => markTouched("designation")}
+                                placeholder="e.g. Managing Director"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Location (City) *
+                              </label>
+                              <input
+                                type="text"
+                                value={regCity}
+                                onChange={(e) => setRegCity(e.target.value)}
+                                onBlur={() => markTouched("city")}
+                                placeholder="e.g. Jaipur"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                Phone Number *
+                              </label>
+                              <input
+                                type="tel"
+                                value={regPhone}
+                                onChange={(e) => setRegPhone(e.target.value)}
+                                onBlur={() => markTouched("phone")}
+                                placeholder="+91 98290 00000"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                                LinkedIn Profile URL
+                              </label>
+                              <input
+                                type="url"
+                                value={regLinkedIn}
+                                onChange={(e) => setRegLinkedIn(e.target.value)}
+                                placeholder="https://linkedin.com/in/..."
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                              />
+                            </div>
+                          </div>
+
+                          {/* DOMAIN TAGS */}
+                          <div>
+                            <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                              Industry Domains *
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                              {DOMAINS.map((dom) => {
+                                const selected = selectedDomains.includes(dom);
+                                return (
+                                  <button
+                                    key={dom}
+                                    type="button"
+                                    onClick={() => toggleDomain(dom)}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                                      selected
+                                        ? "bg-navy-950 text-gold-300 shadow-sm"
+                                        : "bg-ivory border border-line text-navy-800 hover:bg-navy-50"
+                                    }`}
+                                  >
+                                    {selected ? "✓ " : "+ "}
+                                    {dom}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* CONSENT */}
+                          <div className="p-4 rounded-xl bg-ivory border border-line">
+                            <label className="flex items-start gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={regConsent}
+                                onChange={(e) => setRegConsent(e.target.checked)}
+                                className="mt-1 h-4 w-4 rounded border-line text-navy-950 focus:ring-gold-500"
+                              />
+                              <span className="text-xs text-muted leading-relaxed">
+                                I confirm my alumni details are accurate and authorize inclusion in the verified Poddar Alumni Directory.
+                              </span>
+                            </label>
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="w-full h-12 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                          >
+                            <span>Submit Alumni Verification Application</span>
+                            <ArrowRight className="h-4 w-4" />
+                          </button>
+                        </form>
+                      )}
+                    </motion.div>
                   ) : (
-                    /* LOGIN FORM */
-                    <motion.form
-                      key="login-form"
+                    /* SIGN IN FLOW */
+                    <motion.div
+                      key="login-flow"
                       initial={{ opacity: 0, x: 10 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -10 }}
                       transition={{ duration: 0.2 }}
-                      onSubmit={handleLoginSubmit}
-                      className="space-y-6 max-w-md mx-auto py-4"
+                      className="space-y-6"
                     >
-                      <div className="text-center">
-                        <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
-                          Sign In to Your Account
-                        </h2>
-                        <p className="text-xs sm:text-sm text-muted mt-1">
-                          Access your saved preferences, profile completeness, and member privileges.
+                      {/* QUICK 1-CLICK DEMO ACCOUNTS */}
+                      <div className="p-4 rounded-2xl bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 text-white border border-gold-500/30">
+                        <div className="flex items-center gap-2 text-gold-300 font-serif font-bold text-sm mb-2">
+                          <Sparkles className="h-4 w-4" />
+                          <span>1-Click Evaluator Sign-In</span>
+                        </div>
+                        <p className="text-xs text-navy-200 mb-3">
+                          Test the full interactive loop between students applying and alumni referring:
                         </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              login(DEMO_ALUMNUS);
+                              toast.success("Signed in as Demo Alumnus (Vikramaditya Rathore)");
+                              router.push("/dashboard");
+                            }}
+                            className="p-3 rounded-xl bg-navy-900/80 hover:bg-navy-800 border border-gold-400/40 text-left transition-all group"
+                          >
+                            <div className="text-xs font-bold text-gold-300 group-hover:text-gold-200 flex items-center justify-between">
+                              <span>Vikramaditya (Alumnus)</span>
+                              <span className="text-[10px] bg-gold-400/20 text-gold-300 px-1.5 py-0.5 rounded">Gold Alum</span>
+                            </div>
+                            <div className="text-[11px] text-navy-200 truncate mt-0.5">
+                              MD @ Apex Capital • Postings & Referrals
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              login(DEMO_STUDENT);
+                              toast.success("Signed in as Demo Student (Aarav Mehta)");
+                              router.push("/dashboard");
+                            }}
+                            className="p-3 rounded-xl bg-navy-900/80 hover:bg-navy-800 border border-amber-400/40 text-left transition-all group"
+                          >
+                            <div className="text-xs font-bold text-amber-300 group-hover:text-amber-200 flex items-center justify-between">
+                              <span>Aarav Mehta (Student)</span>
+                              <span className="text-[10px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded">Finalist</span>
+                            </div>
+                            <div className="text-[11px] text-navy-200 truncate mt-0.5">
+                              4th Year CS • Applies & Chats with Alums
+                            </div>
+                          </button>
+                        </div>
                       </div>
 
-                      {/* DEMO NOTICE BANNER */}
-                      <div className="p-3.5 rounded-xl bg-gold-500/10 border border-gold-500/30 text-navy-950 text-xs flex items-center gap-2.5">
-                        <Sparkles className="h-4 w-4 text-gold-600 shrink-0" />
+                      {/* STANDARD LOGIN FORM */}
+                      <form onSubmit={handleLoginSubmit} className="space-y-4">
+                        <div className="flex items-center justify-between border-b border-line pb-2">
+                          <span className="text-xs font-semibold text-navy-950 uppercase tracking-wider">
+                            Or Sign In with Credentials
+                          </span>
+                          <div className="flex items-center gap-2 text-xs">
+                            <span className="text-muted">Sign in as:</span>
+                            <button
+                              type="button"
+                              onClick={() => setLoginRole("alumnus")}
+                              className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                                loginRole === "alumnus"
+                                  ? "bg-navy-950 text-gold-300"
+                                  : "bg-ivory text-muted hover:text-navy-950"
+                              }`}
+                            >
+                              Alumnus
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setLoginRole("student")}
+                              className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                                loginRole === "student"
+                                  ? "bg-amber-600 text-white"
+                                  : "bg-ivory text-muted hover:text-navy-950"
+                              }`}
+                            >
+                              Student
+                            </button>
+                          </div>
+                        </div>
+
+                        {loginError && (
+                          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                            <AlertCircle className="h-4 w-4 shrink-0" />
+                            <span>{loginError}</span>
+                          </div>
+                        )}
+
                         <div>
-                          <strong className="font-bold">Interactive Demo Notice:</strong> Any email and password will simulate an authenticated alumni session.
+                          <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                            Email Address
+                          </label>
+                          <input
+                            type="email"
+                            value={loginEmail}
+                            onChange={(e) => setLoginEmail(e.target.value)}
+                            placeholder="your.email@example.com"
+                            className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-navy-950/20"
+                          />
                         </div>
-                      </div>
 
-                      {loginError && (
-                        <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
-                          <AlertCircle className="h-4 w-4 text-red-600 shrink-0" />
-                          <span>{loginError}</span>
+                        <div>
+                          <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+                            Password
+                          </label>
+                          <input
+                            type="password"
+                            value={loginPassword}
+                            onChange={(e) => setLoginPassword(e.target.value)}
+                            placeholder="••••••••"
+                            className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-navy-950/20"
+                          />
                         </div>
-                      )}
 
-                      <div>
-                        <label
-                          htmlFor="loginEmail"
-                          className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                        >
-                          Registered Email Address
-                        </label>
-                        <input
-                          id="loginEmail"
-                          type="email"
-                          value={loginEmail}
-                          onChange={(e) => setLoginEmail(e.target.value)}
-                          placeholder="alumni@poddar.mock"
-                          className="w-full h-12 px-4 rounded-xl border border-line text-base text-navy-950 focus:outline-none focus:ring-2 focus:ring-gold-500/40"
-                        />
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor="loginPassword"
-                          className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5"
-                        >
-                          Password
-                        </label>
-                        <input
-                          id="loginPassword"
-                          type="password"
-                          value={loginPassword}
-                          onChange={(e) => setLoginPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full h-12 px-4 rounded-xl border border-line text-base text-navy-950 focus:outline-none focus:ring-2 focus:ring-gold-500/40"
-                        />
-                      </div>
-
-                      <button
-                        type="submit"
-                        className="w-full h-12 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <LogIn className="h-4 w-4" />
-                        <span>Sign In</span>
-                      </button>
-
-                      <div className="text-center pt-2">
                         <button
-                          type="button"
-                          onClick={() => setActiveTab("register")}
-                          className="text-xs text-gold-700 font-semibold hover:underline inline-flex items-center gap-1"
+                          type="submit"
+                          className="w-full h-12 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                         >
-                          <span>Don&apos;t have an account? Register your batch cohort</span>
-                          <ArrowRight className="h-3 w-3" />
+                          <LogIn className="h-4 w-4" />
+                          <span>Sign In to Portal</span>
                         </button>
-                      </div>
-                    </motion.form>
+                      </form>
+                    </motion.div>
                   )}
                 </AnimatePresence>
               </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Menu,
   X,
@@ -12,6 +12,11 @@ import {
   User,
   ShieldAlert,
   MoreHorizontal,
+  MessageSquare,
+  LayoutDashboard,
+  RefreshCw,
+  Briefcase,
+  Bell,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -20,6 +25,7 @@ import { MAIN_NAVIGATION, NavItem } from "@/data/nav";
 import { usePortalStore } from "@/store/portal";
 import { Logo } from "@/components/layout/Logo";
 import { AvatarInitials } from "@/components/common/AvatarInitials";
+import { NotificationsPopover } from "@/components/common/NotificationsPopover";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -40,7 +46,18 @@ import { cn } from "@/lib/utils";
 
 export function Header() {
   const pathname = usePathname();
-  const { currentUser, logout, login } = usePortalStore();
+  const router = useRouter();
+  const { currentUser, logout, login, conversations, notifications, switchDemoUser } = usePortalStore();
+
+  const unreadMessagesCount = useMemo(() => {
+    if (!currentUser) return 0;
+    return (conversations || []).reduce((acc, c) => acc + (c.unreadCount?.[currentUser.id] || 0), 0);
+  }, [conversations, currentUser]);
+
+  const unreadNotifsCount = useMemo(() => {
+    if (!currentUser) return 0;
+    return (notifications || []).filter((n) => (n.userId === currentUser.id || n.userId === "all") && !n.read).length;
+  }, [notifications, currentUser]);
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -48,6 +65,7 @@ export function Header() {
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [windowWidth, setWindowWidth] = useState<number>(1440);
+  const [navWidth, setNavWidth] = useState<number>(0);
 
   const headerRef = useRef<HTMLElement>(null);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -61,11 +79,30 @@ export function Header() {
       if (width >= 1024) {
         setMobileMenuOpen(false);
       }
+      if (navContainerRef.current) {
+        setNavWidth(navContainerRef.current.clientWidth);
+      }
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    let ro: ResizeObserver | null = null;
+    if (navContainerRef.current && typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.contentRect) {
+            setNavWidth(entry.contentRect.width);
+          }
+        }
+      });
+      ro.observe(navContainerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (ro) ro.disconnect();
+    };
   }, []);
 
   // Scroll detection for header morph (transparent -> solid navy after 80px)
@@ -96,19 +133,27 @@ export function Header() {
     []
   );
 
-  // Calculate visible vs overflow items for desktop navigation
-  // At >= 1440px: all 8 items fit comfortably without Help Desk pill
-  // At 1300px to 1439px: 6 items fit + More
-  // At 1150px to 1299px: 5 items fit + More
-  // At 1024px to 1149px: 4 items fit + More
+  // Dynamically calculate visible vs overflow items for desktop navigation
+  // Prevents overlap at ANY zoom level (100%, 90%, 80%) or screen resolution
   const visibleCount = useMemo(() => {
-    if (!mounted) return 8; // Match SSR to avoid hydration mismatch
-    if (windowWidth >= 1440) return 8;
-    if (windowWidth >= 1300) return 6;
-    if (windowWidth >= 1150) return 5;
-    if (windowWidth >= 1024) return 4;
-    return 8;
-  }, [mounted, windowWidth]);
+    if (!mounted) return 4; // Safe SSR default
+
+    if (navWidth > 0) {
+      if (navWidth >= 1100) return 8; // All 8 categories fit comfortably
+      if (navWidth >= 950) return 6;  // 6 categories + More
+      if (navWidth >= 800) return 5;  // 5 categories + More
+      if (navWidth >= 640) return 4;  // 4 categories + More
+      if (navWidth >= 500) return 3;  // 3 categories + More
+      return 2;
+    }
+
+    // Fallback based on windowWidth if navWidth is not measured yet
+    if (windowWidth >= 1700) return 8;
+    if (windowWidth >= 1520) return 6;
+    if (windowWidth >= 1380) return 5;
+    if (windowWidth >= 1200) return 4;
+    return 3;
+  }, [mounted, navWidth, windowWidth]);
 
   const visibleNavItems = useMemo(
     () => regularNavItems.slice(0, visibleCount),
@@ -137,17 +182,17 @@ export function Header() {
           : "bg-transparent border-b border-transparent py-3 sm:py-4"
       )}
     >
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1600px] 2xl:max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3 xl:gap-6">
           {/* 1. BRAND LOGO (Protected left column, will never be overlapped) */}
-          <div className="shrink-0 z-10 flex items-center pr-2">
+          <div className="shrink-0 z-20 flex items-center pr-1 sm:pr-2">
             <Logo theme="navy" />
           </div>
 
           {/* 2. DESKTOP NAVIGATION (Visible ONLY at >= 1024px via lg:flex) */}
           <nav
             ref={navContainerRef}
-            className="hidden lg:flex items-center gap-0.5 xl:gap-1 2xl:gap-1.5 flex-1 justify-start xl:justify-center min-w-0"
+            className="hidden lg:flex items-center gap-0.5 xl:gap-1 2xl:gap-1.5 flex-1 justify-start min-w-0"
             aria-label="Main Navigation"
           >
             {visibleNavItems.map((item) => {
@@ -171,7 +216,7 @@ export function Header() {
                       }
                     }}
                     className={cn(
-                      "flex items-center gap-1 px-1.5 xl:px-2.5 2xl:px-3 py-1.5 rounded-lg text-xs xl:text-[13px] font-semibold tracking-normal transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gold-400/50",
+                      "flex items-center gap-1 px-1.5 xl:px-2 2xl:px-2.5 py-1.5 rounded-lg text-xs xl:text-[13px] font-semibold tracking-normal transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gold-400/50",
                       isActive
                         ? "text-gold-400 font-bold"
                         : "text-ivory/85 hover:text-gold-300 hover:bg-navy-900/60"
@@ -323,54 +368,166 @@ export function Header() {
             )}
           </nav>
 
-          {/* 3. DESKTOP RIGHT ACTIONS (Login / Logout + Gold Help Desk Pill) */}
-          <div className="hidden lg:flex items-center gap-2.5 shrink-0">
+          {/* 3. DESKTOP RIGHT ACTIONS (Login / Logout + Opportunities Network Controls) */}
+          <div className="hidden lg:flex items-center gap-2 xl:gap-2.5 shrink-0 z-20">
             {/* Logged in state */}
             {currentUser ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 xl:gap-2">
+                {/* Messages Icon Button */}
+                <Link
+                  href="/messages"
+                  scroll={false}
+                  className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-navy-900 border border-navy-700/80 text-ivory/80 hover:text-gold-300 hover:bg-navy-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-400/50"
+                  aria-label={`Messages (${unreadMessagesCount} unread)`}
+                >
+                  <MessageSquare className="h-4 w-4 text-gold-400" />
+                  {unreadMessagesCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-bold text-navy-950 shadow-xs animate-pulse">
+                      {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Notifications Popover */}
+                <NotificationsPopover />
+
+                {/* User Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className="flex items-center gap-2 p-1 rounded-full hover:bg-navy-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-500/40 cursor-pointer"
+                    className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-full bg-navy-900/60 border border-navy-800 hover:bg-navy-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-500/40 cursor-pointer"
                     aria-label="User account menu"
                   >
                     <AvatarInitials name={currentUser.name} src={currentUser.avatarUrl} size="sm" />
                     <div className="text-left hidden 2xl:block pr-1">
-                      <span className="text-xs font-semibold text-ivory block line-clamp-1 max-w-[100px]">
-                        {currentUser.name}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-ivory block line-clamp-1 max-w-[90px]">
+                          {currentUser.name}
+                        </span>
+                        <span
+                          className={cn(
+                            "px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider",
+                            currentUser.role === "student"
+                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                              : "bg-gold-500/20 text-gold-300 border border-gold-500/30"
+                          )}
+                        >
+                          {currentUser.role === "student" ? "Student" : "Alumnus"}
+                        </span>
+                      </div>
                     </div>
                     <ChevronDown className="h-3 w-3 text-ivory/60" />
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent
                     align="end"
-                    className="w-56 bg-navy-900 border-navy-700 text-ivory p-1.5 rounded-xl shadow-xl z-50"
+                    className="w-64 bg-navy-900 border-navy-700 text-ivory p-2 rounded-xl shadow-xl z-50"
                   >
                     <DropdownMenuGroup>
                       <DropdownMenuLabel className="font-normal px-2 py-1.5">
-                        <div className="text-xs font-bold text-ivory">{currentUser.name}</div>
-                        <div className="text-[11px] text-ivory/60 truncate">{currentUser.email}</div>
-                        {currentUser.batch && (
-                          <div className="text-[10px] text-gold-400 mt-0.5">
-                            Class of {currentUser.batch} • {currentUser.course}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-ivory">{currentUser.name}</span>
+                          <span
+                            className={cn(
+                              "px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
+                              currentUser.role === "student"
+                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                : "bg-gold-500/20 text-gold-300 border border-gold-500/30"
+                            )}
+                          >
+                            {currentUser.role === "student" ? "Student" : "Alumnus"}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-ivory/60 truncate mt-0.5">{currentUser.email}</div>
+                        {currentUser.course && (
+                          <div className="text-[10px] text-gold-400 mt-1 truncate">
+                            {currentUser.course} {currentUser.batch ? `• 'Class of ${currentUser.batch}` : ""}
                           </div>
                         )}
                       </DropdownMenuLabel>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator className="bg-navy-800" />
 
-                    <DropdownMenuItem className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs p-0">
-                      <Link href="/join/profile" className="flex items-center gap-2 w-full px-2 py-1.5">
-                        <User className="h-3.5 w-3.5 text-gold-400" />
-                        Update My Profile
-                      </Link>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/dashboard")}
+                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
+                    >
+                      <LayoutDashboard className="h-3.5 w-3.5 text-gold-400" />
+                      <span>Opportunities Dashboard</span>
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs p-0">
-                      <Link href="/admin" className="flex items-center gap-2 w-full px-2 py-1.5">
-                        <ShieldAlert className="h-3.5 w-3.5 text-gold-400" />
-                        Admin Demo Panel
-                      </Link>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/dashboard/applications")}
+                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
+                    >
+                      <Briefcase className="h-3.5 w-3.5 text-gold-400" />
+                      <span>My Applications</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => router.push("/messages")}
+                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center justify-between px-2 py-1.5"
+                    >
+                      <span className="flex items-center gap-2">
+                        <MessageSquare className="h-3.5 w-3.5 text-gold-400" />
+                        <span>Direct Messages</span>
+                      </span>
+                      {unreadMessagesCount > 0 && (
+                        <span className="bg-gold-500 text-navy-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                          {unreadMessagesCount}
+                        </span>
+                      )}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => router.push("/dashboard/profile")}
+                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
+                    >
+                      <User className="h-3.5 w-3.5 text-gold-400" />
+                      <span>My Profile & Skills</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => router.push("/admin")}
+                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
+                    >
+                      <ShieldAlert className="h-3.5 w-3.5 text-gold-400" />
+                      <span>Admin Moderation Panel</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator className="bg-navy-800" />
+                    <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-ivory/50">
+                      Switch Demo Role
+                    </div>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        switchDemoUser("alumnus");
+                        toast.success("Switched to Alumnus demo account (Vikramaditya Rathore)");
+                      }}
+                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center justify-between px-2 py-1.5"
+                    >
+                      <span className="flex items-center gap-2">
+                        <RefreshCw className="h-3.5 w-3.5 text-gold-400" />
+                        <span>Alumnus (Employer/Referrer)</span>
+                      </span>
+                      {currentUser.role !== "student" && (
+                        <span className="text-[10px] text-gold-400 font-bold">Active</span>
+                      )}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => {
+                        switchDemoUser("student");
+                        toast.success("Switched to Student demo account (Aarav Mehta)");
+                      }}
+                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center justify-between px-2 py-1.5"
+                    >
+                      <span className="flex items-center gap-2">
+                        <RefreshCw className="h-3.5 w-3.5 text-emerald-400" />
+                        <span>Student (Applicant/Trainee)</span>
+                      </span>
+                      {currentUser.role === "student" && (
+                        <span className="text-[10px] text-emerald-400 font-bold">Active</span>
+                      )}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -403,7 +560,17 @@ export function Header() {
             {/* Mobile Auth Button (Login or Logout) */}
             {currentUser ? (
               <div className="flex items-center gap-1.5">
-                <AvatarInitials name={currentUser.name} src={currentUser.avatarUrl} size="sm" />
+                <Link
+                  href="/messages"
+                  scroll={false}
+                  className="relative flex items-center justify-center h-10 w-10 rounded-xl bg-navy-900 border border-navy-700 text-ivory"
+                  aria-label="Direct Messages"
+                >
+                  <MessageSquare className="h-4 w-4 text-gold-400" />
+                  {unreadMessagesCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-gold-400" />
+                  )}
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="flex items-center justify-center h-10 px-2.5 rounded-xl bg-navy-900 border border-navy-700 text-rose-300 hover:text-white text-xs font-semibold"
@@ -423,15 +590,18 @@ export function Header() {
               </Link>
             )}
 
-            {/* Mobile Hamburger Button */}
+            {/* Mobile Hamburger Button with Unread Dot */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="flex lg:hidden h-11 w-11 items-center justify-center rounded-xl bg-navy-900 border border-navy-700 text-ivory active:scale-95 transition-transform cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-400"
+                className="relative flex lg:hidden h-11 w-11 items-center justify-center rounded-xl bg-navy-900 border border-navy-700 text-ivory active:scale-95 transition-transform cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-400"
                 aria-label="Open Navigation Menu"
               >
                 <Menu className="h-5 w-5 text-gold-400" strokeWidth={2} />
+                {(unreadMessagesCount > 0 || unreadNotifsCount > 0) && (
+                  <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-gold-400 border-2 border-navy-950 animate-pulse" />
+                )}
               </button>
 
               <SheetContent
@@ -452,9 +622,115 @@ export function Header() {
 
                 {/* Middle Region: Scrollable navigation with data-lenis-prevent */}
                 <div
-                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4 px-4 space-y-2 scrollbar-thin"
+                  className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4 px-4 space-y-3 scrollbar-thin"
                   data-lenis-prevent
                 >
+                  {/* Opportunities Network Mobile Header Section */}
+                  {currentUser ? (
+                    <div className="space-y-2 mb-4 p-3 rounded-2xl bg-navy-900 border border-navy-800">
+                      {/* User Profile Summary */}
+                      <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-navy-800/80">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <AvatarInitials name={currentUser.name} src={currentUser.avatarUrl} size="sm" />
+                          <div className="min-w-0">
+                            <span className="text-xs font-bold text-ivory block truncate">{currentUser.name}</span>
+                            <span className="text-[10px] text-ivory/60 block truncate">{currentUser.email}</span>
+                          </div>
+                        </div>
+                        <span
+                          className={cn(
+                            "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0",
+                            currentUser.role === "student"
+                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                              : "bg-gold-500/20 text-gold-300 border border-gold-500/30"
+                          )}
+                        >
+                          {currentUser.role === "student" ? "Student" : "Alumnus"}
+                        </span>
+                      </div>
+
+                      {/* Prominent Quick Access Rows for Messages and Notifications */}
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <Link
+                          href="/messages"
+                          scroll={false}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center justify-between p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold"
+                        >
+                          <span className="flex items-center gap-2">
+                            <MessageSquare className="h-4 w-4 text-gold-400" />
+                            <span>Messages</span>
+                          </span>
+                          {unreadMessagesCount > 0 && (
+                            <span className="bg-gold-500 text-navy-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                              {unreadMessagesCount}
+                            </span>
+                          )}
+                        </Link>
+
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center justify-between p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold"
+                        >
+                          <span className="flex items-center gap-2">
+                            <Bell className="h-4 w-4 text-gold-400" />
+                            <span>Alerts</span>
+                          </span>
+                          {unreadNotifsCount > 0 && (
+                            <span className="bg-gold-500 text-navy-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                              {unreadNotifsCount}
+                            </span>
+                          )}
+                        </Link>
+                      </div>
+
+                      {/* Dashboard Link */}
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center justify-between w-full p-2.5 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 text-xs font-bold transition-colors"
+                      >
+                        <span className="flex items-center gap-2">
+                          <LayoutDashboard className="h-4 w-4 text-gold-400" />
+                          <span>Opportunities Dashboard</span>
+                        </span>
+                        <span className="text-[10px] bg-gold-500 text-navy-950 px-1.5 py-0.2 rounded font-bold">
+                          NEW
+                        </span>
+                      </Link>
+
+                      {/* Quick Role Switcher */}
+                      <div className="pt-2 border-t border-navy-800/80 flex items-center justify-between text-[11px]">
+                        <span className="text-ivory/60">Demo account:</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const targetRole = currentUser.role === "student" ? "alumnus" : "student";
+                            switchDemoUser(targetRole);
+                            toast.success(`Switched role to ${targetRole === "student" ? "Student (Aarav)" : "Alumnus (Vikramaditya)"}`);
+                          }}
+                          className="inline-flex items-center gap-1.5 text-gold-400 hover:text-gold-300 font-semibold cursor-pointer"
+                        >
+                          <RefreshCw className="h-3 w-3" />
+                          <span>Switch to {currentUser.role === "student" ? "Alumnus" : "Student"}</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mb-4 p-3 rounded-2xl bg-navy-900 border border-navy-800 text-center">
+                      <p className="text-xs text-ivory/80 mb-2">Join the Opportunities Network</p>
+                      <Link
+                        href="/join/auth?tab=login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-gold-500 text-navy-950 font-bold text-xs"
+                      >
+                        <LogIn className="h-3.5 w-3.5" />
+                        <span>Sign In / Register</span>
+                      </Link>
+                    </div>
+                  )}
+
                   {regularNavItems.map((item) => {
                     const isExpanded = expandedMobileMenu === item.id;
                     const isActive = pathname.startsWith(item.href);

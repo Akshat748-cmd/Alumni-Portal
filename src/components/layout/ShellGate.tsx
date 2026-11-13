@@ -12,6 +12,7 @@ import { PageTransition } from "@/components/motion/PageTransition";
 export function ShellGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
+  const isMessages = pathname.startsWith("/messages");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -28,12 +29,12 @@ export function ShellGate({ children }: { children: React.ReactNode }) {
       <Preloader />
 
       <Header />
-      <PageTransition className="flex-1 flex flex-col">
+      <PageTransition className={isMessages ? "h-screen overflow-hidden" : "flex-1 flex flex-col"}>
         {children}
       </PageTransition>
-      <Footer />
+      {!isMessages && <Footer />}
 
-      <FloatingHelpButton />
+      {!isMessages && <FloatingHelpButton />}
     </>
   );
 }

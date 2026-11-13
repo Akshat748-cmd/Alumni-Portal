@@ -79,6 +79,25 @@ export function AdminSidebar({
       badgeVariant: "pending",
     },
     {
+      id: "live_postings",
+      label: "Live Postings",
+      icon: Briefcase,
+      count: counts.live_postings || 0,
+    },
+    {
+      id: "students",
+      label: "Students Registry",
+      icon: GraduationCap,
+      count: counts.students || 0,
+    },
+    {
+      id: "chat_reports",
+      label: "Chat Reports",
+      icon: ShieldAlert,
+      count: counts.chat_reports || 0,
+      badgeVariant: "pending",
+    },
+    {
       id: "mentorship",
       label: "Mentorship",
       icon: GraduationCap,
