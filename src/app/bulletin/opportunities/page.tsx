@@ -120,7 +120,7 @@ export default function OpportunitiesPage() {
                         </Badge>
                       )}
 
-                      <span className="font-semibold text-amber-600 dark:text-amber-400 font-mono text-xs">
+                      <span className="font-semibold text-amber-600 dark:text-amber-400 tabular-nums text-xs">
                         {opp.grantAmount}
                       </span>
                     </div>

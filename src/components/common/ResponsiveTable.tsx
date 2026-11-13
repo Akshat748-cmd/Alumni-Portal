@@ -66,13 +66,13 @@ export function ResponsiveTable<T extends Record<string, any>>({
       </div>
 
       {/* DESKTOP VIEW: Full Structured Table (md and up) */}
-      <div className="hidden md:block overflow-hidden rounded-xl border border-line bg-card shadow-navy-soft">
+      <div className="hidden md:block overflow-hidden rounded-xl border border-line bg-card shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-navy-950 text-ivory text-xs font-semibold uppercase tracking-wider">
+          <table className="w-full text-left text-[14px]">
+            <thead className="bg-navy-950 text-ivory text-[12px] font-semibold uppercase tracking-[0.06em]">
               <tr>
                 {columns.map((col) => (
-                  <th key={col.key} scope="col" className={cn("px-5 py-4", col.className)}>
+                  <th key={col.key} scope="col" className={cn("px-4 py-2.5", col.className)}>
                     {col.header}
                   </th>
                 ))}
@@ -92,7 +92,7 @@ export function ResponsiveTable<T extends Record<string, any>>({
                     return (
                       <td
                         key={col.key}
-                        className={cn("px-5 py-4 text-ink font-normal align-middle", col.className)}
+                        className={cn("px-4 py-2.5 sm:py-3 text-[13.5px] sm:text-[14px] text-ink font-normal align-middle", col.className)}
                       >
                         {value}
                       </td>

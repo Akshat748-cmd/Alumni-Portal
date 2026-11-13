@@ -17,21 +17,21 @@ export function Logo({ theme = "navy", className = "", onClick }: LogoProps) {
     <Link
       href="/"
       onClick={onClick}
-      className={cn("group inline-flex items-center gap-3 select-none", className)}
+      className={cn("group inline-flex items-center gap-2.5 select-none", className)}
       aria-label="Poddar Alumni Network Home"
     >
       {/* SVG Crest Monogram */}
-      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gold-500/40 bg-gradient-to-br from-navy-900 to-navy-950 shadow-sm transition-transform duration-300 group-hover:scale-105">
-        <span className="font-serif text-xl font-bold tracking-tight text-gold-300">P</span>
+      <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gold-500/40 bg-gradient-to-br from-navy-900 to-navy-950 shadow-xs transition-transform duration-200 group-hover:scale-105">
+        <span className="font-serif text-lg font-bold tracking-tight text-gold-300">P</span>
         {/* Subtle decorative gold inner corner accent */}
         <div className="absolute top-1 right-1 h-1 w-1 rounded-full bg-gold-400" />
       </div>
 
       {/* Typography */}
-      <div className="flex flex-col leading-tight">
+      <div className="flex flex-col leading-none">
         <span
           className={cn(
-            "font-serif text-base sm:text-lg font-bold tracking-tight transition-colors",
+            "font-serif text-[17px] sm:text-[18px] font-semibold tracking-[-0.01em] transition-colors leading-tight",
             isDarkSurface
               ? "text-ivory group-hover:text-gold-300"
               : "text-navy-950 group-hover:text-gold-600"
@@ -39,7 +39,7 @@ export function Logo({ theme = "navy", className = "", onClick }: LogoProps) {
         >
           Poddar Alumni
         </span>
-        <span className="text-[10px] uppercase font-semibold tracking-widest text-gold-500/90 font-sans">
+        <span className="text-[10px] uppercase font-semibold tracking-[0.08em] text-gold-500/90 font-sans mt-0.5">
           Network{INSTITUTION.foundingYear ? ` • Est. ${INSTITUTION.foundingYear}` : ""}
         </span>
       </div>

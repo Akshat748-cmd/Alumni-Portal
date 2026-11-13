@@ -63,7 +63,7 @@ export default async function SectionPage({ params }: SectionPageProps) {
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-navy-900 to-gold-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div>
-                <span className="text-xs font-mono font-bold text-gold-600 block mb-2">
+                <span className="text-xs tabular-nums font-bold text-gold-600 block mb-2">
                   0{idx + 1}
                 </span>
                 <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-600 transition-colors mb-2">

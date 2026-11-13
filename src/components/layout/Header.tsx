@@ -176,10 +176,10 @@ export function Header() {
     <header
       ref={headerRef}
       className={cn(
-        "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-40 transition-all duration-300 h-14 lg:h-16 flex items-center",
         hasSolidBackground
-          ? "bg-navy-950/95 backdrop-blur-md border-b border-navy-800 shadow-lg py-2.5"
-          : "bg-transparent border-b border-transparent py-3 sm:py-4"
+          ? "bg-navy-950/95 backdrop-blur-md border-b border-navy-800 shadow-sm"
+          : "bg-transparent border-b border-transparent"
       )}
     >
       <div className="w-full max-w-[1600px] 2xl:max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -216,7 +216,7 @@ export function Header() {
                       }
                     }}
                     className={cn(
-                      "flex items-center gap-1 px-1.5 xl:px-2 2xl:px-2.5 py-1.5 rounded-lg text-xs xl:text-[13px] font-semibold tracking-normal transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gold-400/50",
+                      "flex items-center gap-1 px-1.5 xl:px-2 2xl:px-2.5 py-1.5 rounded-lg text-[13.5px] xl:text-[14px] font-semibold tracking-normal transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gold-400/50",
                       isActive
                         ? "text-gold-400 font-bold"
                         : "text-ivory/85 hover:text-gold-300 hover:bg-navy-900/60"
@@ -377,7 +377,7 @@ export function Header() {
                 <Link
                   href="/messages"
                   scroll={false}
-                  className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-navy-900 border border-navy-700/80 text-ivory/80 hover:text-gold-300 hover:bg-navy-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-400/50"
+                  className="relative flex items-center justify-center h-10 w-10 rounded-lg bg-navy-900 border border-navy-700/80 text-ivory/80 hover:text-gold-300 hover:bg-navy-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-400/50"
                   aria-label={`Messages (${unreadMessagesCount} unread)`}
                 >
                   <MessageSquare className="h-4 w-4 text-gold-400" />

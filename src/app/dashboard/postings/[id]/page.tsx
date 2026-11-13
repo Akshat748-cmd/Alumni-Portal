@@ -177,7 +177,7 @@ export default function PostingApplicantsPage({
                             {app.applicantEmail && (
                               <>
                                 <span>•</span>
-                                <span className="font-mono text-[11px]">{app.applicantEmail}</span>
+                                <span className="tabular-nums text-[11px]">{app.applicantEmail}</span>
                               </>
                             )}
                           </div>
@@ -232,7 +232,7 @@ export default function PostingApplicantsPage({
                       <div className="flex items-center gap-2">
                         <FileText className="h-4 w-4 text-gold-600 shrink-0" />
                         <span className="text-muted">Attached Resume:</span>
-                        <span className="font-mono font-bold text-navy-950">
+                        <span className="tabular-nums font-bold text-navy-950">
                           {app.resumeFileName || "Candidate_Profile.pdf"}
                         </span>
                       </div>

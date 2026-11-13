@@ -228,7 +228,7 @@ export default function AdminPage() {
   return (
     <Suspense
       fallback={
-        <div className="h-screen w-full flex items-center justify-center bg-slate-50 text-xs font-mono text-muted">
+        <div className="h-screen w-full flex items-center justify-center bg-slate-50 text-xs tabular-nums text-muted">
           Loading Secretariat Administrative Panel...
         </div>
       }

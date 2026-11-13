@@ -291,19 +291,19 @@ export default function BulletinOverviewPage() {
           {selectedNotice && (
             <>
               <DialogHeader>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex flex-wrap items-center gap-2 mb-2 pr-6">
                   <Badge variant="outline">{selectedNotice.category}</Badge>
                   {selectedNotice.priority === "High" && (
                     <Badge variant="destructive" className="text-xs">
                       High Priority
                     </Badge>
                   )}
-                  <span className="text-xs text-slate-500 ml-auto flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" />
+                  <span className="text-xs text-slate-500 flex items-center gap-1 tabular-nums ml-auto mr-4">
+                    <Calendar className="w-3.5 h-3.5 text-gold-600" />
                     {selectedNotice.date}
                   </span>
                 </div>
-                <DialogTitle className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-[17px] sm:text-[19px] font-sans font-semibold text-slate-900 dark:text-slate-100 text-left leading-snug tracking-tight">
                   {selectedNotice.title}
                 </DialogTitle>
                 <DialogDescription className="text-left text-slate-600 dark:text-slate-400 font-medium pt-1">

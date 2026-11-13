@@ -198,7 +198,7 @@ export function AdminGiveBackQueue() {
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-navy-950">
+                          <span className="tabular-nums text-xs font-bold text-navy-950">
                             {p.registrationNumber || item.id}
                           </span>
                           <span className="font-bold text-sm text-navy-950">{attendee}</span>
@@ -221,7 +221,7 @@ export function AdminGiveBackQueue() {
                       </div>
 
                       <div className="self-end md:self-auto shrink-0">
-                        <Badge variant="outline" className="text-xs font-mono">
+                        <Badge variant="outline" className="text-xs tabular-nums">
                           Pass Validated
                         </Badge>
                       </div>

@@ -234,7 +234,7 @@ export default function PostOpportunityPage() {
               <div className="p-4 rounded-2xl bg-ivory border border-line text-left max-w-md mx-auto mb-8 space-y-2 text-xs">
                 <div className="flex justify-between">
                   <span className="text-muted">Posting ID:</span>
-                  <span className="font-mono font-bold text-navy-950">{submittedId}</span>
+                  <span className="tabular-nums font-bold text-navy-950">{submittedId}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted">Target Applicants:</span>
@@ -606,7 +606,7 @@ export default function PostOpportunityPage() {
                     value={requirementsInput}
                     onChange={(e) => setRequirementsInput(e.target.value)}
                     placeholder="List requirements, degrees, certifications or years of experience..."
-                    className="w-full p-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30 font-mono text-xs"
+                    className="w-full p-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/30 tabular-nums text-xs"
                   />
                 </div>
 

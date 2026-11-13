@@ -102,7 +102,7 @@ export function AdminStudents() {
                           <AvatarInitials name={s.name} size="sm" />
                           <div>
                             <div className="font-bold text-navy-950">{s.name}</div>
-                            <div className="text-[11px] text-muted font-mono">{s.email}</div>
+                            <div className="text-[11px] text-muted tabular-nums">{s.email}</div>
                           </div>
                         </div>
                       </td>
@@ -112,7 +112,7 @@ export function AdminStudents() {
                         <div className="text-[11px] text-muted">{s.yearOfStudy}</div>
                       </td>
 
-                      <td className="py-4 px-4 font-mono font-bold text-navy-950">
+                      <td className="py-4 px-4 tabular-nums font-bold text-navy-950">
                         {s.enrollmentNumber}
                       </td>
 

@@ -134,7 +134,7 @@ export default function ConnectPage() {
                 >
                   {/* Step Monogram Header */}
                   <div className="flex items-center justify-between w-full mb-4">
-                    <span className="font-mono text-2xl font-bold text-gold-600">
+                    <span className="tabular-nums text-2xl font-bold text-gold-600">
                       {s.step}
                     </span>
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-500/15 text-gold-600 border border-gold-500/30 group-hover:bg-navy-900 group-hover:text-gold-300 transition-colors">
@@ -228,7 +228,7 @@ export default function ConnectPage() {
 
                       {/* Domain and Batch */}
                       <div className="flex items-center justify-between gap-2 text-[11px] text-muted pt-2 border-t border-line/60 mb-3">
-                        <span className="font-mono">Class of {person.batch}</span>
+                        <span className="tabular-nums">Class of {person.batch}</span>
                         <span className="truncate max-w-[120px] text-navy-900 font-medium">
                           {person.city}
                         </span>

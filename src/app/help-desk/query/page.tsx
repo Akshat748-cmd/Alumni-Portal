@@ -265,7 +265,7 @@ export default function SubmitQueryPage() {
                       />
                     </label>
                     {attachedFileName && (
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold-500/15 text-navy-950 text-xs font-mono">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gold-500/15 text-navy-950 text-xs tabular-nums">
                         <FileText className="h-3.5 w-3.5 text-gold-700" />
                         <span className="truncate max-w-[200px]">{attachedFileName}</span>
                         <button

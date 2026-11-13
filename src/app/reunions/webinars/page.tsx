@@ -66,7 +66,7 @@ export default function WebinarsPage() {
                     <Video className="w-3.5 h-3.5" />
                     Interactive Virtual Webinar
                   </div>
-                  <div className="absolute bottom-3 right-3 bg-navy-950/80 backdrop-blur-sm text-white px-2 py-0.5 rounded text-[11px] font-mono">
+                  <div className="absolute bottom-3 right-3 bg-navy-950/80 backdrop-blur-sm text-white px-2 py-0.5 rounded text-[11px] tabular-nums">
                     {webinar.attendeeCount} RSVPs
                   </div>
                 </div>

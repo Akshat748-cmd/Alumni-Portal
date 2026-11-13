@@ -22,14 +22,14 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center p-8 sm:p-12 rounded-xl border border-dashed border-line bg-card/60 max-w-lg mx-auto",
+        "flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-xl border border-dashed border-line bg-card/60 max-w-md mx-auto",
         className
       )}
     >
       {/* Institutional Empty State SVG Illustration */}
-      <div className="mb-5 flex h-24 w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-ivory to-gold-300/20 border border-gold-500/20 shadow-inner">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-ivory to-gold-300/20 border border-gold-500/20 shadow-xs">
         <svg
-          className="h-12 w-12 text-gold-600"
+          className="h-8 w-8 text-gold-600"
           viewBox="0 0 64 64"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -60,13 +60,13 @@ export function EmptyState({
         </svg>
       </div>
 
-      <h3 className="font-serif text-xl font-bold text-navy-950 mb-2">{title}</h3>
-      <p className="text-sm text-muted max-w-md leading-relaxed mb-6">{description}</p>
+      <h3 className="font-serif text-[18px] font-semibold text-navy-950 mb-1.5">{title}</h3>
+      <p className="text-[13.5px] text-muted max-w-sm leading-relaxed mb-4">{description}</p>
 
       {actionLabel && onAction && (
         <Button
           onClick={onAction}
-          className="h-11 px-6 rounded-xl bg-navy-900 hover:bg-navy-800 text-gold-300 font-semibold shadow-sm"
+          className="h-10 px-4 rounded-lg bg-navy-900 hover:bg-navy-800 text-gold-300 font-semibold shadow-xs text-sm"
         >
           {actionLabel}
         </Button>

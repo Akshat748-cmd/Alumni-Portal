@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 interface ImageWithFallbackProps extends Omit<ImageProps, "onError"> {
   fallbackSrc?: string;
   overlay?: boolean;
-  aspectRatio?: "16/9" | "4/3" | "1/1" | "auto";
+  aspectRatio?: "16/9" | "16/10" | "4/3" | "1/1" | "auto";
   containerClassName?: string;
 }
 
@@ -26,6 +26,7 @@ export function ImageWithFallback({
 
   const aspectClasses = {
     "16/9": "aspect-[16/9]",
+    "16/10": "aspect-[16/10]",
     "4/3": "aspect-[4/3]",
     "1/1": "aspect-square",
     auto: "",

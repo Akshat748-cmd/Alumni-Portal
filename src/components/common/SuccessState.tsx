@@ -28,14 +28,14 @@ export function SuccessState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center text-center p-8 sm:p-12 rounded-xl border border-line bg-card shadow-navy-soft max-w-lg mx-auto",
+        "flex flex-col items-center justify-center text-center p-6 sm:p-8 rounded-xl border border-line bg-card shadow-xs max-w-md mx-auto",
         className
       )}
     >
       {/* Success Badge SVG Illustration */}
-      <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 border-2 border-emerald-500/30 shadow-inner">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 border-2 border-emerald-500/30 shadow-inner">
         <svg
-          className="h-10 w-10 text-emerald-600"
+          className="h-7 w-7 text-emerald-600"
           viewBox="0 0 48 48"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -51,12 +51,12 @@ export function SuccessState({
         </svg>
       </div>
 
-      <h3 className="font-serif text-2xl font-bold text-navy-950 mb-2">{title}</h3>
-      <p className="text-sm text-muted max-w-md leading-relaxed mb-4">{message}</p>
+      <h3 className="font-serif text-[20px] font-semibold text-navy-950 mb-1.5">{title}</h3>
+      <p className="text-[13.5px] sm:text-[14px] text-muted max-w-sm leading-relaxed mb-3.5">{message}</p>
 
       {referenceId && (
-        <div className="mb-6 rounded-lg bg-ivory px-3.5 py-1.5 border border-line text-xs font-mono text-navy-900">
-          Tracking ID: <span className="font-bold text-gold-600">{referenceId}</span>
+        <div className="mb-4 rounded-lg bg-ivory px-3 py-1 border border-line text-xs tabular-nums text-navy-900">
+          Tracking ID: <span className="font-semibold text-gold-700">{referenceId}</span>
         </div>
       )}
 

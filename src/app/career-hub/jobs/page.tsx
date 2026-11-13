@@ -324,38 +324,38 @@ export default function JobsPage() {
         ]}
       />
 
-      <section className="py-12 md:py-16">
+      <section className="py-8 md:py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
           {/* TOP SEARCH & ACTION BAR */}
-          <div className="bg-white rounded-3xl p-6 border border-line shadow-sm mb-8">
-            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          <div className="bg-white rounded-xl p-4 sm:p-5 border border-line shadow-xs mb-6">
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
               {/* SEARCH INPUT */}
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-3.5 h-5 w-5 text-muted pointer-events-none" />
+                <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search role title, company, skills (e.g. React), or city..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-12 pl-12 pr-10 rounded-xl border border-line bg-ivory/50 text-base text-navy-950 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-gold-500/40"
+                  className="w-full h-10 pl-10 pr-9 rounded-lg border border-line bg-ivory/50 text-sm text-navy-950 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-gold-500/40"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-3.5 top-3.5 text-muted hover:text-navy-950"
+                    className="absolute right-3 top-2.5 text-muted hover:text-navy-950"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-4 w-4" />
                   </button>
                 )}
               </div>
 
               {/* POST AN OPPORTUNITY BUTTON */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 {currentUser?.role !== "student" && (
                   <Link
                     href="/career-hub/post"
-                    className="h-12 px-5 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-colors shadow-md flex items-center justify-center gap-2 shrink-0"
+                    className="h-10 px-4 rounded-lg bg-navy-950 text-gold-300 font-semibold text-xs sm:text-sm hover:bg-navy-900 transition-colors shadow-xs flex items-center justify-center gap-1.5 shrink-0"
                   >
                     <PlusCircle className="h-4 w-4" />
                     <span>Post an Opening</span>
@@ -364,7 +364,7 @@ export default function JobsPage() {
                 {currentUser && (
                   <Link
                     href="/dashboard/applications"
-                    className="h-12 px-4 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-xs sm:text-sm hover:bg-navy-50 transition-colors flex items-center justify-center gap-2 shrink-0"
+                    className="h-10 px-3.5 rounded-lg bg-ivory border border-line text-navy-900 font-medium text-xs sm:text-sm hover:bg-navy-50 transition-colors flex items-center justify-center gap-1.5 shrink-0"
                   >
                     <FileText className="h-4 w-4 text-gold-600" />
                     <span>My Applications</span>
@@ -583,7 +583,7 @@ export default function JobsPage() {
               onAction={resetFilters}
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               {filteredJobs.map((job) => {
                 const application = getApplicationForJob(job.id);
                 const referral = getReferralForJob(job.id);
@@ -597,14 +597,14 @@ export default function JobsPage() {
                 return (
                   <div
                     key={job.id}
-                    className="flex flex-col justify-between bg-white rounded-3xl p-6 sm:p-7 border border-line shadow-md hover:shadow-xl hover:border-gold-500/40 transition-all duration-300 relative"
+                    className="flex flex-col justify-between bg-white rounded-xl p-4 sm:p-5 border border-line shadow-xs hover:shadow-md hover:border-gold-500/40 transition-all duration-300 relative"
                   >
                     <div>
                       {/* HEADER BADGES */}
-                      <div className="flex items-start justify-between gap-2 mb-3">
+                      <div className="flex items-start justify-between gap-2 mb-2.5">
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span
-                            className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                            className={`text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full ${
                               job.type === "Internship"
                                 ? "bg-purple-100 text-purple-800"
                                 : job.type === "Full-Time"
@@ -616,14 +616,14 @@ export default function JobsPage() {
                           </span>
 
                           {job.workMode && (
-                            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-navy-50 text-navy-800 border border-navy-200">
+                            <span className="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-full bg-navy-50 text-navy-800 border border-navy-200">
                               {job.workMode}
                             </span>
                           )}
 
                           {job.whoCanApply && (
                             <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                                 job.whoCanApply === "Students"
                                   ? "bg-amber-100 text-amber-900 border border-amber-300"
                                   : job.whoCanApply === "Alumni"
@@ -643,9 +643,9 @@ export default function JobsPage() {
                             toggleSaveJob(job.id);
                             toast.success(isSaved ? "Removed from saved opportunities" : "Saved to your bookmarks");
                           }}
-                          className={`p-2 rounded-xl transition-colors shrink-0 ${
+                          className={`p-1.5 rounded-lg transition-colors shrink-0 ${
                             isSaved
-                              ? "bg-navy-950 text-gold-300 shadow-sm"
+                              ? "bg-navy-950 text-gold-300 shadow-xs"
                               : "bg-ivory text-muted hover:text-navy-950"
                           }`}
                           aria-label={isSaved ? "Remove bookmark" : "Save opportunity"}
@@ -655,38 +655,38 @@ export default function JobsPage() {
                       </div>
 
                       {/* ROLE TITLE & COMPANY */}
-                      <h3 className="text-lg font-serif font-bold text-navy-950 line-clamp-2 mb-1">
+                      <h3 className="text-[15px] sm:text-[16px] font-serif font-semibold text-navy-950 line-clamp-2 mb-1 leading-snug">
                         {job.title}
                       </h3>
-                      <div className="text-sm font-semibold text-navy-900 mb-2 flex items-center justify-between">
+                      <div className="text-[13px] sm:text-[14px] font-medium text-navy-900 mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-1.5 truncate">
-                          <Building className="h-4 w-4 text-gold-600 shrink-0" />
+                          <Building className="h-3.5 w-3.5 text-gold-600 shrink-0" />
                           <span className="truncate">{job.company}</span>
                         </div>
                         {job.salaryRange && (
-                          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shrink-0 ml-2">
+                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shrink-0 ml-2 tabular-nums">
                             {job.salaryRange}
                           </span>
                         )}
                       </div>
 
                       {/* LOCATION & OPENINGS */}
-                      <div className="flex flex-wrap items-center gap-y-1 gap-x-2 text-xs text-muted mb-3">
+                      <div className="flex flex-wrap items-center gap-y-1 gap-x-2 text-xs text-muted mb-2.5">
                         <span className="flex items-center gap-1">
                           <MapPin className="h-3.5 w-3.5" />
                           <span>{job.location}</span>
                         </span>
                         <span>•</span>
-                        <span>{job.openings ? `${job.openings} Openings` : "Multiple Openings"}</span>
+                        <span className="tabular-nums">{job.openings ? `${job.openings} Openings` : "Multiple Openings"}</span>
                       </div>
 
                       {/* SKILLS PILLS */}
                       {job.skills && job.skills.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mb-3">
+                        <div className="flex flex-wrap gap-1 mb-2.5">
                           {job.skills.slice(0, 3).map((sk) => (
                             <span
                               key={sk}
-                              className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-ivory text-navy-800 border border-line"
+                              className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-ivory text-navy-800 border border-line"
                             >
                               {sk}
                             </span>
@@ -701,14 +701,14 @@ export default function JobsPage() {
 
                       {/* REFERRAL BADGE */}
                       {job.canRefer && (
-                        <div className="mb-4 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-300">
+                        <div className="mb-3 inline-flex items-center gap-1.5 text-xs font-medium text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-lg border border-amber-300 tabular-nums">
                           <Award className="h-3.5 w-3.5 text-amber-600 shrink-0" />
                           <span>{job.referralSlots ?? 1} Referral Slots by Alumnus</span>
                         </div>
                       )}
 
                       {/* POSTER INFO */}
-                      <p className="text-xs text-muted line-clamp-2 mb-4 leading-relaxed">
+                      <p className="text-[12px] sm:text-[13px] text-muted line-clamp-2 mb-3 leading-relaxed">
                         {job.description}
                       </p>
                     </div>
@@ -1000,7 +1000,7 @@ export default function JobsPage() {
               <div className="flex items-center justify-between p-3 rounded-xl bg-ivory border border-line text-xs">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-gold-600" />
-                  <span className="font-mono font-medium text-navy-950">{mockResume}</span>
+                  <span className="tabular-nums font-medium text-navy-950">{mockResume}</span>
                 </div>
                 <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold border border-emerald-200">
                   Ready to submit

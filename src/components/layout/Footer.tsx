@@ -98,7 +98,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-navy-950 text-ivory border-t border-navy-800 pb-12 sm:pb-16 overflow-hidden">
+    <footer className="relative bg-navy-950 text-ivory border-t border-navy-800 pb-3 sm:pb-4 overflow-hidden">
       {/* Background subtle patterned overlay */}
       <div className="absolute inset-0 bg-navy-pattern opacity-15 pointer-events-none" />
 
@@ -287,7 +287,7 @@ export function Footer() {
                 <Phone className="h-3.5 w-3.5 text-gold-500 shrink-0" />
                 <a
                   href={`tel:${ALUMNI_OFFICE.contact.phonePrimary.replace(/\s+/g, "")}`}
-                  className="text-[11px] sm:text-xs text-ivory hover:text-gold-300 transition-colors font-mono"
+                  className="text-[12px] sm:text-[13px] text-ivory hover:text-gold-300 transition-colors tabular-nums font-medium"
                 >
                   {ALUMNI_OFFICE.contact.phonePrimary}
                 </a>
@@ -340,7 +340,7 @@ export function Footer() {
       {showBackToTop && !isOverlayOpen && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-4 sm:bottom-6 sm:right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-navy-900 border border-gold-500/40 text-gold-300 shadow-xl transition-all duration-300 hover:scale-105 hover:border-gold-400 active:scale-95 cursor-pointer pb-safe"
+          className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-30 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-navy-900 border border-gold-500/40 text-gold-300 shadow-xl transition-all duration-300 hover:scale-105 hover:border-gold-400 active:scale-95 cursor-pointer pb-safe"
           aria-label="Back to top"
         >
           <svg className="absolute inset-0 h-full w-full -rotate-90 p-0.5" viewBox="0 0 36 36">

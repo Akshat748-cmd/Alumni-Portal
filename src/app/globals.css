@@ -45,6 +45,31 @@
   --font-serif: var(--font-playfair), Georgia, serif;
   --font-heading: var(--font-playfair), Georgia, serif;
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  /* Global typography scale override (compact & refined) */
+  --text-xs: 0.75rem; /* 12px */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.8125rem; /* 13px */
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.9375rem; /* 15px */
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1rem; /* 16px */
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.125rem; /* 18px */
+  --text-xl--line-height: 1.5rem;
+  --text-2xl: 1.375rem; /* 22px */
+  --text-2xl--line-height: 1.75rem;
+  --text-3xl: 1.625rem; /* 26px */
+  --text-3xl--line-height: 2rem;
+  --text-4xl: 2rem; /* 32px */
+  --text-4xl--line-height: 2.375rem;
+  --text-5xl: 2.5rem; /* 40px */
+  --text-5xl--line-height: 2.875rem;
+  --text-6xl: 2.875rem; /* 46px */
+  --text-6xl--line-height: 3.25rem;
+  --text-7xl: 3.25rem; /* 52px */
+  --text-7xl--line-height: 3.625rem;
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -109,30 +134,54 @@
     background-color: var(--background);
     color: var(--foreground);
     line-height: 1.6;
-    font-size: 1rem;
+    font-size: 0.9375rem; /* 15px default body */
     overflow-x: hidden;
     position: relative;
   }
 
-  h1, h2, h3, h4, .font-heading, .font-serif {
+  h1, h2, h3, .font-heading, .font-serif {
     font-family: var(--font-playfair), Georgia, serif;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.01em;
+    font-weight: 600;
   }
 
-  /* Fluid typography */
+  h4, h5, h6 {
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+  }
+
+  /* Refined typography scale */
   h1 {
-    font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
-    line-height: 1.15;
+    font-size: clamp(1.625rem, 2.5vw + 0.875rem, 2.75rem); /* 26px mobile to 44px desktop */
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
 
   h2 {
-    font-size: clamp(1.625rem, 3vw + 0.5rem, 2.5rem);
+    font-size: clamp(1.375rem, 1.5vw + 0.625rem, 1.75rem); /* 22px mobile to 28px desktop */
     line-height: 1.25;
+    letter-spacing: -0.01em;
   }
 
   h3 {
-    font-size: clamp(1.25rem, 2vw + 0.25rem, 1.75rem);
-    line-height: 1.35;
+    font-size: clamp(1.03rem, 0.75vw + 0.625rem, 1.125rem); /* 16.5px mobile to 18px desktop */
+    line-height: 1.3;
+  }
+
+  h4 {
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.6;
+  }
+
+  /* Remove monospace styles, use Inter with tabular-nums */
+  .font-mono, code, kbd, samp, pre {
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif !important;
+    font-variant-numeric: tabular-nums;
   }
 
   /* Accessible touch targets and mobile form usability */
@@ -140,8 +189,36 @@
     touch-action: manipulation;
   }
 
+  /* Mobile inputs stay 16px to prevent iOS auto-zoom; on desktop 14px */
   input, select, textarea {
-    font-size: 16px; /* Prevents auto-zoom in iOS Safari */
+    font-size: 16px;
+  }
+
+  @media (min-width: 1024px) {
+    input, select, textarea {
+      font-size: 14px;
+    }
+  }
+
+  /* Target Container: max-width 1280px with balanced padding */
+  .container {
+    max-width: 1280px !important;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 768px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
   }
 }
 

@@ -146,26 +146,26 @@ export function AdminSidebar({
     <aside
       className={cn(
         "flex flex-col bg-navy-950 text-ivory border-r border-navy-800 transition-all duration-300 select-none",
-        collapsed ? "w-20" : "w-64",
+        collapsed ? "w-20" : "w-[248px]",
         className
       )}
     >
-      {/* Brand Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-navy-800 shrink-0">
+      {/* Brand Header (56px) */}
+      <div className="h-14 flex items-center justify-between px-4 border-b border-navy-800 shrink-0">
         <Link
           href="/"
           className={cn(
-            "flex items-center gap-3 overflow-hidden transition-all duration-200",
+            "flex items-center gap-2.5 overflow-hidden transition-all duration-200",
             collapsed && "justify-center w-full"
           )}
           title="Return to Public Portal"
         >
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-serif font-black text-lg shadow-gold-sm shrink-0">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-serif font-black text-base shadow-xs shrink-0">
             P
           </div>
           {!collapsed && (
             <div className="leading-tight truncate">
-              <span className="font-serif font-bold text-sm tracking-wide text-ivory block truncate">
+              <span className="font-serif font-semibold text-[13.5px] tracking-wide text-ivory block truncate">
                 Poddar Secretariat
               </span>
               <span className="text-[10px] tracking-widest uppercase text-gold-400/90 font-medium">
@@ -229,11 +229,11 @@ export function AdminSidebar({
               }}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 text-left relative",
+                "w-full h-10 flex items-center gap-2.5 px-3 rounded-lg text-[14px] font-medium transition-all duration-150 text-left relative",
                 isActive
                   ? "bg-navy-900 text-gold-300 font-semibold shadow-inner border border-navy-700/60"
                   : "text-ivory/70 hover:bg-navy-900/60 hover:text-ivory",
-                collapsed && "justify-center px-0 py-3"
+                collapsed && "justify-center px-0 h-10"
               )}
             >
               <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-gold-400" : "text-ivory/60")} />

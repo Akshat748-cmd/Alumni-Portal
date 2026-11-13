@@ -184,13 +184,13 @@ export function AdminDashboard({
       </div>
 
       {/* Visual Charts & Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
         {/* Chart 1: Submissions by Queue Type */}
-        <Card className="lg:col-span-2 border-line shadow-navy-soft rounded-2xl">
+        <Card className="lg:col-span-2 border-line shadow-xs rounded-xl">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="font-serif text-base text-navy-950">
+                <CardTitle className="font-serif text-[15px] sm:text-[16px] text-navy-950">
                   Submissions Volume by Workflow
                 </CardTitle>
                 <CardDescription className="text-xs">
@@ -208,9 +208,9 @@ export function AdminDashboard({
                   <div key={cat.label} className="space-y-1">
                     <div className="flex items-center justify-between text-xs font-medium">
                       <span className="text-navy-950">{cat.label}</span>
-                      <span className="text-muted font-mono">{cat.count} pending</span>
+                      <span className="text-muted tabular-nums">{cat.count} pending</span>
                     </div>
-                    <div className="h-3 w-full rounded-full bg-slate-100 overflow-hidden flex">
+                    <div className="h-2.5 w-full rounded-full bg-slate-100 overflow-hidden flex">
                       <div
                         className={`h-full ${cat.color} rounded-full transition-all duration-500`}
                         style={{ width: `${pct}%` }}
@@ -224,9 +224,9 @@ export function AdminDashboard({
         </Card>
 
         {/* Chart 2: Status Breakdown Donut/Segments */}
-        <Card className="border-line shadow-navy-soft rounded-2xl flex flex-col">
+        <Card className="border-line shadow-xs rounded-xl flex flex-col">
           <CardHeader>
-            <CardTitle className="font-serif text-base text-navy-950">
+            <CardTitle className="font-serif text-[15px] sm:text-[16px] text-navy-950">
               Moderation Pipeline Status
             </CardTitle>
             <CardDescription className="text-xs">
@@ -236,7 +236,7 @@ export function AdminDashboard({
           <CardContent className="flex-1 flex flex-col justify-between">
             {/* SVG Donut Chart */}
             <div className="py-2 flex items-center justify-center">
-              <div className="relative h-40 w-40 flex items-center justify-center">
+              <div className="relative h-36 w-36 flex items-center justify-center">
                 <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
                   {/* Background Circle */}
                   <circle
@@ -282,7 +282,7 @@ export function AdminDashboard({
                   />
                 </svg>
                 <div className="absolute text-center">
-                  <span className="font-serif text-2xl font-bold text-navy-950 block leading-tight">
+                  <span className="font-serif text-xl font-bold text-navy-950 block leading-tight tabular-nums">
                     {queue.length}
                   </span>
                   <span className="text-[10px] uppercase font-semibold text-muted">
@@ -293,28 +293,28 @@ export function AdminDashboard({
             </div>
 
             {/* Legend */}
-            <div className="grid grid-cols-3 gap-2 pt-4 border-t border-line text-center text-xs">
-              <div className="p-2 rounded-lg bg-emerald-50/70 border border-emerald-100">
+            <div className="grid grid-cols-3 gap-2 pt-3 border-t border-line text-center text-xs">
+              <div className="p-1.5 rounded-lg bg-emerald-50/70 border border-emerald-100">
                 <span className="block text-[10px] uppercase font-semibold text-emerald-800">
                   Approved
                 </span>
-                <span className="font-serif text-base font-bold text-emerald-700">
+                <span className="font-serif text-[15px] font-bold text-emerald-700 tabular-nums">
                   {approvedCount}
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-amber-50/70 border border-amber-100">
+              <div className="p-1.5 rounded-lg bg-amber-50/70 border border-amber-100">
                 <span className="block text-[10px] uppercase font-semibold text-amber-800">
                   Pending
                 </span>
-                <span className="font-serif text-base font-bold text-amber-700">
+                <span className="font-serif text-[15px] font-bold text-amber-700 tabular-nums">
                   {pendingCount}
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-rose-50/70 border border-rose-100">
+              <div className="p-1.5 rounded-lg bg-rose-50/70 border border-rose-100">
                 <span className="block text-[10px] uppercase font-semibold text-rose-800">
                   Rejected
                 </span>
-                <span className="font-serif text-base font-bold text-rose-700">
+                <span className="font-serif text-[15px] font-bold text-rose-700 tabular-nums">
                   {rejectedCount}
                 </span>
               </div>
@@ -324,7 +324,7 @@ export function AdminDashboard({
       </div>
 
       {/* Recent Activity Audit Feed */}
-      <Card className="border-line shadow-navy-soft rounded-2xl">
+      <Card className="border-line shadow-xs rounded-xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>

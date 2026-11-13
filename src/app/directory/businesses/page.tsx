@@ -291,7 +291,7 @@ export default function BusinessDirectoryPage() {
             </div>
           </div>
 
-          <div className="text-xs text-muted font-mono">
+          <div className="text-xs text-muted tabular-nums">
             Showing {filteredBusinesses.length} verified alumni-founded enterprise{filteredBusinesses.length !== 1 ? "s" : ""}
           </div>
         </div>

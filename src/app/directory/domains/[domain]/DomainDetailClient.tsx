@@ -112,7 +112,7 @@ export function DomainDetailClient({ domainData }: DomainDetailClientProps) {
       key: "batch",
       header: "Batch",
       render: (row) => (
-        <span className="font-mono text-xs font-semibold text-navy-900 bg-ivory px-2 py-1 rounded-md border border-line">
+        <span className="tabular-nums text-xs font-semibold text-navy-900 bg-ivory px-2 py-0.5 rounded-md border border-line">
           {row.batch}
         </span>
       ),
@@ -180,62 +180,62 @@ export function DomainDetailClient({ domainData }: DomainDetailClientProps) {
   ];
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 max-w-7xl space-y-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 max-w-7xl space-y-6">
       {/* DOMAIN SUMMARY HEADER CARD */}
-      <div className="rounded-2xl border border-line bg-card p-6 md:p-8 shadow-navy-soft flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gold-500/15 text-gold-600 border border-gold-500/30 shrink-0">
-            <DomainIcon className="h-8 w-8" strokeWidth={1.75} />
+      <div className="rounded-xl border border-line bg-card p-5 sm:p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
+        <div className="flex items-center gap-3.5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold-500/15 text-gold-600 border border-gold-500/30 shrink-0">
+            <DomainIcon className="h-6 w-6" strokeWidth={1.75} />
           </div>
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold-600">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-gold-600">
                 Industry Domain Cohort
               </span>
             </div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-navy-950">
+            <h2 className="font-serif text-[22px] sm:text-[26px] font-semibold text-navy-950">
               {domainData.name}
             </h2>
-            <p className="text-xs text-muted mt-1 max-w-xl">
+            <p className="text-[12px] sm:text-[13px] text-muted mt-0.5 max-w-xl">
               {domainData.description}
             </p>
           </div>
         </div>
 
         {/* Counter Badge */}
-        <div className="rounded-xl bg-ivory border border-line p-4 text-center shrink-0 w-full sm:w-auto">
-          <div className="font-serif text-3xl font-bold text-navy-950 leading-none">
+        <div className="rounded-lg bg-ivory border border-line p-3 sm:p-3.5 text-center shrink-0 w-full sm:w-auto">
+          <div className="font-serif text-[24px] sm:text-[28px] font-semibold text-navy-950 leading-none tabular-nums">
             <CountUp end={domainData.sampleCount} />
           </div>
-          <span className="text-[11px] uppercase font-bold text-muted tracking-wider block mt-1">
+          <span className="text-[10px] sm:text-[11px] uppercase font-semibold text-muted tracking-wider block mt-1">
             Registered Alumni
           </span>
         </div>
       </div>
 
       {/* SEARCH AND ROSTER TOOLBAR */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* In-table Search Input */}
-        <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted" />
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted" />
           <Input
             type="text"
             placeholder={`Search ${domainData.name} alumni...`}
             value={tableSearch}
             onChange={(e) => setTableSearch(e.target.value)}
-            className="pl-10 h-10 border-line rounded-xl text-xs bg-card"
+            className="pl-9 h-10 border-line rounded-lg text-xs sm:text-sm bg-card"
           />
           {tableSearch && (
             <button
               onClick={() => setTableSearch("")}
-              className="absolute right-3 top-2.5 text-muted hover:text-navy-950"
+              className="absolute right-2.5 top-2.5 text-muted hover:text-navy-950"
             >
               <X className="h-4 w-4" />
             </button>
           )}
         </div>
 
-        <div className="text-xs text-muted font-mono self-end sm:self-auto">
+        <div className="text-xs text-muted tabular-nums self-end sm:self-auto">
           Displaying {filteredAlumni.length} verified {domainData.name} profile{filteredAlumni.length !== 1 ? "s" : ""}
         </div>
       </div>

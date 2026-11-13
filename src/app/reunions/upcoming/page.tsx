@@ -74,27 +74,27 @@ export default function UpcomingEventsPage() {
         ]}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
         {/* Search & Filter Bar */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-md border border-slate-200/80 dark:border-slate-800 mb-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-3 sm:p-4 shadow-xs border border-slate-200/80 dark:border-slate-800 mb-6 flex flex-col md:flex-row gap-3 items-center justify-between">
           <div className="relative w-full md:w-80">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by event title, speaker, city..."
-              className="pl-10 text-base sm:text-sm h-11 bg-slate-50 dark:bg-slate-800"
+              className="pl-9 text-sm h-10 bg-slate-50 dark:bg-slate-800 rounded-lg"
             />
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
             {types.map((t) => (
               <Button
                 key={t.value}
                 size="sm"
                 variant={typeFilter === t.value ? "default" : "outline"}
                 onClick={() => setTypeFilter(t.value)}
-                className="text-xs h-9 min-w-[90px]"
+                className="text-xs h-8 min-w-[80px] rounded-lg"
               >
                 {t.label}
               </Button>
@@ -114,7 +114,7 @@ export default function UpcomingEventsPage() {
             }}
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {filtered.map((event, idx) => {
               const capacityPercent = Math.min(
                 100,
@@ -123,66 +123,66 @@ export default function UpcomingEventsPage() {
 
               return (
                 <Reveal key={event.id} delay={idx * 0.05}>
-                  <Card className="border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-xl transition-all h-full flex flex-col justify-between group overflow-hidden">
-                    <div className="aspect-[16/10] overflow-hidden relative">
+                  <Card className="border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-md transition-all h-full flex flex-col justify-between group overflow-hidden rounded-xl shadow-xs">
+                    <div className="aspect-[16/10] max-h-[180px] overflow-hidden relative">
                       <img
                         src={event.imageUrl}
                         alt={event.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute top-3 left-3 rounded-lg bg-navy-950/95 border border-gold-500/40 px-3 py-1.5 text-center backdrop-blur-md shadow-md">
-                        <span className="block text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
+                      <div className="absolute top-2.5 left-2.5 rounded-md bg-navy-950/95 border border-gold-500/40 px-2.5 py-1 text-center backdrop-blur-md shadow-xs">
+                        <span className="block text-[10px] sm:text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
                           {new Date(event.date).toLocaleString("default", { month: "short" }).toUpperCase()}
                         </span>
-                        <span className="block text-xl font-serif font-bold text-white leading-none mt-0.5">
+                        <span className="block text-lg font-serif font-bold text-white leading-none mt-0.5 tabular-nums">
                           {new Date(event.date).getDate()}
                         </span>
                       </div>
-                      <div className="absolute bottom-3 left-3 bg-navy-950/80 backdrop-blur-sm text-[#F3DC9C] px-2.5 py-1 rounded text-xs font-semibold capitalize border border-navy-800">
+                      <div className="absolute bottom-2.5 left-2.5 bg-navy-950/80 backdrop-blur-sm text-[#F3DC9C] px-2 py-0.5 rounded text-[11px] font-semibold capitalize border border-navy-800">
                         {event.type}
                       </div>
                       {event.isVirtual ? (
-                        <div className="absolute top-3 right-3 bg-blue-600/90 text-white px-2 py-0.5 rounded text-[11px] font-semibold flex items-center gap-1">
+                        <div className="absolute top-2.5 right-2.5 bg-blue-600/90 text-white px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold flex items-center gap-1">
                           <Video className="w-3 h-3" />
                           Virtual
                         </div>
                       ) : (
-                        <div className="absolute top-3 right-3 bg-amber-500/90 text-navy-950 px-2 py-0.5 rounded text-[11px] font-bold">
+                        <div className="absolute top-2.5 right-2.5 bg-amber-500/90 text-navy-950 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-bold">
                           In-Person
                         </div>
                       )}
                     </div>
 
-                    <CardContent className="p-6 flex-1 flex flex-col justify-between">
+                    <CardContent className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                       <div>
-                        <div className="flex items-center gap-2 text-xs text-amber-600 font-semibold mb-2">
+                        <div className="flex items-center gap-1.5 text-xs text-amber-600 font-semibold mb-1.5">
                           <Calendar className="w-3.5 h-3.5" />
-                          {event.date} • {event.time}
+                          <span className="tabular-nums">{event.date} • {event.time}</span>
                         </div>
 
-                        <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                        <h3 className="text-[15px] sm:text-[16px] font-serif font-semibold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
                           {event.title}
                         </h3>
 
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-2">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1.5">
                           <MapPin className="w-3.5 h-3.5 shrink-0" />
                           <span className="truncate">{event.location}</span>
                         </div>
 
                         {event.speaker && (
-                          <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded">
+                          <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded">
                             <span className="font-semibold text-slate-800 dark:text-slate-200">Speaker: </span>
                             {event.speaker} ({event.speakerRole})
                           </div>
                         )}
 
-                        <p className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                        <p className="mt-2 text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 line-clamp-2">
                           {event.description}
                         </p>
 
                         {/* Capacity meter */}
-                        <div className="mt-4">
-                          <div className="flex justify-between text-[11px] text-slate-500 mb-1">
+                        <div className="mt-3">
+                          <div className="flex justify-between text-[11px] text-slate-500 mb-1 tabular-nums">
                             <span>RSVPs: {event.attendeeCount} / {event.capacity}</span>
                             <span>{capacityPercent}% filled</span>
                           </div>
@@ -195,19 +195,19 @@ export default function UpcomingEventsPage() {
                         </div>
                       </div>
 
-                      <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setSelectedEvent(event)}
-                          className="text-xs px-2 text-slate-600 dark:text-slate-400"
+                          className="text-xs px-2 h-8 text-slate-600 dark:text-slate-400"
                         >
                           Details
                         </Button>
                         <Button
                           asChild
                           size="sm"
-                          className="bg-amber-500 hover:bg-amber-600 text-navy-950 font-bold text-xs"
+                          className="bg-amber-500 hover:bg-amber-600 text-navy-950 font-semibold text-xs h-8 px-3 rounded-lg"
                         >
                           <Link href={`/reunions/register?event=${event.id}`}>
                             <Ticket className="w-3.5 h-3.5 mr-1" />

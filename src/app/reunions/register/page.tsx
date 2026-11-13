@@ -178,10 +178,10 @@ function RegisterForm() {
               </div>
 
               <div className="text-left sm:text-right">
-                <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs px-3 py-1">
+                <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white tabular-nums text-xs px-3 py-1">
                   Confirmed Entry
                 </Badge>
-                <div className="text-xs text-slate-500 mt-1 font-mono">
+                <div className="text-xs text-slate-500 mt-1 tabular-nums">
                   Pass Ref: <span className="font-bold text-slate-800 dark:text-slate-200">{confirmedPass.regNumber}</span>
                 </div>
               </div>
@@ -226,7 +226,7 @@ function RegisterForm() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Barcode / Entry Code:</span>
-                  <span className="font-mono text-amber-600 font-bold">{confirmedPass.regNumber}</span>
+                  <span className="tabular-nums text-amber-600 font-bold">{confirmedPass.regNumber}</span>
                 </div>
               </div>
             </div>

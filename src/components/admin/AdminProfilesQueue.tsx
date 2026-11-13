@@ -147,7 +147,7 @@ export function AdminProfilesQueue() {
           </div>
         </div>
 
-        <span className="text-xs font-mono text-muted">
+        <span className="text-xs tabular-nums text-muted">
           Showing {filteredItems.length} of {profileQueue.length} records
         </span>
       </div>
@@ -358,7 +358,7 @@ export function AdminProfilesQueue() {
                   <span className="text-[10px] uppercase font-semibold text-amber-800 block mb-1">
                     Proposed Profile Modification Diff
                   </span>
-                  <pre className="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200 text-amber-950 font-mono text-[11px] whitespace-pre-wrap">
+                  <pre className="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200 text-amber-950 tabular-nums text-[11px] whitespace-pre-wrap">
                     {typeof selectedItem.payload.changesSummary === "string"
                       ? selectedItem.payload.changesSummary
                       : JSON.stringify(selectedItem.payload.changesSummary, null, 2)}

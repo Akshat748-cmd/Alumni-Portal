@@ -71,7 +71,7 @@ export default function NewslettersPage() {
                     <span className="bg-amber-500 text-navy-950 font-bold px-3 py-1 rounded-full">
                       {latestIssue.quarter} Edition
                     </span>
-                    <span className="text-white/80 font-mono">{latestIssue.volume}</span>
+                    <span className="text-white/80 tabular-nums">{latestIssue.volume}</span>
                   </div>
                 </div>
 
@@ -139,7 +139,7 @@ export default function NewslettersPage() {
                   <div className="absolute top-3 left-3 bg-navy-950/80 backdrop-blur-sm text-white px-2.5 py-1 rounded text-xs font-semibold">
                     {issue.quarter}
                   </div>
-                  <div className="absolute top-3 right-3 bg-slate-900/70 backdrop-blur-sm text-slate-200 px-2 py-0.5 rounded text-[11px] font-mono">
+                  <div className="absolute top-3 right-3 bg-slate-900/70 backdrop-blur-sm text-slate-200 px-2 py-0.5 rounded text-[11px] tabular-nums">
                     {issue.volume}
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function NewslettersPage() {
               <DialogHeader>
                 <div className="flex items-center gap-2 mb-2">
                   <Badge variant="outline">{selectedIssue.quarter}</Badge>
-                  <span className="text-xs text-slate-500 ml-auto font-mono">
+                  <span className="text-xs text-slate-500 ml-auto tabular-nums">
                     {selectedIssue.volume} • {selectedIssue.issue}
                   </span>
                 </div>

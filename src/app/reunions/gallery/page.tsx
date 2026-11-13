@@ -136,7 +136,7 @@ export default function ReunionsGalleryPage() {
                   <Badge className="bg-navy-900/80 backdrop-blur-sm text-white text-[11px] font-normal border border-white/20">
                     {item.event}
                   </Badge>
-                  <span className="text-[11px] text-amber-300 font-mono font-semibold">
+                  <span className="text-[11px] text-amber-300 tabular-nums font-semibold">
                     {item.year}
                   </span>
                 </div>
@@ -169,7 +169,7 @@ export default function ReunionsGalleryPage() {
         >
           {/* Top Bar */}
           <div className="flex items-center justify-between text-white z-10">
-            <div className="text-xs font-mono text-amber-400">
+            <div className="text-xs tabular-nums text-amber-400">
               {lightboxIndex + 1} / {filteredItems.length}
             </div>
             <div className="text-sm font-medium text-slate-300 hidden sm:block">

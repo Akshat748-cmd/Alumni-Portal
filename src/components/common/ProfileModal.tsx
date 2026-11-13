@@ -79,37 +79,37 @@ export function ProfileModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="w-full max-w-lg p-0 overflow-hidden bg-white border border-line rounded-3xl shadow-2xl"
+        className="w-full max-w-[500px] p-0 overflow-hidden bg-white border border-line rounded-xl shadow-lg"
         data-lenis-prevent
       >
         {/* Navy Header Banner */}
-        <div className="relative bg-navy-950 p-6 text-white overflow-hidden">
+        <div className="relative bg-navy-950 p-4 sm:p-5 text-white overflow-hidden">
           <div className="absolute inset-0 bg-navy-pattern opacity-25 pointer-events-none" />
           <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-gold-500/15 blur-2xl pointer-events-none" />
 
-          <div className="relative z-10 flex items-start gap-4">
+          <div className="relative z-10 flex items-start gap-3.5">
             <AvatarInitials
               name={profile.name}
               src={profile.avatarUrl}
               size="xl"
-              className="border-2 border-gold-400 shadow-md shrink-0"
+              className="border-2 border-gold-400 shadow-xs shrink-0"
             />
             <div className="flex-1 min-w-0 pr-6">
-              <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                 <StatusBadge status={profile.status} size="sm" />
                 {profile.membershipTier && (
-                  <span className="text-[10px] font-bold text-gold-400 uppercase tracking-widest bg-gold-500/10 px-2 py-0.5 rounded-full border border-gold-500/20">
+                  <span className="text-[10px] font-semibold text-gold-400 uppercase tracking-widest bg-gold-500/10 px-2 py-0.5 rounded-full border border-gold-500/20">
                     {profile.membershipTier}
                   </span>
                 )}
               </div>
-              <h2 className="font-serif text-xl sm:text-2xl font-bold text-ivory truncate">
+              <h2 className="font-serif text-[18px] sm:text-[20px] font-semibold text-ivory truncate">
                 {profile.name}
               </h2>
-              <p className="text-xs text-gold-300 font-medium truncate">
+              <p className="text-[13px] text-gold-300 font-medium truncate">
                 {profile.designation}
               </p>
-              <p className="text-xs text-ivory/70 truncate">
+              <p className="text-[12px] text-ivory/70 truncate">
                 {profile.company}
               </p>
             </div>
@@ -117,27 +117,27 @@ export function ProfileModal({
         </div>
 
         {/* Modal Body Details */}
-        <div className="p-6 space-y-5 max-h-[65vh] overflow-y-auto">
+        <div className="p-4 sm:p-5 space-y-4 max-h-[65vh] overflow-y-auto">
           {/* Company Network Opportunities Banner */}
           {(companyJobs.length > 0 || companyAlumniCount > 1) && (
-            <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-1.5">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
-                <Sparkles className="h-4 w-4 text-amber-600" />
+            <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80 space-y-1">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-900">
+                <Sparkles className="h-3.5 w-3.5 text-amber-600" />
                 <span>Opportunities Network at {profile.company}</span>
               </div>
-              <div className="flex flex-wrap items-center gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-2 text-xs">
                 {companyJobs.length > 0 && (
                   <Link
                     href={`/career-hub/jobs?search=${encodeURIComponent(profile.company)}`}
                     onClick={onClose}
-                    className="font-semibold text-navy-950 hover:underline flex items-center gap-1"
+                    className="font-medium text-navy-950 hover:underline flex items-center gap-1"
                   >
-                    <span>{companyJobs.length} active job opening(s)</span>
+                    <span>{companyJobs.length} active opening(s)</span>
                     <ArrowRightIcon className="h-3 w-3 text-gold-600" />
                   </Link>
                 )}
                 {companyAlumniCount > 1 && (
-                  <span className="text-muted">
+                  <span className="text-muted text-[11px]">
                     • {companyAlumniCount} Poddar alumni work here
                   </span>
                 )}
@@ -146,8 +146,8 @@ export function ProfileModal({
           )}
 
           {/* Academic & Geographic Metadata */}
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-ivory border border-line">
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-ivory border border-line">
               <GraduationCap className="h-4 w-4 text-gold-600 shrink-0" />
               <div className="min-w-0">
                 <span className="text-muted block text-[10px] uppercase font-bold">Class of {profile.batch}</span>

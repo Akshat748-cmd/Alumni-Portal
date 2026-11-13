@@ -138,19 +138,19 @@ export default function AlumniOfficePage() {
                     <div className="space-y-1">
                       <div>
                         <span className="text-xs text-slate-500">Primary Desk: </span>
-                        <a href={`tel:${office.contact.phonePrimary.replace(/\s/g, "")}`} className="font-medium hover:text-amber-600">
+                        <a href={`tel:${office.contact.phonePrimary.replace(/\s/g, "")}`} className="font-medium hover:text-amber-600 tabular-nums">
                           {office.contact.phonePrimary}
                         </a>
                       </div>
                       <div>
                         <span className="text-xs text-slate-500">Secondary: </span>
-                        <a href={`tel:${office.contact.phoneSecondary.replace(/\s/g, "")}`} className="font-medium hover:text-amber-600">
+                        <a href={`tel:${office.contact.phoneSecondary.replace(/\s/g, "")}`} className="font-medium hover:text-amber-600 tabular-nums">
                           {office.contact.phoneSecondary}
                         </a>
                       </div>
                       <div>
                         <span className="text-xs text-slate-500">Toll Free Helpline: </span>
-                        <span className="font-mono font-bold text-amber-600">{office.contact.tollFree}</span>
+                        <span className="tabular-nums font-bold text-amber-600">{office.contact.tollFree}</span>
                       </div>
                     </div>
                   </div>

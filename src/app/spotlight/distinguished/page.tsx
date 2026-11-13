@@ -66,7 +66,7 @@ export default function DistinguishedAlumniPage() {
                     <Star className="w-3.5 h-3.5 fill-current" />
                     Distinguished Laureate
                   </div>
-                  <div className="absolute bottom-3 right-3 bg-navy-950/80 backdrop-blur-sm text-white px-2.5 py-0.5 rounded text-xs font-mono">
+                  <div className="absolute bottom-3 right-3 bg-navy-950/80 backdrop-blur-sm text-white px-2.5 py-0.5 rounded text-xs tabular-nums">
                     Class of {alumnus.batch}
                   </div>
                 </div>

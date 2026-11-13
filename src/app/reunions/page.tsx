@@ -163,7 +163,7 @@ export default function ReunionsOverviewPage() {
                     <span className="bg-amber-500 text-navy-950 font-bold px-3 py-1 rounded-full">
                       Flagship Homecoming
                     </span>
-                    <span className="text-white/90 font-mono">
+                    <span className="text-white/90 tabular-nums">
                       {flagshipEvent.attendeeCount} / {flagshipEvent.capacity} Confirmed
                     </span>
                   </div>
@@ -201,7 +201,7 @@ export default function ReunionsOverviewPage() {
                             key={t.label}
                             className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-center"
                           >
-                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
+                            <div className="text-xl sm:text-2xl font-bold tabular-nums text-white">
                               {String(t.val).padStart(2, "0")}
                             </div>
                             <div className="text-[10px] uppercase tracking-wider text-slate-400 mt-0.5">

@@ -30,10 +30,10 @@ export function AvatarInitials({
   const initials = getInitials(name);
 
   const sizeClasses = {
-    sm: "h-9 w-9 text-xs",
-    md: "h-11 w-11 text-sm",
-    lg: "h-14 w-14 text-base",
-    xl: "h-20 w-20 text-xl",
+    sm: "h-8 w-8 text-[11px]",
+    md: "h-9 w-9 sm:h-10 sm:w-10 text-xs",
+    lg: "h-11 w-11 text-sm",
+    xl: "h-14 w-14 sm:h-16 sm:w-16 text-base",
   }[size];
 
   return (

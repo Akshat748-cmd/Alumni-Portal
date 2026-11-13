@@ -129,7 +129,7 @@ export default function GiveBackOverviewPage() {
                         <div className={`p-3 rounded-xl ${track.color}`}>
                           <Icon className="w-6 h-6" />
                         </div>
-                        <Badge variant="outline" className="text-xs font-mono">
+                        <Badge variant="outline" className="text-xs tabular-nums">
                           {track.impact}
                         </Badge>
                       </div>

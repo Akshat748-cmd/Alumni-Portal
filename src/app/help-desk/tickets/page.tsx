@@ -173,7 +173,7 @@ export default function MyTicketsPage() {
                 >
                   <div className="space-y-1.5 flex-1">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="font-mono font-bold text-navy-950 text-sm bg-navy-50 px-2.5 py-0.5 rounded-lg border border-navy-200">
+                      <span className="tabular-nums font-bold text-navy-950 text-sm bg-navy-50 px-2.5 py-0.5 rounded-lg border border-navy-200">
                         {ticket.ticketNumber}
                       </span>
                       <StatusBadge status={ticket.status} size="sm" />
@@ -209,7 +209,7 @@ export default function MyTicketsPage() {
           <DialogHeader className="text-left">
             {selectedTicket && (
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-xs font-bold bg-navy-50 text-navy-950 px-2 py-0.5 rounded border border-navy-200">
+                <span className="tabular-nums text-xs font-bold bg-navy-50 text-navy-950 px-2 py-0.5 rounded border border-navy-200">
                   {selectedTicket.ticketNumber}
                 </span>
                 <StatusBadge status={selectedTicket.status} size="sm" />

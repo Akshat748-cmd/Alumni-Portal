@@ -81,6 +81,7 @@ function MessagesContent() {
   const [reportNotes, setReportNotes] = useState("");
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const urlParamConsumedRef = useRef<string | null>(null);
 
   // Ensure body scroll is locked and window stays at top when opening messages
   useEffect(() => {
@@ -96,21 +97,26 @@ function MessagesContent() {
     };
   }, []);
 
-  // Initialize or select conversation from URL
+  // Initialize or select conversation from URL (only once per URL param to allow free switching)
   useEffect(() => {
     if (!currentUser) return;
 
-    if (startWithParam) {
-      const convId = startConversation(startWithParam);
-      setActiveConvId(convId);
-      setMobileThreadOpen(true);
-    } else if (convParam) {
-      setActiveConvId(convParam);
-      setMobileThreadOpen(true);
-    } else if (conversations.length > 0 && !activeConvId) {
+    const currentParamKey = startWithParam ? `startWith:${startWithParam}` : convParam ? `conv:${convParam}` : null;
+
+    if (currentParamKey && urlParamConsumedRef.current !== currentParamKey) {
+      urlParamConsumedRef.current = currentParamKey;
+      if (startWithParam) {
+        const convId = startConversation(startWithParam);
+        setActiveConvId(convId);
+        setMobileThreadOpen(true);
+      } else if (convParam) {
+        setActiveConvId(convParam);
+        setMobileThreadOpen(true);
+      }
+    } else if (!activeConvId && conversations.length > 0) {
       setActiveConvId(conversations[0].id);
     }
-  }, [currentUser, startWithParam, convParam, conversations, activeConvId, startConversation, nameParam]);
+  }, [currentUser, startWithParam, convParam, conversations, activeConvId, startConversation]);
 
   // Mark conversation read on selection
   useEffect(() => {
@@ -236,40 +242,32 @@ function MessagesContent() {
   );
 
   return (
-    <div className="fixed inset-0 top-0 pt-[68px] sm:pt-[72px] flex flex-col bg-ivory overflow-hidden z-20">
-      {/* SIMULATED EVALUATION NOTICE BANNER */}
-      <div className="shrink-0 bg-navy-950 border-b border-gold-500/30 px-4 py-2 text-center text-xs text-gold-300 flex items-center justify-center gap-2">
-        <Sparkles className="h-3.5 w-3.5 text-gold-400 shrink-0" />
-        <span>
-          <strong>Evaluation Mode:</strong> Messages receive realistic simulated alumni/student replies within 2 seconds.
-        </span>
-      </div>
-
-      <div className="flex-1 min-h-0 container mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-3 max-w-7xl flex flex-col">
+    <div className="fixed inset-0 top-0 pt-[58px] sm:pt-[64px] flex flex-col bg-ivory overflow-hidden z-20">
+      <div className="flex-1 min-h-0 container mx-auto px-2 sm:px-4 lg:px-6 py-2 sm:py-2.5 max-w-7xl flex flex-col">
         {/* MAIN TWO-PANE CHAT CONTAINER (LOCKED VIEWPORT) */}
-        <div className="flex-1 min-h-0 bg-white rounded-3xl border border-line shadow-xl overflow-hidden flex h-full">
-          {/* LEFT PANE: CONVERSATION LIST */}
+        <div className="flex-1 min-h-0 bg-white rounded-xl border border-line shadow-md overflow-hidden flex h-full">
+          {/* LEFT PANE: CONVERSATION LIST (COMPACT SIDEBAR) */}
           <div
-            className={`w-full md:w-80 lg:w-96 border-r border-line flex flex-col bg-ivory/30 min-h-0 h-full ${
+            className={`w-full md:w-64 lg:w-72 shrink-0 border-r border-line flex flex-col bg-ivory/30 min-h-0 h-full ${
               mobileThreadOpen ? "hidden md:flex" : "flex"
             }`}
           >
             {/* LEFT HEADER */}
-            <div className="shrink-0 p-4 border-b border-line bg-white flex items-center justify-between">
+            <div className="shrink-0 p-3 sm:p-3.5 border-b border-line bg-white flex items-center justify-between">
               <div>
-                <h1 className="text-lg font-serif font-bold text-navy-950 flex items-center gap-2">
+                <h1 className="text-base font-serif font-semibold text-navy-950 flex items-center gap-1.5">
                   <span>Direct Messages</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-gold-400/20 text-navy-950 font-sans font-bold">
+                  <span className="text-[11px] px-1.5 py-0.2 rounded-full bg-gold-400/20 text-navy-950 font-sans font-bold tabular-nums">
                     {conversations.length}
                   </span>
                 </h1>
-                <p className="text-[11px] text-muted">Signed in as {currentUser.name}</p>
+                <p className="text-[10px] text-muted truncate">Signed in as {currentUser.name}</p>
               </div>
 
               <button
                 type="button"
                 onClick={() => setNewChatModalOpen(true)}
-                className="p-2 rounded-xl bg-navy-950 text-gold-300 hover:bg-navy-900 transition-colors shadow-sm"
+                className="p-1.5 rounded-lg bg-navy-950 text-gold-300 hover:bg-navy-900 transition-colors shadow-xs"
                 title="Start a new message"
               >
                 <Plus className="h-4 w-4" />
@@ -277,15 +275,15 @@ function MessagesContent() {
             </div>
 
             {/* SEARCH BOX */}
-            <div className="shrink-0 p-3 border-b border-line bg-white/70">
+            <div className="shrink-0 p-2 sm:p-2.5 border-b border-line bg-white/70">
               <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted pointer-events-none" />
+                <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Search participants or context..."
+                  placeholder="Search participants..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-9 pl-9 pr-3 rounded-xl border border-line bg-white text-xs focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                  className="w-full h-8 pl-8 pr-2.5 rounded-lg border border-line bg-white text-xs focus:outline-none focus:ring-1 focus:ring-gold-500/40"
                 />
               </div>
             </div>
@@ -293,7 +291,7 @@ function MessagesContent() {
             {/* CONVERSATION LIST ITEMS */}
             <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-line/60">
               {filteredConversations.length === 0 ? (
-                <div className="p-6 text-center text-xs text-muted">
+                <div className="p-4 text-center text-xs text-muted">
                   No conversations match your search.
                 </div>
               ) : (
@@ -309,25 +307,28 @@ function MessagesContent() {
                       onClick={() => {
                         setActiveConvId(conv.id);
                         setMobileThreadOpen(true);
+                        if (typeof window !== "undefined") {
+                          window.history.replaceState({}, "", `/messages?conv=${conv.id}`);
+                        }
                       }}
-                      className={`w-full p-3.5 text-left transition-all flex items-start gap-3 cursor-pointer ${
+                      className={`w-full px-2.5 py-2 sm:py-2.5 text-left transition-all flex items-start gap-2.5 cursor-pointer ${
                         isSelected
-                          ? "bg-navy-900/5 border-l-4 border-l-gold-500"
+                          ? "bg-navy-900/5 border-l-[3px] border-l-gold-500"
                           : "hover:bg-ivory/80"
                       }`}
                     >
-                      <AvatarInitials name={other?.name || "Member"} size="md" className="shrink-0" />
+                      <AvatarInitials name={other?.name || "Member"} size="sm" className="shrink-0 mt-0.5" />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="font-bold text-xs sm:text-sm text-navy-950 truncate">
+                          <span className="font-semibold text-xs text-navy-950 truncate">
                             {other?.name}
                           </span>
-                          <span suppressHydrationWarning className="text-[10px] text-muted shrink-0">
+                          <span suppressHydrationWarning className="text-[10px] text-muted shrink-0 tabular-nums">
                             {conv.lastMessageAt ? new Date(conv.lastMessageAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1.5 mb-1">
+                        <div className="flex items-center gap-1 mb-0.5">
                           <span
                             className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
                               other?.role === "student"
@@ -344,13 +345,13 @@ function MessagesContent() {
                           )}
                         </div>
 
-                        <p className="text-xs text-muted truncate leading-relaxed">
+                        <p className="text-[11px] text-muted truncate leading-tight">
                           {conv.lastMessage || "No messages yet"}
                         </p>
                       </div>
 
                       {unread > 0 && (
-                        <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-gold-500 text-navy-950 font-extrabold text-[10px] flex items-center justify-center shrink-0">
+                        <span className="h-4 min-w-[16px] px-1 rounded-full bg-gold-500 text-navy-950 font-bold text-[9px] flex items-center justify-center shrink-0 tabular-nums">
                           {unread}
                         </span>
                       )}
@@ -506,13 +507,13 @@ function MessagesContent() {
                 </div>
 
                 {/* COMPOSER (STICKY AT BOTTOM) */}
-                <div className="shrink-0 p-3 sm:p-4 border-t border-line bg-white">
+                <div className="shrink-0 p-2.5 sm:p-3 border-t border-line bg-white">
                   {isBlocked ? (
-                    <div className="text-center p-3 text-xs text-muted bg-gray-50 rounded-xl">
+                    <div className="text-center p-2.5 text-xs text-muted bg-gray-50 rounded-lg">
                       Composer disabled because conversation is blocked.
                     </div>
                   ) : (
-                    <form onSubmit={handleSendMessage} className="space-y-2">
+                    <form onSubmit={handleSendMessage} className="space-y-1.5">
                       <div className="relative">
                         <textarea
                           rows={2}
@@ -521,25 +522,25 @@ function MessagesContent() {
                           onChange={(e) => setInputText(e.target.value)}
                           onKeyDown={handleKeyDown}
                           placeholder={`Message ${activeOtherParticipant.name}... (Press Enter to send)`}
-                          className="w-full p-3 pr-20 rounded-2xl border border-line text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-gold-500/40 resize-none bg-ivory/30"
+                          className="w-full p-2.5 pr-14 rounded-xl border border-line text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-gold-500/40 resize-none bg-ivory/20 placeholder:text-muted"
                         />
                         <button
                           type="submit"
                           disabled={!inputText.trim()}
-                          className={`absolute right-3 bottom-3 p-2 rounded-xl transition-all ${
+                          className={`absolute right-2.5 bottom-2.5 h-8 w-8 rounded-lg flex items-center justify-center transition-all ${
                             inputText.trim()
-                              ? "bg-navy-950 text-gold-300 hover:bg-navy-900 shadow-sm cursor-pointer"
+                              ? "bg-navy-950 text-gold-300 hover:bg-navy-900 shadow-xs cursor-pointer active:scale-95"
                               : "bg-gray-100 text-gray-400 cursor-not-allowed"
                           }`}
                           aria-label="Send message"
                         >
-                          <Send className="h-4 w-4" />
+                          <Send className="h-3.5 w-3.5" />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between text-[10px] text-muted px-1">
+                      <div className="flex items-center justify-between text-[10px] text-muted px-0.5">
                         <span>Press Enter to send • Shift + Enter for new line</span>
-                        <span>{inputText.length} / 1000</span>
+                        <span className="tabular-nums">{inputText.length} / 1000</span>
                       </div>
                     </form>
                   )}
@@ -691,7 +692,7 @@ export default function MessagesPage() {
   return (
     <React.Suspense
       fallback={
-        <div className="min-h-screen bg-ivory flex items-center justify-center text-xs font-mono text-muted">
+        <div className="min-h-screen bg-ivory flex items-center justify-center text-xs tabular-nums text-muted">
           Loading Opportunities Network Messages...
         </div>
       }

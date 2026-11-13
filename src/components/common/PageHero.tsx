@@ -33,7 +33,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-navy-950 text-white pt-10 pb-12 md:pt-16 md:pb-20 border-b border-navy-800 max-w-full",
+        "relative overflow-hidden bg-navy-950 text-white pt-7 pb-8 md:pt-10 md:pb-11 border-b border-navy-800 max-w-full",
         className
       )}
     >
@@ -62,11 +62,11 @@ export function PageHero({
         {/* Breadcrumb nav */}
         <nav
           aria-label="Breadcrumb"
-          className="flex items-center gap-1.5 text-xs text-ivory/60 mb-4 flex-wrap"
+          className="flex items-center gap-1.5 text-[13px] text-ivory/70 mb-2.5 flex-wrap"
         >
           <Link
             href="/"
-            className="flex items-center gap-1 hover:text-gold-300 transition-colors py-1"
+            className="flex items-center gap-1 hover:text-gold-300 transition-colors py-0.5"
           >
             <Home className="h-3.5 w-3.5" strokeWidth={1.75} />
             <span className="sr-only md:not-sr-only">Home</span>
@@ -80,14 +80,14 @@ export function PageHero({
                 {crumb.href && !isLast ? (
                   <Link
                     href={crumb.href}
-                    className="hover:text-gold-300 transition-colors py-1 line-clamp-1"
+                    className="hover:text-gold-300 transition-colors py-0.5 line-clamp-1"
                   >
                     {crumb.label}
                   </Link>
                 ) : (
                   <span
                     className={cn(
-                      "line-clamp-1 py-1 font-medium",
+                      "line-clamp-1 py-0.5 font-medium",
                       isLast ? "text-gold-400" : "text-ivory/80"
                     )}
                     aria-current={isLast ? "page" : undefined}
@@ -102,28 +102,28 @@ export function PageHero({
 
         {/* Eyebrow */}
         {eyebrow && (
-          <div className="inline-flex items-center gap-2 mb-3">
+          <div className="inline-flex items-center gap-1.5 mb-2">
             <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
-            <span className="text-xs uppercase font-bold tracking-widest text-gold-400">
+            <span className="text-[11px] sm:text-xs uppercase font-semibold tracking-[0.08em] text-gold-400">
               {eyebrow}
             </span>
           </div>
         )}
 
         {/* Title */}
-        <h1 className="font-serif font-bold text-ivory tracking-tight max-w-4xl text-balance mb-4">
+        <h1 className="font-serif font-semibold text-ivory tracking-[-0.01em] text-[26px] md:text-[34px] leading-[1.2] max-w-3xl text-balance mb-2.5">
           {title}
         </h1>
 
         {/* Subtitle */}
         {subtitle && (
-          <p className="text-base sm:text-lg md:text-xl text-ivory/70 max-w-2xl leading-relaxed text-pretty">
+          <p className="text-[15px] md:text-[16px] text-ivory/80 max-w-[62ch] leading-relaxed text-pretty">
             {subtitle}
           </p>
         )}
 
         {/* Action buttons if supplied */}
-        {actions && <div className="mt-6 flex flex-wrap items-center gap-3">{actions}</div>}
+        {actions && <div className="mt-4 flex flex-wrap items-center gap-2.5">{actions}</div>}
       </div>
     </section>
   );

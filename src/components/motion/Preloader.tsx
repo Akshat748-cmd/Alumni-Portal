@@ -89,7 +89,7 @@ export function Preloader() {
                 transition={{ ease: "easeOut" }}
               />
             </div>
-            <span className="text-[10px] text-muted-text mt-2 font-mono tracking-wider">{progress}%</span>
+            <span className="text-[10px] text-muted-text mt-2 tabular-nums tracking-wider">{progress}%</span>
           </div>
         </motion.div>
       )}

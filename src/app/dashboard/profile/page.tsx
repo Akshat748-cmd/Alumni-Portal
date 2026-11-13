@@ -152,7 +152,7 @@ export default function DashboardProfilePage() {
                   >
                     {isStudent ? "Student Account" : "Alumnus Account"}
                   </span>
-                  <span className="text-xs text-muted font-mono">{currentUser.email}</span>
+                  <span className="text-xs text-muted tabular-nums">{currentUser.email}</span>
                 </div>
               </div>
             </div>
@@ -205,7 +205,7 @@ export default function DashboardProfilePage() {
                     type="text"
                     disabled
                     value={currentUser.enrollmentNumber || "POD-2023-CS042"}
-                    className="w-full h-11 px-3.5 rounded-xl border border-line text-sm bg-ivory text-muted font-mono cursor-not-allowed"
+                    className="w-full h-11 px-3.5 rounded-xl border border-line text-sm bg-ivory text-muted tabular-nums cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -305,7 +305,7 @@ export default function DashboardProfilePage() {
               <div className="p-3.5 rounded-xl bg-ivory border border-line flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-gold-600" />
-                  <span className="font-mono font-bold text-navy-950">{resumeName}</span>
+                  <span className="tabular-nums font-bold text-navy-950">{resumeName}</span>
                 </div>
                 <button
                   type="button"
@@ -346,7 +346,7 @@ export default function DashboardProfilePage() {
                     key={uid}
                     className="p-3 rounded-xl bg-ivory border border-line flex items-center justify-between text-xs"
                   >
-                    <span className="font-mono font-medium text-navy-950">User ID: {uid}</span>
+                    <span className="tabular-nums font-medium text-navy-950">User ID: {uid}</span>
                     <button
                       type="button"
                       onClick={() => {

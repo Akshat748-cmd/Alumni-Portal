@@ -101,7 +101,7 @@ export function AdminTicketsQueue() {
           </button>
         </div>
 
-        <span className="text-xs font-mono text-muted">
+        <span className="text-xs tabular-nums text-muted">
           Showing {filteredTickets.length} of {tickets.length} tickets
         </span>
       </div>
@@ -143,7 +143,7 @@ export function AdminTicketsQueue() {
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-navy-950">
+                        <span className="tabular-nums text-xs font-bold text-navy-950">
                           {ticket.ticketNumber}
                         </span>
                         <StatusBadge status={ticket.status} size="sm" />
@@ -226,7 +226,7 @@ export function AdminTicketsQueue() {
           <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-navy-950">
+                <span className="tabular-nums text-xs font-bold text-navy-950">
                   {activeTicket.ticketNumber}
                 </span>
                 <StatusBadge status={activeTicket.status} size="sm" />
@@ -324,7 +324,7 @@ export function AdminTicketsQueue() {
                           <span className="font-semibold text-navy-900">{h.status}</span>
                           {h.note && <p className="text-muted mt-0.5">{h.note}</p>}
                         </div>
-                        <span className="text-muted font-mono text-[10px] shrink-0">{h.date}</span>
+                        <span className="text-muted tabular-nums text-[10px] shrink-0">{h.date}</span>
                       </div>
                     ))}
                   </div>

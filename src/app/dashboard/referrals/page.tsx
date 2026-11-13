@@ -342,7 +342,7 @@ export default function ReferralCenterPage() {
                           <div className="flex items-center gap-2 text-muted pt-2 border-t border-line/60">
                             <FileText className="h-3.5 w-3.5 text-gold-600" />
                             <span>Candidate Resume:</span>
-                            <span className="font-mono font-bold text-navy-950">
+                            <span className="tabular-nums font-bold text-navy-950">
                               {ref.resumeFileName}
                             </span>
                           </div>

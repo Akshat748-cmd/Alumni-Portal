@@ -371,7 +371,7 @@ export default function FindMentorPage() {
                 {activeMentor?.name} will review your request. Upon acceptance, you will receive a calendar invitation with meeting coordinates.
               </p>
               {requestId && (
-                <div className="p-2.5 rounded-xl bg-ivory border border-line text-xs font-mono text-muted">
+                <div className="p-2.5 rounded-xl bg-ivory border border-line text-xs tabular-nums text-muted">
                   Reference: <span className="font-bold text-navy-950">{requestId}</span>
                 </div>
               )}

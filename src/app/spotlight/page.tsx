@@ -166,7 +166,7 @@ export default function SpotlightOverviewPage() {
                 <div className="w-full lg:w-8/12">
                   <div className="flex items-center gap-2 mb-3">
                     <Badge className="bg-amber-500 text-navy-950 font-bold">Featured Spotlight</Badge>
-                    <span className="text-xs text-slate-300 font-mono">
+                    <span className="text-xs text-slate-300 tabular-nums">
                       {featuredStory.companyOrOrg}
                     </span>
                   </div>

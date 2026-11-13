@@ -61,42 +61,43 @@ export default function JoinNetworkPage() {
       />
 
       {/* THREE ACTION PILLARS */}
-      <section className="py-16 md:py-24 bg-white border-b border-line">
+      <section className="py-10 md:py-14 bg-white border-b border-line">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeader
             eyebrow="ONBOARDING CHANNELS"
             title="How Would You Like to Proceed?"
             subtitle="Choose your onboarding path below to register a new profile, refresh existing records, or review membership tiers."
             align="center"
+            className="mx-auto"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mt-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 max-w-6xl mx-auto">
             {JOIN_PILLARS.map((pillar, idx) => {
               const Icon = pillar.icon;
               return (
                 <Reveal key={pillar.title} delay={idx * 0.1}>
                   <TiltCard className="h-full">
-                    <div className="h-full flex flex-col justify-between p-6 sm:p-8 bg-ivory/60 rounded-2xl border border-line hover:border-gold-500/50 hover:shadow-xl transition-all duration-300">
+                    <div className="h-full flex flex-col justify-between p-5 sm:p-6 bg-ivory/60 rounded-xl border border-line hover:border-gold-500/50 hover:shadow-md transition-all duration-300">
                       <div>
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="h-12 w-12 rounded-xl bg-navy-950 flex items-center justify-center text-gold-400 shadow-md">
-                            <Icon className="h-6 w-6 text-gold-400" />
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="h-10 w-10 rounded-xl bg-navy-950 flex items-center justify-center text-gold-400 shadow-sm">
+                            <Icon className="h-5 w-5 text-gold-400" />
                           </div>
-                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-navy-950/5 text-navy-900 border border-navy-950/10">
+                          <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-navy-950/5 text-navy-900 border border-navy-950/10">
                             {pillar.badge}
                           </span>
                         </div>
-                        <h3 className="text-xl font-bold font-serif text-navy-950 mb-3">
+                        <h3 className="text-[17px] sm:text-[18px] font-semibold font-serif text-navy-950 mb-2">
                           {pillar.title}
                         </h3>
-                        <p className="text-sm text-muted leading-relaxed mb-6">
+                        <p className="text-xs sm:text-[13px] text-muted leading-relaxed mb-4">
                           {pillar.description}
                         </p>
                       </div>
 
                       <Link
                         href={pillar.href}
-                        className="inline-flex items-center justify-between w-full px-4 py-3 rounded-xl bg-navy-950 text-gold-300 font-semibold text-sm hover:bg-navy-900 transition-colors group"
+                        className="inline-flex items-center justify-between w-full px-4 py-2.5 rounded-lg bg-navy-950 text-gold-300 font-semibold text-xs sm:text-sm hover:bg-navy-900 transition-colors group"
                       >
                         <span>{pillar.action}</span>
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 text-gold-400" />

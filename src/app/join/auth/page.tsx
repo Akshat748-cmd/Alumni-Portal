@@ -671,7 +671,7 @@ export default function AuthPage() {
                                 onChange={(e) => setStuEnrollment(e.target.value)}
                                 onBlur={() => markTouched("stuEnroll")}
                                 placeholder="e.g. POD-2023-CS042"
-                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-mono text-xs"
+                                className="w-full h-11 px-3.5 rounded-xl border border-line text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 tabular-nums text-xs"
                               />
                             </div>
                           </div>
