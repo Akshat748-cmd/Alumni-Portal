@@ -206,7 +206,7 @@ export default function HomePage() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gold-500/10 blur-3xl pointer-events-none" />
 
         {/* Hero Content */}
-        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 flex flex-col items-center text-center">
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-8 sm:pb-10 lg:pb-12 flex flex-col items-center text-center">
           {/* Institutional Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: -16 }}

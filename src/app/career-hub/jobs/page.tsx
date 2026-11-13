@@ -5,35 +5,24 @@ import Link from "next/link";
 import { toast } from "sonner";
 import {
   Search,
-  SlidersHorizontal,
   Briefcase,
   MapPin,
   Building,
-  Calendar,
-  UserCheck,
   CheckCircle2,
-  ExternalLink,
   Send,
   X,
-  Sparkles,
   ArrowRight,
-  PlusCircle,
   Bookmark,
-  BookmarkCheck,
   Award,
-  Users,
-  Eye,
-  DollarSign,
-  AlertCircle,
   FileText,
   Upload,
+  Sparkles,
 } from "lucide-react";
-import { PageHero } from "@/components/common/PageHero";
-import { FilterDrawer } from "@/components/common/FilterDrawer";
 import { EmptyState } from "@/components/common/EmptyState";
 import { AvatarInitials } from "@/components/common/AvatarInitials";
 import { usePortalStore } from "@/store/portal";
-import { JobOpportunity, DomainCategory, WorkMode, WhoCanApply } from "@/data/types";
+import { JobOpportunity } from "@/data/types";
+import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetContent,
@@ -64,7 +53,57 @@ const DOMAINS: string[] = [
   "Jewellery & Fashion",
 ];
 
-const LOCATIONS = ["All Locations", "Jaipur", "Bengaluru", "Mumbai", "Pune", "Remote"];
+// Helper to format salary concisely like reference UI (e.g. "18–28 LPA", "15K–25K / Month")
+function formatSalaryCompact(salary?: string): string {
+  if (!salary) return "";
+  if (salary.includes("18,00,000") && salary.includes("28,00,000")) return "18–28 LPA";
+  if (salary.includes("12,00,000") && salary.includes("18,00,000")) return "12–20 LPA";
+  if (salary.includes("25,000")) return "15K–25K / Month";
+  if (salary.includes("8,00,000") && salary.includes("12,00,000")) return "8–12 LPA";
+  if (salary.includes("30,000") && salary.includes("45,000")) return "30K–45K / Month";
+  return salary.replace(/₹/g, "").replace(/\/ yr/gi, "LPA").trim();
+}
+
+// Helper to generate distinct company brand icon matching the reference style
+function getCompanyBranding(company: string) {
+  const c = company.toLowerCase();
+  if (c.includes("cloud") || c.includes("vertex") || c.includes("novacrest") || c.includes("tech")) {
+    return {
+      companyBg: "bg-[#0b1c3d]",
+      companyIcon: (
+        <svg className="h-4 w-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M18.178 8c5.096 0 5.096 8 0 8-3.058 0-4.587-4-6.116-4s-3.058 4-6.116 4c-5.096 0-5.096-8 0-8 3.058 0 4.587 4 6.116 4s3.058-4 6.116-4z" />
+        </svg>
+      ),
+    };
+  }
+  if (c.includes("fintura") || c.includes("apex") || c.includes("capital") || c.includes("finance")) {
+    return {
+      companyBg: "bg-gradient-to-br from-indigo-700 to-purple-800",
+      companyIcon: <span className="font-serif italic font-bold text-sm text-white">F</span>,
+    };
+  }
+  if (c.includes("amitech") || c.includes("zenith") || c.includes("agri") || c.includes("innov")) {
+    return {
+      companyBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+      companyIcon: (
+        <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" />
+        </svg>
+      ),
+    };
+  }
+  if (c.includes("aura") || c.includes("media") || c.includes("pulse")) {
+    return {
+      companyBg: "bg-gradient-to-br from-rose-600 to-pink-700",
+      companyIcon: <Sparkles className="h-4 w-4 text-white" />,
+    };
+  }
+  return {
+    companyBg: "bg-[#101A30]",
+    companyIcon: <span className="font-bold text-xs text-[#D5B568]">{company.slice(0, 2).toUpperCase()}</span>,
+  };
+}
 
 export default function JobsPage() {
   const {
@@ -83,7 +122,6 @@ export default function JobsPage() {
   const [selectedMode, setSelectedMode] = useState("All Modes");
   const [selectedWhoCanApply, setSelectedWhoCanApply] = useState("All Eligibility");
   const [selectedDomain, setSelectedDomain] = useState("All Domains");
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [onlyReferral, setOnlyReferral] = useState(false);
   const [onlySaved, setOnlySaved] = useState(false);
 
@@ -95,13 +133,13 @@ export default function JobsPage() {
   const [applyModalJob, setApplyModalJob] = useState<JobOpportunity | null>(null);
   const [coverNote, setCoverNote] = useState("");
   const [askReferralChecked, setAskReferralChecked] = useState(true);
-  const [mockResume, setMockResume] = useState(currentUser?.resumeFileName || "Candidate_Profile_Resume.pdf");
+  const [mockResume] = useState(currentUser?.resumeFileName || "Candidate_Profile_Resume.pdf");
 
   // Referral Request Dialog state
   const [referralModalJob, setReferralModalJob] = useState<JobOpportunity | null>(null);
   const [referralMessage, setReferralMessage] = useState("");
 
-  // Only approved or live jobs appear publicly (not closed or removed)
+  // Only approved or live jobs appear publicly
   const availableJobs = useMemo(() => {
     return jobs.filter((j) => j.status === "approved" || j.status === "live");
   }, [jobs]);
@@ -158,13 +196,6 @@ export default function JobsPage() {
         return false;
       }
 
-      // Location filter
-      if (selectedLocation !== "All Locations") {
-        if (!job.location.toLowerCase().includes(selectedLocation.toLowerCase())) {
-          return false;
-        }
-      }
-
       return true;
     });
   }, [
@@ -177,7 +208,6 @@ export default function JobsPage() {
     selectedMode,
     selectedWhoCanApply,
     selectedDomain,
-    selectedLocation,
   ]);
 
   const activeFilterCount =
@@ -185,7 +215,6 @@ export default function JobsPage() {
     (selectedMode !== "All Modes" ? 1 : 0) +
     (selectedWhoCanApply !== "All Eligibility" ? 1 : 0) +
     (selectedDomain !== "All Domains" ? 1 : 0) +
-    (selectedLocation !== "All Locations" ? 1 : 0) +
     (onlyReferral ? 1 : 0) +
     (onlySaved ? 1 : 0) +
     (searchQuery.trim() ? 1 : 0);
@@ -196,7 +225,6 @@ export default function JobsPage() {
     setSelectedMode("All Modes");
     setSelectedWhoCanApply("All Eligibility");
     setSelectedDomain("All Domains");
-    setSelectedLocation("All Locations");
     setOnlyReferral(false);
     setOnlySaved(false);
   };
@@ -248,10 +276,10 @@ export default function JobsPage() {
 
   const handleSubmitApplication = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!applyModalJob) return;
+    if (!applyModalJob || !currentUser) return;
 
     if (!coverNote.trim()) {
-      toast.error("Please add a short note highlighting your qualifications.");
+      toast.error("Please provide a brief cover note.");
       return;
     }
 
@@ -259,11 +287,11 @@ export default function JobsPage() {
       jobId: applyModalJob.id,
       coverNote: coverNote.trim(),
       resumeFileName: mockResume,
-      askReferral: askReferralChecked && applyModalJob.canRefer,
+      askReferral: askReferralChecked,
     });
 
     if (res.success) {
-      toast.success(`Application submitted for ${applyModalJob.title}!`);
+      toast.success(`Application submitted successfully for ${applyModalJob.title}!`);
       setApplyModalJob(null);
       setSheetOpen(false);
     } else {
@@ -273,25 +301,21 @@ export default function JobsPage() {
 
   const handleOpenReferralModal = (job: JobOpportunity) => {
     if (!currentUser) {
-      toast.error("Please sign in or register to request internal referrals.");
-      return;
-    }
-    if (currentUser.id === job.posterId) {
-      toast.info("You cannot request a referral from yourself.");
+      toast.error("Please sign in to request an alumni referral.");
       return;
     }
     setReferralModalJob(job);
     setReferralMessage(
-      `Hello ${job.postedByAlumniName}, I would be grateful for an internal referral for ${job.title} at ${job.company}.`
+      `Hi ${job.postedByAlumniName}, I am applying for ${job.title} at ${job.company}. Given our shared Poddar foundation, I would be grateful for an internal referral.`
     );
   };
 
   const handleSubmitReferral = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!referralModalJob) return;
+    if (!referralModalJob || !currentUser) return;
 
     if (!referralMessage.trim()) {
-      toast.error("Please include a brief message explaining why you'd be a great referral.");
+      toast.error("Please include a brief message for the alumni referrer.");
       return;
     }
 
@@ -312,537 +336,432 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ivory text-ink">
-      <PageHero
-        eyebrow="OPPORTUNITIES NETWORK • HIRING & REFERRALS"
-        title="Jobs & Internships"
-        subtitle="Exclusive vacancies, corporate internships, and verified alumni referral slots shared directly by Poddar alumni."
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: "Career Hub", href: "/career-hub" },
-          { label: "Jobs & Internships" },
-        ]}
-      />
+    <div className="min-h-screen bg-[#F6F4EF] text-slate-800 font-sans">
+      {/* 1. HERO SECTION (Desktop Clearance for Fixed Header, 48% Left / 52% Right, Deep Navy #101A30) */}
+      <div className="relative bg-[#101A30] text-white overflow-hidden pt-20 sm:pt-24 lg:pt-[84px] pb-14 sm:pb-16 lg:pb-12 min-h-[420px] lg:h-[430px] flex items-center">
+        {/* Right side: Authentic Poddar Campus Photograph (Full building visible without clipping) */}
+        <div className="hidden lg:block absolute top-0 right-0 bottom-0 w-[50%] xl:w-[52%] z-0 overflow-hidden pointer-events-none select-none bg-white">
+          <img
+            src="/assets/poddar-campus-main.jpg?v=3"
+            alt="Poddar Group of Institutions Main Campus"
+            className="w-full h-full object-contain object-right p-2 xl:p-4"
+          />
 
-      <section className="py-8 md:py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          {/* TOP SEARCH & ACTION BAR */}
-          <div className="bg-white rounded-xl p-4 sm:p-5 border border-line shadow-xs mb-6">
-            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-              {/* SEARCH INPUT */}
-              <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder="Search role title, company, skills (e.g. React), or city..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-10 pl-10 pr-9 rounded-lg border border-line bg-ivory/50 text-sm text-navy-950 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-gold-500/40"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-2.5 text-muted hover:text-navy-950"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
+          {/* Smooth subtle curved/diagonal transition with Champagne Gold detailing */}
+          <svg
+            className="absolute inset-0 h-full w-full pointer-events-none"
+            viewBox="0 0 500 400"
+            preserveAspectRatio="none"
+          >
+            {/* Deep Navy fill covering only the left transition edge */}
+            <path
+              d="M 0,0 L 20,0 C 60,90 30,250 85,400 L 0,400 Z"
+              fill="#101A30"
+            />
+            {/* Subtle Champagne Gold detailing stroke */}
+            <path
+              d="M 20,0 C 60,90 30,250 85,400"
+              fill="none"
+              stroke="#D5B568"
+              strokeWidth="2.5"
+              strokeOpacity="0.85"
+            />
+            <path
+              d="M 26,0 C 66,90 36,250 91,400"
+              fill="none"
+              stroke="#D5B568"
+              strokeWidth="1"
+              strokeOpacity="0.25"
+            />
+          </svg>
+        </div>
 
-              {/* POST AN OPPORTUNITY BUTTON */}
-              <div className="flex items-center gap-2.5">
-                {currentUser?.role !== "student" && (
-                  <Link
-                    href="/career-hub/post"
-                    className="h-10 px-4 rounded-lg bg-navy-950 text-gold-300 font-semibold text-xs sm:text-sm hover:bg-navy-900 transition-colors shadow-xs flex items-center justify-center gap-1.5 shrink-0"
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                    <span>Post an Opening</span>
-                  </Link>
-                )}
-                {currentUser && (
-                  <Link
-                    href="/dashboard/applications"
-                    className="h-10 px-3.5 rounded-lg bg-ivory border border-line text-navy-900 font-medium text-xs sm:text-sm hover:bg-navy-50 transition-colors flex items-center justify-center gap-1.5 shrink-0"
-                  >
-                    <FileText className="h-4 w-4 text-gold-600" />
-                    <span>My Applications</span>
-                  </Link>
-                )}
-              </div>
+        {/* Mobile / Tablet Campus Banner (Stacked, 16:9 ratio, contained without cropping) */}
+        <div className="lg:hidden w-full container mx-auto px-4 mb-4">
+          <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-[#D5B568]/30 shadow-md bg-white">
+            <img
+              src="/assets/poddar-campus-main.jpg?v=3"
+              alt="Poddar Group of Institutions Main Campus"
+              className="w-full h-full object-contain object-center p-2"
+            />
+            <div className="absolute bottom-2 left-3 text-[11px] text-[#101A30] font-semibold bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded shadow-xs">
+              Poddar Group of Institutions • Jaipur
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Content Left (48% width, ~64px padding) */}
+        <div className="container mx-auto px-4 sm:px-8 lg:px-16 max-w-[1328px] relative z-10 w-full py-4 lg:py-0">
+          <div className="w-full lg:w-[48%] max-w-xl">
+            {/* Label: CAREER HUB */}
+            <div className="flex items-center gap-3 mb-3.5">
+              <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#D5B568]">
+                CAREER HUB
+              </span>
+              <div className="h-[1px] w-12 bg-[#D5B568]/60" />
             </div>
 
-            {/* MOBILE FILTER DRAWER */}
-            <div className="mt-4 md:hidden">
-              <FilterDrawer
-                title="Filters & Preferences"
-                activeFilterCount={activeFilterCount}
-                onReset={resetFilters}
-              >
-                <div className="space-y-4 py-2">
-                  <div>
-                    <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
-                      Employment Type
-                    </label>
-                    <select
-                      value={selectedType}
-                      onChange={(e) => setSelectedType(e.target.value)}
-                      className="w-full h-11 px-3 rounded-xl border border-line text-sm text-navy-950 bg-white"
-                    >
-                      {JOB_TYPES.map((t) => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                    </select>
-                  </div>
+            {/* Heading: Jobs & Internships for Poddar Alumni (48-54px serif) */}
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-[46px] font-bold text-white tracking-tight leading-[1.12] mb-3">
+              Jobs & Internships <br />
+              <span className="font-serif italic font-normal text-[#D5B568]">
+                for Poddar Alumni
+              </span>
+            </h1>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
-                      Work Mode
-                    </label>
-                    <select
-                      value={selectedMode}
-                      onChange={(e) => setSelectedMode(e.target.value)}
-                      className="w-full h-11 px-3 rounded-xl border border-line text-sm text-navy-950 bg-white"
-                    >
-                      {WORK_MODES.map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
+            {/* Description */}
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
+              Explore meaningful career opportunities, connect with fellow alumni and take the next step in your professional journey.
+            </p>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
-                      Who Can Apply
-                    </label>
-                    <select
-                      value={selectedWhoCanApply}
-                      onChange={(e) => setSelectedWhoCanApply(e.target.value)}
-                      className="w-full h-11 px-3 rounded-xl border border-line text-sm text-navy-950 bg-white"
-                    >
-                      {WHO_CAN_APPLY_OPTIONS.map((w) => (
-                        <option key={w} value={w}>{w}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
-                      Industry Domain
-                    </label>
-                    <select
-                      value={selectedDomain}
-                      onChange={(e) => setSelectedDomain(e.target.value)}
-                      className="w-full h-11 px-3 rounded-xl border border-line text-sm text-navy-950 bg-white"
-                    >
-                      {DOMAINS.map((d) => (
-                        <option key={d} value={d}>{d}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="pt-2 border-t border-line space-y-2">
-                    <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-navy-950">
-                      <input
-                        type="checkbox"
-                        checked={onlyReferral}
-                        onChange={(e) => setOnlyReferral(e.target.checked)}
-                        className="rounded border-line text-navy-950"
-                      />
-                      <span>Alumni Referral Slots Available Only</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-navy-950">
-                      <input
-                        type="checkbox"
-                        checked={onlySaved}
-                        onChange={(e) => setOnlySaved(e.target.checked)}
-                        className="rounded border-line text-navy-950"
-                      />
-                      <span>Bookmarked / Saved Jobs Only</span>
-                    </label>
-                  </div>
-                </div>
-              </FilterDrawer>
-            </div>
-
-            {/* DESKTOP INLINE FILTER BAR */}
-            <div className="hidden md:flex flex-wrap items-center gap-3 pt-4 border-t border-line mt-4">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-semibold text-navy-900">Type:</span>
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="h-9 px-2.5 rounded-lg border border-line text-xs font-medium text-navy-950 bg-ivory/50"
-                >
-                  {JOB_TYPES.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-semibold text-navy-900">Mode:</span>
-                <select
-                  value={selectedMode}
-                  onChange={(e) => setSelectedMode(e.target.value)}
-                  className="h-9 px-2.5 rounded-lg border border-line text-xs font-medium text-navy-950 bg-ivory/50"
-                >
-                  {WORK_MODES.map((m) => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-semibold text-navy-900">Eligibility:</span>
-                <select
-                  value={selectedWhoCanApply}
-                  onChange={(e) => setSelectedWhoCanApply(e.target.value)}
-                  className="h-9 px-2.5 rounded-lg border border-line text-xs font-medium text-navy-950 bg-ivory/50"
-                >
-                  {WHO_CAN_APPLY_OPTIONS.map((w) => (
-                    <option key={w} value={w}>{w}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-semibold text-navy-900">Domain:</span>
-                <select
-                  value={selectedDomain}
-                  onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="h-9 px-2.5 rounded-lg border border-line text-xs font-medium text-navy-950 bg-ivory/50 max-w-[150px] truncate"
-                >
-                  {DOMAINS.map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* TOGGLES */}
+            {/* Two CTA Buttons (46px height) */}
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                onClick={() => setOnlyReferral(!onlyReferral)}
-                className={`h-9 px-3 rounded-lg border text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                  onlyReferral
-                    ? "bg-amber-100 text-amber-900 border-amber-300"
-                    : "bg-ivory border-line text-navy-900 hover:bg-navy-50"
-                }`}
+                onClick={() => {
+                  const el = document.getElementById("search-filters-panel");
+                  el?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="inline-flex items-center gap-2 h-[46px] px-5 rounded-xl bg-[#D5B568] hover:bg-[#c6a350] text-[#101A30] font-semibold text-sm transition-all shadow-md active:scale-95 cursor-pointer"
               >
-                <Award className="h-3.5 w-3.5 text-amber-600" />
-                <span>Referrals Only</span>
+                <Search className="h-4 w-4" />
+                <span>Explore Opportunities</span>
+                <ArrowRight className="h-4 w-4" />
               </button>
 
-              <button
-                type="button"
-                onClick={() => setOnlySaved(!onlySaved)}
-                className={`h-9 px-3 rounded-lg border text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                  onlySaved
-                    ? "bg-navy-950 text-gold-300 border-navy-950"
-                    : "bg-ivory border-line text-navy-900 hover:bg-navy-50"
-                }`}
-              >
-                <Bookmark className="h-3.5 w-3.5" />
-                <span>Saved ({savedJobIds.length})</span>
-              </button>
-
-              {activeFilterCount > 0 && (
-                <button
-                  type="button"
-                  onClick={resetFilters}
-                  className="text-xs text-red-600 font-semibold hover:underline ml-auto cursor-pointer"
+              {currentUser?.role !== "student" ? (
+                <Link
+                  href="/career-hub/post"
+                  className="inline-flex items-center gap-2 h-[46px] px-5 rounded-xl border border-[#D5B568]/60 hover:border-[#D5B568] text-white hover:text-[#D5B568] bg-[#101A30]/60 hover:bg-[#101A30] font-semibold text-sm transition-all shadow-sm active:scale-95"
                 >
-                  Clear all ({activeFilterCount})
-                </button>
+                  <Upload className="h-4 w-4 text-[#D5B568]" />
+                  <span>Post an Opportunity</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/dashboard/applications"
+                  className="inline-flex items-center gap-2 h-[46px] px-5 rounded-xl border border-slate-600 hover:border-slate-400 text-white hover:text-slate-200 bg-white/5 font-semibold text-sm transition-all shadow-sm active:scale-95"
+                >
+                  <Briefcase className="h-4 w-4 text-[#D5B568]" />
+                  <span>My Applications</span>
+                </Link>
               )}
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* RESULTS COUNTER */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="text-xs sm:text-sm font-medium text-muted">
-              Showing <strong className="text-navy-950 font-bold">{filteredJobs.length}</strong> active opportunities
+      {/* 2. SEARCH AND FILTERS SECTION (Max-width ~1328px, White background, 14px radius, 20px padding) */}
+      <div id="search-filters-panel" className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1328px] -mt-8 sm:-mt-10 relative z-20">
+        <div className="bg-white rounded-[14px] shadow-lg border border-[#E8E1D2] p-5">
+          {/* Top Row: Search Input (50px height) + Search Button + Saved Jobs */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 mb-3.5">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search by role, company, skills, or location..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-[50px] pl-11 pr-10 rounded-xl border border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D5B568]/40 focus:border-[#D5B568] transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
-            {currentUser && (
-              <div className="text-xs text-muted flex items-center gap-1.5">
-                <span>Signed in as:</span>
-                <span className="font-semibold text-navy-950">{currentUser.name}</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-navy-100 text-navy-800 uppercase font-bold">
-                  {currentUser.role === "student" ? "Student" : "Alumnus"}
-                </span>
-              </div>
-            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                toast.success(`Found ${filteredJobs.length} opportunities`);
+              }}
+              className="h-[50px] px-6 rounded-xl bg-[#101A30] hover:bg-[#182747] text-white font-medium text-sm flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer shrink-0"
+            >
+              <Search className="h-4 w-4 text-slate-300" />
+              <span>Search</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setOnlySaved(!onlySaved)}
+              className={cn(
+                "h-[50px] px-4 rounded-xl border font-medium text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0",
+                onlySaved
+                  ? "bg-[#D5B568]/15 border-[#D5B568] text-[#101A30]"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+              )}
+            >
+              <Bookmark className={cn("h-4 w-4", onlySaved ? "fill-[#D5B568] text-[#D5B568]" : "text-slate-600")} />
+              <span>Saved ({savedJobIds.length})</span>
+            </button>
           </div>
 
-          {/* JOBS GRID */}
-          {filteredJobs.length === 0 ? (
-            <EmptyState
-              title="No Opportunities Match Your Criteria"
-              description="No job or internship vacancies match your active search terms or filters. Try clearing some filters or searching for a different skill."
-              actionLabel="Reset All Filters"
-              onAction={resetFilters}
-            />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-              {filteredJobs.map((job) => {
-                const application = getApplicationForJob(job.id);
-                const referral = getReferralForJob(job.id);
-                const isSaved = savedJobIds.includes(job.id);
-                const isMyPosting = currentUser?.id === job.posterId;
-                const { eligible, reason } = checkEligibility(job);
+          {/* Bottom Row: Compact functional filters (Type, Mode, Eligibility, Domain, Referrals Only) */}
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-3 border-t border-slate-100">
+            {/* Type */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-slate-700">Type:</span>
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="h-9 px-2.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#D5B568]"
+              >
+                {JOB_TYPES.map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
 
-                // Count applicants for poster
-                const myApplicantsCount = jobApplications.filter((a) => a.jobId === job.id).length;
+            {/* Mode */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-slate-700">Mode:</span>
+              <select
+                value={selectedMode}
+                onChange={(e) => setSelectedMode(e.target.value)}
+                className="h-9 px-2.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#D5B568]"
+              >
+                {WORK_MODES.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            </div>
 
-                return (
-                  <div
-                    key={job.id}
-                    className="flex flex-col justify-between bg-white rounded-xl p-4 sm:p-5 border border-line shadow-xs hover:shadow-md hover:border-gold-500/40 transition-all duration-300 relative"
-                  >
-                    <div>
-                      {/* HEADER BADGES */}
-                      <div className="flex items-start justify-between gap-2 mb-2.5">
-                        <div className="flex flex-wrap items-center gap-1.5">
-                          <span
-                            className={`text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                              job.type === "Internship"
-                                ? "bg-purple-100 text-purple-800"
-                                : job.type === "Full-Time"
-                                ? "bg-emerald-100 text-emerald-800"
-                                : "bg-blue-100 text-blue-800"
-                            }`}
-                          >
-                            {job.type}
-                          </span>
+            {/* Eligibility */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-slate-700">Eligibility:</span>
+              <select
+                value={selectedWhoCanApply}
+                onChange={(e) => setSelectedWhoCanApply(e.target.value)}
+                className="h-9 px-2.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#D5B568]"
+              >
+                {WHO_CAN_APPLY_OPTIONS.map((w) => (
+                  <option key={w} value={w}>{w}</option>
+                ))}
+              </select>
+            </div>
 
-                          {job.workMode && (
-                            <span className="text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-full bg-navy-50 text-navy-800 border border-navy-200">
-                              {job.workMode}
-                            </span>
+            {/* Domain */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-slate-700">Domain:</span>
+              <select
+                value={selectedDomain}
+                onChange={(e) => setSelectedDomain(e.target.value)}
+                className="h-9 px-2.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-[#D5B568] max-w-[160px] truncate"
+              >
+                {DOMAINS.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Referrals Only Toggle */}
+            <button
+              type="button"
+              onClick={() => setOnlyReferral(!onlyReferral)}
+              className={cn(
+                "h-9 px-3 rounded-lg border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer",
+                onlyReferral
+                  ? "bg-[#D5B568]/20 border-[#D5B568] text-[#101A30] font-semibold"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+              )}
+            >
+              <Award className={cn("h-3.5 w-3.5", onlyReferral ? "text-[#D5B568]" : "text-[#D5B568]")} />
+              <span>Referrals Only</span>
+            </button>
+
+            {/* Clear Filters (if active) */}
+            {activeFilterCount > 0 && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="text-xs text-red-600 font-semibold hover:underline ml-auto cursor-pointer"
+              >
+                Clear filters ({activeFilterCount})
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. OPPORTUNITIES COUNT & USER STATUS */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1328px] pt-8 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="text-sm font-medium text-slate-600">
+          Showing <strong className="text-[#101A30] font-bold">{filteredJobs.length}</strong> opportunities
+        </div>
+        {currentUser && (
+          <div className="text-xs sm:text-sm text-slate-600 flex items-center gap-2">
+            <span>Signed in as:</span>
+            <span className="font-bold text-[#101A30]">{currentUser.name}</span>
+            <span
+              className={cn(
+                "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
+                currentUser.role === "student"
+                  ? "bg-indigo-100 text-indigo-900 border border-indigo-200"
+                  : "bg-[#D5B568]/20 text-[#101A30] border border-[#D5B568]/40"
+              )}
+            >
+              {currentUser.role === "student" ? "STUDENT" : "ALUMNUS"}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* 4. JOB LISTING SECTION (Three equal-width columns on desktop, 22px gap, max-width ~1328px) */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1328px] pb-16">
+        {filteredJobs.length === 0 ? (
+          <EmptyState
+            title="No Opportunities Match Your Criteria"
+            description="No job or internship vacancies match your active search terms or filters. Try clearing some filters or searching for a different skill."
+            actionLabel="Reset All Filters"
+            onAction={resetFilters}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[22px]">
+            {filteredJobs.map((job) => {
+              const isSaved = savedJobIds.includes(job.id);
+              const { companyIcon, companyBg } = getCompanyBranding(job.company);
+              const formattedSalary = formatSalaryCompact(job.salaryRange);
+
+              return (
+                <div
+                  key={job.id}
+                  className="bg-white rounded-[14px] border border-[#E8E1D2] hover:border-[#D5B568]/60 hover:shadow-md transition-all duration-200 p-[22px] flex flex-col justify-between group"
+                >
+                  <div>
+                    {/* Top Row: Employment Type & Work Mode badges + Bookmark */}
+                    <div className="flex items-center justify-between gap-2 mb-3.5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span
+                          className={cn(
+                            "px-2.5 py-0.5 rounded-md text-xs font-semibold",
+                            job.type === "Internship"
+                              ? "bg-purple-50 text-purple-700 border border-purple-200/60"
+                              : "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
                           )}
-
-                          {job.whoCanApply && (
-                            <span
-                              className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                                job.whoCanApply === "Students"
-                                  ? "bg-amber-100 text-amber-900 border border-amber-300"
-                                  : job.whoCanApply === "Alumni"
-                                  ? "bg-indigo-100 text-indigo-900 border border-indigo-200"
-                                  : "bg-gray-100 text-gray-800"
-                              }`}
-                            >
-                              {job.whoCanApply === "Both" ? "Students & Alumni" : `${job.whoCanApply} Only`}
-                            </span>
-                          )}
-                        </div>
-
-                        {/* BOOKMARK BUTTON */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            toggleSaveJob(job.id);
-                            toast.success(isSaved ? "Removed from saved opportunities" : "Saved to your bookmarks");
-                          }}
-                          className={`p-1.5 rounded-lg transition-colors shrink-0 ${
-                            isSaved
-                              ? "bg-navy-950 text-gold-300 shadow-xs"
-                              : "bg-ivory text-muted hover:text-navy-950"
-                          }`}
-                          aria-label={isSaved ? "Remove bookmark" : "Save opportunity"}
                         >
-                          <Bookmark className="h-4 w-4" />
-                        </button>
-                      </div>
-
-                      {/* ROLE TITLE & COMPANY */}
-                      <h3 className="text-[15px] sm:text-[16px] font-serif font-semibold text-navy-950 line-clamp-2 mb-1 leading-snug">
-                        {job.title}
-                      </h3>
-                      <div className="text-[13px] sm:text-[14px] font-medium text-navy-900 mb-2 flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 truncate">
-                          <Building className="h-3.5 w-3.5 text-gold-600 shrink-0" />
-                          <span className="truncate">{job.company}</span>
-                        </div>
-                        {job.salaryRange && (
-                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shrink-0 ml-2 tabular-nums">
-                            {job.salaryRange}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* LOCATION & OPENINGS */}
-                      <div className="flex flex-wrap items-center gap-y-1 gap-x-2 text-xs text-muted mb-2.5">
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-3.5 w-3.5" />
-                          <span>{job.location}</span>
+                          {job.type}
                         </span>
-                        <span>•</span>
-                        <span className="tabular-nums">{job.openings ? `${job.openings} Openings` : "Multiple Openings"}</span>
+                        <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+                          {job.workMode || "On-site"}
+                        </span>
                       </div>
 
-                      {/* SKILLS PILLS */}
-                      {job.skills && job.skills.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-2.5">
-                          {job.skills.slice(0, 3).map((sk) => (
-                            <span
-                              key={sk}
-                              className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-ivory text-navy-800 border border-line"
-                            >
-                              {sk}
-                            </span>
-                          ))}
-                          {job.skills.length > 3 && (
-                            <span className="text-[10px] text-muted self-center">
-                              +{job.skills.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                      {/* REFERRAL BADGE */}
-                      {job.canRefer && (
-                        <div className="mb-3 inline-flex items-center gap-1.5 text-xs font-medium text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-lg border border-amber-300 tabular-nums">
-                          <Award className="h-3.5 w-3.5 text-amber-600 shrink-0" />
-                          <span>{job.referralSlots ?? 1} Referral Slots by Alumnus</span>
-                        </div>
-                      )}
-
-                      {/* POSTER INFO */}
-                      <p className="text-[12px] sm:text-[13px] text-muted line-clamp-2 mb-3 leading-relaxed">
-                        {job.description}
-                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          toggleSaveJob(job.id);
+                          toast.success(isSaved ? "Removed from saved opportunities" : "Saved to your bookmarks");
+                        }}
+                        className="p-1 text-slate-400 hover:text-[#D5B568] transition-colors"
+                        aria-label={isSaved ? "Remove bookmark" : "Save opportunity"}
+                      >
+                        <Bookmark className={cn("h-4 w-4", isSaved && "fill-[#D5B568] text-[#D5B568]")} />
+                      </button>
                     </div>
 
-                    {/* FOOTER */}
-                    <div className="pt-3 border-t border-line">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <AvatarInitials name={job.postedByAlumniName} size="sm" />
-                          <div className="min-w-0">
-                            <div className="text-xs font-bold text-navy-950 truncate">
-                              {job.postedByAlumniName}
-                            </div>
-                            <div className="text-[10px] text-muted truncate">
-                              Class of {job.postedByBatch}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* STATUS PILL */}
-                        {isMyPosting ? (
-                          <Link
-                            href={`/dashboard/postings/${job.id}`}
-                            className="text-[11px] font-bold text-navy-950 bg-gold-400/20 border border-gold-500/40 px-2 py-1 rounded-lg hover:bg-gold-400/30 transition-colors"
-                          >
-                            {myApplicantsCount} Applicants →
-                          </Link>
-                        ) : application ? (
-                          <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg flex items-center gap-1">
-                            <CheckCircle2 className="h-3 w-3 text-emerald-600" />
-                            <span>{application.status}</span>
-                          </span>
-                        ) : referral ? (
-                          <span className="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg">
-                            Ref: {referral.status}
-                          </span>
-                        ) : null}
+                    {/* Company Logo & Company Name with Verified Indicator */}
+                    <div className="flex items-center gap-2.5 mb-2.5">
+                      <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center font-bold text-white shadow-xs shrink-0", companyBg)}>
+                        {companyIcon}
                       </div>
-
-                      {/* ACTION BUTTONS */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActiveJob(job);
-                            setSheetOpen(true);
-                          }}
-                          className="py-2.5 rounded-xl bg-ivory border border-line text-navy-900 font-semibold text-xs hover:bg-navy-50 transition-colors cursor-pointer text-center"
-                        >
-                          View Details
-                        </button>
-
-                        {isMyPosting ? (
-                          <Link
-                            href={`/dashboard/postings/${job.id}`}
-                            className="py-2.5 rounded-xl bg-navy-950 text-gold-300 font-bold text-xs hover:bg-navy-900 transition-colors text-center flex items-center justify-center gap-1"
-                          >
-                            <span>Manage</span>
-                            <ArrowRight className="h-3 w-3" />
-                          </Link>
-                        ) : application ? (
-                          <Link
-                            href="/dashboard/applications"
-                            className="py-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold text-xs hover:bg-emerald-100 transition-colors text-center flex items-center justify-center gap-1"
-                          >
-                            <span>View Status</span>
-                            <ArrowRight className="h-3 w-3" />
-                          </Link>
-                        ) : !eligible ? (
-                          <button
-                            type="button"
-                            disabled
-                            title={reason}
-                            className="py-2.5 rounded-xl bg-gray-100 text-gray-400 font-semibold text-xs text-center cursor-not-allowed"
-                          >
-                            {job.whoCanApply === "Students" ? "Students Only" : "Alumni Only"}
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => handleOpenApplyModal(job)}
-                            className="py-2.5 rounded-xl bg-navy-950 text-gold-300 hover:bg-navy-900 font-bold text-xs transition-colors cursor-pointer text-center flex items-center justify-center gap-1 shadow-sm"
-                          >
-                            <Send className="h-3 w-3" />
-                            <span>Apply</span>
-                          </button>
-                        )}
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm font-semibold text-slate-900 truncate">{job.company}</span>
+                        <CheckCircle2 className="h-3.5 w-3.5 text-[#D5B568] shrink-0 fill-[#D5B568]" />
                       </div>
+                    </div>
+
+                    {/* Job Title */}
+                    <h3 className="font-serif font-bold text-[17px] sm:text-lg text-[#101A30] group-hover:text-[#b89547] transition-colors line-clamp-1 mb-2.5">
+                      {job.title}
+                    </h3>
+
+                    {/* Location, Experience and Salary */}
+                    <div className="flex items-center gap-2 text-xs text-slate-600 flex-wrap mb-4">
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                        <span>{job.location}</span>
+                      </span>
+                      <span className="text-slate-300">|</span>
+                      <span className="flex items-center gap-1">
+                        <Briefcase className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                        <span>{job.experience || "1-3 Years"}</span>
+                      </span>
+                      {formattedSalary && (
+                        <>
+                          <span className="text-slate-300">|</span>
+                          <span className="flex items-center gap-1 font-medium text-slate-800">
+                            <span>₹</span>
+                            <span>{formattedSalary}</span>
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </section>
 
-      {/* JOB DETAIL SHEET */}
+                  {/* Bottom Row: View Details Action aligned to the right */}
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveJob(job);
+                        setSheetOpen(true);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-[#D5B568] text-xs font-semibold text-[#101A30] hover:bg-[#D5B568]/15 transition-colors group-hover:bg-[#D5B568] group-hover:text-[#101A30]"
+                    >
+                      <span>View Details</span>
+                      <ArrowRight className="h-3.5 w-3.5 text-[#D5B568] group-hover:text-[#101A30] transition-colors" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* 5. PRESERVED JOB DETAIL SHEET */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent side="right" className="w-full sm:max-w-xl p-0 overflow-y-auto bg-white" data-lenis-prevent>
           {activeJob && (
             <div className="p-6 sm:p-8 space-y-6">
-              <SheetHeader className="text-left border-b border-line pb-4">
+              <SheetHeader className="text-left border-b border-slate-200 pb-4">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-navy-950 text-gold-300">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#101A30] text-[#D5B568]">
                     {activeJob.type}
                   </span>
                   {activeJob.workMode && (
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-navy-100 text-navy-900 font-medium">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-900 font-medium">
                       {activeJob.workMode}
                     </span>
                   )}
-                  <span className="text-xs text-muted font-medium">{activeJob.domain}</span>
+                  <span className="text-xs text-slate-500 font-medium">{activeJob.domain}</span>
                 </div>
-                <SheetTitle className="text-2xl font-serif font-bold text-navy-950">
+                <SheetTitle className="text-2xl font-serif font-bold text-[#101A30]">
                   {activeJob.title}
                 </SheetTitle>
-                <SheetDescription className="text-sm font-semibold text-navy-900 flex items-center gap-1.5 mt-1">
-                  <Building className="h-4 w-4 text-gold-600" />
+                <SheetDescription className="text-sm font-semibold text-slate-900 flex items-center gap-1.5 mt-1">
+                  <Building className="h-4 w-4 text-[#D5B568]" />
                   <span>{activeJob.company}</span>
-                  <span className="text-muted">•</span>
-                  <span className="text-muted font-normal">{activeJob.location}</span>
+                  <span className="text-slate-400">•</span>
+                  <span className="text-slate-500 font-normal">{activeJob.location}</span>
                 </SheetDescription>
               </SheetHeader>
 
               {/* POSTER CARD */}
-              <div className="p-4 rounded-2xl bg-ivory border border-line flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#F6F4EF] border border-[#E8E1D2] flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <AvatarInitials name={activeJob.postedByAlumniName} size="md" />
                   <div>
-                    <div className="text-xs font-bold text-navy-950">
+                    <div className="text-xs font-bold text-[#101A30]">
                       Posted by {activeJob.postedByAlumniName}
                     </div>
-                    <div className="text-[11px] text-muted">
+                    <div className="text-[11px] text-slate-500">
                       Class of {activeJob.postedByBatch} • Verified Alumnus
                     </div>
                   </div>
@@ -853,7 +772,7 @@ export default function JobsPage() {
                       activeJob.postedByAlumniName
                     )}`}
                     scroll={false}
-                    className="px-3 py-1.5 rounded-lg bg-navy-950 text-gold-300 font-semibold text-xs hover:bg-navy-900"
+                    className="px-3 py-1.5 rounded-lg bg-[#101A30] text-[#D5B568] font-semibold text-xs hover:bg-navy-900"
                   >
                     Message
                   </Link>
@@ -862,30 +781,30 @@ export default function JobsPage() {
 
               {/* KEY STATS PILLS */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-                <div className="p-2.5 rounded-xl bg-ivory border border-line">
-                  <div className="text-[10px] text-muted uppercase font-bold">Openings</div>
-                  <div className="text-sm font-bold text-navy-950">{activeJob.openings || 1}</div>
+                <div className="p-2.5 rounded-xl bg-[#F6F4EF] border border-[#E8E1D2]">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Openings</div>
+                  <div className="text-sm font-bold text-[#101A30]">{activeJob.openings || 1}</div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-ivory border border-line">
-                  <div className="text-[10px] text-muted uppercase font-bold">Compensation</div>
+                <div className="p-2.5 rounded-xl bg-[#F6F4EF] border border-[#E8E1D2]">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Compensation</div>
                   <div className="text-sm font-bold text-emerald-700 truncate">{activeJob.salaryRange || "Competitive"}</div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-ivory border border-line">
-                  <div className="text-[10px] text-muted uppercase font-bold">Who Can Apply</div>
-                  <div className="text-sm font-bold text-navy-950 truncate">{activeJob.whoCanApply || "Both"}</div>
+                <div className="p-2.5 rounded-xl bg-[#F6F4EF] border border-[#E8E1D2]">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Who Can Apply</div>
+                  <div className="text-sm font-bold text-[#101A30] truncate">{activeJob.whoCanApply || "Both"}</div>
                 </div>
-                <div className="p-2.5 rounded-xl bg-ivory border border-line">
-                  <div className="text-[10px] text-muted uppercase font-bold">Referral Slots</div>
+                <div className="p-2.5 rounded-xl bg-[#F6F4EF] border border-[#E8E1D2]">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Referral Slots</div>
                   <div className="text-sm font-bold text-amber-700">{activeJob.canRefer ? activeJob.referralSlots ?? 1 : 0}</div>
                 </div>
               </div>
 
               {/* DESCRIPTION */}
               <div>
-                <h4 className="text-xs font-bold text-navy-950 uppercase tracking-wider mb-2">
+                <h4 className="text-xs font-bold text-[#101A30] uppercase tracking-wider mb-2">
                   Role Description
                 </h4>
-                <p className="text-sm text-navy-900/90 leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
                   {activeJob.description}
                 </p>
               </div>
@@ -893,12 +812,12 @@ export default function JobsPage() {
               {/* REQUIREMENTS */}
               {activeJob.requirements && activeJob.requirements.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-bold text-navy-950 uppercase tracking-wider mb-2">
+                  <h4 className="text-xs font-bold text-[#101A30] uppercase tracking-wider mb-2">
                     Requirements & Qualifications
                   </h4>
                   <ul className="space-y-2">
                     {activeJob.requirements.map((req, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-muted">
+                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600">
                         <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span>{req}</span>
                       </li>
@@ -908,11 +827,11 @@ export default function JobsPage() {
               )}
 
               {/* ACTIONS */}
-              <div className="pt-6 border-t border-line space-y-3">
+              <div className="pt-6 border-t border-slate-200 space-y-3">
                 {currentUser?.id === activeJob.posterId ? (
                   <Link
                     href={`/dashboard/postings/${activeJob.id}`}
-                    className="w-full py-3.5 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm text-center flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-xl bg-[#101A30] text-[#D5B568] font-bold text-sm text-center flex items-center justify-center gap-2"
                   >
                     <span>Manage Posting & Review Applicants</span>
                     <ArrowRight className="h-4 w-4" />
@@ -935,7 +854,7 @@ export default function JobsPage() {
                     <button
                       type="button"
                       onClick={() => handleOpenApplyModal(activeJob)}
-                      className="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-gold-300 via-gold-500 to-gold-600 text-navy-950 hover:brightness-105 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#D5B568] via-amber-400 to-[#c6a350] text-[#101A30] hover:brightness-105 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <Send className="h-4 w-4" />
                       <span>Apply for this Opportunity</span>
@@ -945,9 +864,9 @@ export default function JobsPage() {
                       <button
                         type="button"
                         onClick={() => handleOpenReferralModal(activeJob)}
-                        className="w-full py-3.5 rounded-xl font-semibold text-sm bg-navy-950 text-gold-300 hover:bg-navy-900 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full py-3.5 rounded-xl font-semibold text-sm bg-[#101A30] text-[#D5B568] hover:bg-navy-900 transition-all flex items-center justify-center gap-2 cursor-pointer"
                       >
-                        <Award className="h-4 w-4 text-gold-400" />
+                        <Award className="h-4 w-4 text-[#D5B568]" />
                         <span>Request Referral from Alumnus ({activeJob.referralSlots} slots)</span>
                       </button>
                     )}
@@ -959,48 +878,48 @@ export default function JobsPage() {
         </SheetContent>
       </Sheet>
 
-      {/* APPLY DIALOG */}
+      {/* 6. PRESERVED APPLY DIALOG */}
       <Dialog open={Boolean(applyModalJob)} onOpenChange={(open) => !open && setApplyModalJob(null)}>
         <DialogContent className="sm:max-w-lg bg-white rounded-3xl p-6 sm:p-8" data-lenis-prevent>
-          <DialogHeader className="border-b border-line pb-3">
-            <DialogTitle className="text-xl font-serif font-bold text-navy-950">
+          <DialogHeader className="border-b border-slate-200 pb-3">
+            <DialogTitle className="text-xl font-serif font-bold text-[#101A30]">
               Apply for {applyModalJob?.title}
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted">
+            <DialogDescription className="text-xs text-slate-500">
               {applyModalJob?.company} • Location: {applyModalJob?.location}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmitApplication} className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-[#101A30] uppercase tracking-wider mb-1.5">
                 Applicant Information
               </label>
-              <div className="p-3 rounded-xl bg-ivory border border-line text-xs space-y-1">
+              <div className="p-3 rounded-xl bg-[#F6F4EF] border border-[#E8E1D2] text-xs space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-muted">Name:</span>
-                  <span className="font-bold text-navy-950">{currentUser?.name}</span>
+                  <span className="text-slate-500">Name:</span>
+                  <span className="font-bold text-[#101A30]">{currentUser?.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted">Role:</span>
-                  <span className="font-semibold text-navy-950 capitalize">{currentUser?.role === "student" ? "Student" : "Alumnus"}</span>
+                  <span className="text-slate-500">Role:</span>
+                  <span className="font-semibold text-[#101A30] capitalize">{currentUser?.role === "student" ? "Student" : "Alumnus"}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted">Course / Org:</span>
-                  <span className="text-navy-950">{currentUser?.course || currentUser?.company || "Poddar Network"}</span>
+                  <span className="text-slate-500">Course / Org:</span>
+                  <span className="text-[#101A30]">{currentUser?.course || currentUser?.company || "Poddar Network"}</span>
                 </div>
               </div>
             </div>
 
             {/* RESUME DISPLAY */}
             <div>
-              <label className="block text-xs font-semibold text-navy-950 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-[#101A30] uppercase tracking-wider mb-1.5">
                 Attached Resume / Portfolio
               </label>
-              <div className="flex items-center justify-between p-3 rounded-xl bg-ivory border border-line text-xs">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-[#F6F4EF] border border-[#E8E1D2] text-xs">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-gold-600" />
-                  <span className="tabular-nums font-medium text-navy-950">{mockResume}</span>
+                  <FileText className="h-4 w-4 text-[#D5B568]" />
+                  <span className="tabular-nums font-medium text-[#101A30]">{mockResume}</span>
                 </div>
                 <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold border border-emerald-200">
                   Ready to submit
@@ -1011,10 +930,10 @@ export default function JobsPage() {
             {/* COVER NOTE */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-semibold text-navy-950 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-[#101A30] uppercase tracking-wider">
                   Cover Note / Pitch (Max 500 characters) *
                 </label>
-                <span className="text-[10px] text-muted">{coverNote.length} / 500</span>
+                <span className="text-[10px] text-slate-500">{coverNote.length} / 500</span>
               </div>
               <textarea
                 rows={4}
@@ -1022,7 +941,7 @@ export default function JobsPage() {
                 value={coverNote}
                 onChange={(e) => setCoverNote(e.target.value)}
                 placeholder="Highlight your key projects, academic excellence, or relevant experience..."
-                className="w-full p-3 rounded-xl border border-line text-xs focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                className="w-full p-3 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#D5B568]/40"
               />
             </div>
 
@@ -1034,13 +953,13 @@ export default function JobsPage() {
                     type="checkbox"
                     checked={askReferralChecked}
                     onChange={(e) => setAskReferralChecked(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded text-navy-950 border-line"
+                    className="mt-0.5 h-4 w-4 rounded text-[#101A30] border-slate-300"
                   />
                   <div className="text-xs">
-                    <span className="font-bold text-navy-950 block">
+                    <span className="font-bold text-[#101A30] block">
                       Also request internal referral from {applyModalJob.postedByAlumniName}
                     </span>
-                    <span className="text-muted text-[11px]">
+                    <span className="text-slate-500 text-[11px]">
                       Alumnus has {applyModalJob.referralSlots} referral slots open for verified candidates.
                     </span>
                   </div>
@@ -1050,7 +969,7 @@ export default function JobsPage() {
 
             <button
               type="submit"
-              className="w-full h-12 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-12 rounded-xl bg-[#101A30] text-[#D5B568] font-bold text-sm hover:bg-navy-900 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               <Send className="h-4 w-4" />
               <span>Submit Application</span>
@@ -1059,30 +978,30 @@ export default function JobsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* REFERRAL REQUEST DIALOG */}
+      {/* 7. PRESERVED REFERRAL REQUEST DIALOG */}
       <Dialog open={Boolean(referralModalJob)} onOpenChange={(open) => !open && setReferralModalJob(null)}>
         <DialogContent className="sm:max-w-lg bg-white rounded-3xl p-6 sm:p-8" data-lenis-prevent>
-          <DialogHeader className="border-b border-line pb-3">
-            <DialogTitle className="text-xl font-serif font-bold text-navy-950 flex items-center gap-2">
-              <Award className="h-5 w-5 text-gold-600" />
+          <DialogHeader className="border-b border-slate-200 pb-3">
+            <DialogTitle className="text-xl font-serif font-bold text-[#101A30] flex items-center gap-2">
+              <Award className="h-5 w-5 text-[#D5B568]" />
               <span>Request Internal Referral</span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted">
+            <DialogDescription className="text-xs text-slate-500">
               Asking {referralModalJob?.postedByAlumniName} for {referralModalJob?.title} at {referralModalJob?.company}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmitReferral} className="space-y-4 pt-2">
-            <p className="text-xs text-muted leading-relaxed">
+            <p className="text-xs text-slate-500 leading-relaxed">
               Alumni mentors review referral requests based on skill match and academic grounding. Be professional, concise, and clear about your background.
             </p>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-semibold text-navy-950 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-[#101A30] uppercase tracking-wider">
                   Personal Intro & Pitch (Max 300 chars) *
                 </label>
-                <span className="text-[10px] text-muted">{referralMessage.length} / 300</span>
+                <span className="text-[10px] text-slate-500">{referralMessage.length} / 300</span>
               </div>
               <textarea
                 rows={3}
@@ -1090,15 +1009,15 @@ export default function JobsPage() {
                 value={referralMessage}
                 onChange={(e) => setReferralMessage(e.target.value)}
                 placeholder="Briefly state your graduation year, relevant skills, and why you are keen on this team..."
-                className="w-full p-3 rounded-xl border border-line text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                className="w-full p-3 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/30"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full h-12 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-12 rounded-xl bg-[#101A30] text-[#D5B568] font-bold text-sm hover:bg-navy-900 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Award className="h-4 w-4 text-gold-400" />
+              <Award className="h-4 w-4 text-[#D5B568]" />
               <span>Send Referral Request</span>
             </button>
           </form>

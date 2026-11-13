@@ -420,15 +420,15 @@ export function Header() {
 
                   <DropdownMenuContent
                     align="end"
-                    className="w-64 bg-navy-900 border-navy-700 text-ivory p-2 rounded-xl shadow-xl z-50"
+                    className="w-72 sm:w-80 bg-navy-950/98 backdrop-blur-md border border-navy-700/80 text-ivory p-2.5 rounded-2xl shadow-2xl z-50 divide-y divide-navy-800/80"
                   >
                     <DropdownMenuGroup>
-                      <DropdownMenuLabel className="font-normal px-2 py-1.5">
+                      <DropdownMenuLabel className="font-normal px-2.5 py-2">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-xs font-bold text-ivory">{currentUser.name}</span>
+                          <span className="text-sm font-bold text-ivory tracking-tight">{currentUser.name}</span>
                           <span
                             className={cn(
-                              "px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
+                              "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider",
                               currentUser.role === "student"
                                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                                 : "bg-gold-500/20 text-gold-300 border border-gold-500/30"
@@ -437,98 +437,123 @@ export function Header() {
                             {currentUser.role === "student" ? "Student" : "Alumnus"}
                           </span>
                         </div>
-                        <div className="text-[11px] text-ivory/60 truncate mt-0.5">{currentUser.email}</div>
+                        <div className="text-[12px] text-ivory/70 truncate mt-0.5">{currentUser.email}</div>
                         {currentUser.course && (
-                          <div className="text-[10px] text-gold-400 mt-1 truncate">
+                          <div className="text-[11px] text-gold-400/90 mt-1 truncate font-medium">
                             {currentUser.course} {currentUser.batch ? `• 'Class of ${currentUser.batch}` : ""}
                           </div>
                         )}
                       </DropdownMenuLabel>
                     </DropdownMenuGroup>
-                    <DropdownMenuSeparator className="bg-navy-800" />
 
-                    <DropdownMenuItem
-                      onClick={() => router.push("/dashboard")}
-                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
-                    >
-                      <LayoutDashboard className="h-3.5 w-3.5 text-gold-400" />
-                      <span>Opportunities Dashboard</span>
-                    </DropdownMenuItem>
+                    <div className="py-1.5 space-y-0.5">
+                      <DropdownMenuItem
+                        onClick={() => router.push("/dashboard")}
+                        className="group focus:bg-navy-800/90 focus:text-gold-300 data-highlighted:bg-navy-800/90 data-highlighted:text-gold-300 cursor-pointer rounded-xl text-xs flex items-center gap-2.5 px-2.5 py-2 text-ivory/90 transition-colors"
+                      >
+                        <LayoutDashboard className="h-4 w-4 text-gold-400 group-hover:text-gold-300 shrink-0" />
+                        <span className="font-medium">Opportunities Dashboard</span>
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      onClick={() => router.push("/dashboard/applications")}
-                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
-                    >
-                      <Briefcase className="h-3.5 w-3.5 text-gold-400" />
-                      <span>My Applications</span>
-                    </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/dashboard/applications")}
+                        className="group focus:bg-navy-800/90 focus:text-gold-300 data-highlighted:bg-navy-800/90 data-highlighted:text-gold-300 cursor-pointer rounded-xl text-xs flex items-center gap-2.5 px-2.5 py-2 text-ivory/90 transition-colors"
+                      >
+                        <Briefcase className="h-4 w-4 text-gold-400 group-hover:text-gold-300 shrink-0" />
+                        <span className="font-medium">My Applications</span>
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      onClick={() => router.push("/messages")}
-                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center justify-between px-2 py-1.5"
-                    >
-                      <span className="flex items-center gap-2">
-                        <MessageSquare className="h-3.5 w-3.5 text-gold-400" />
-                        <span>Direct Messages</span>
-                      </span>
-                      {unreadMessagesCount > 0 && (
-                        <span className="bg-gold-500 text-navy-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
-                          {unreadMessagesCount}
+                      <DropdownMenuItem
+                        onClick={() => router.push("/messages")}
+                        className="group focus:bg-navy-800/90 focus:text-gold-300 data-highlighted:bg-navy-800/90 data-highlighted:text-gold-300 cursor-pointer rounded-xl text-xs flex items-center justify-between px-2.5 py-2 text-ivory/90 transition-colors"
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <MessageSquare className="h-4 w-4 text-gold-400 group-hover:text-gold-300 shrink-0" />
+                          <span className="font-medium">Direct Messages</span>
                         </span>
-                      )}
-                    </DropdownMenuItem>
+                        {unreadMessagesCount > 0 && (
+                          <span className="bg-gold-500 text-navy-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                            {unreadMessagesCount}
+                          </span>
+                        )}
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      onClick={() => router.push("/dashboard/profile")}
-                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
-                    >
-                      <User className="h-3.5 w-3.5 text-gold-400" />
-                      <span>My Profile & Skills</span>
-                    </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/dashboard/profile")}
+                        className="group focus:bg-navy-800/90 focus:text-gold-300 data-highlighted:bg-navy-800/90 data-highlighted:text-gold-300 cursor-pointer rounded-xl text-xs flex items-center gap-2.5 px-2.5 py-2 text-ivory/90 transition-colors"
+                      >
+                        <User className="h-4 w-4 text-gold-400 group-hover:text-gold-300 shrink-0" />
+                        <span className="font-medium">My Profile & Skills</span>
+                      </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      onClick={() => router.push("/admin")}
-                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center gap-2 px-2 py-1.5"
-                    >
-                      <ShieldAlert className="h-3.5 w-3.5 text-gold-400" />
-                      <span>Admin Moderation Panel</span>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuSeparator className="bg-navy-800" />
-                    <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-ivory/50">
-                      Switch Demo Role
+                      <DropdownMenuItem
+                        onClick={() => router.push("/admin")}
+                        className="group focus:bg-navy-800/90 focus:text-gold-300 data-highlighted:bg-navy-800/90 data-highlighted:text-gold-300 cursor-pointer rounded-xl text-xs flex items-center gap-2.5 px-2.5 py-2 text-ivory/90 transition-colors"
+                      >
+                        <ShieldAlert className="h-4 w-4 text-gold-400 group-hover:text-gold-300 shrink-0" />
+                        <span className="font-medium">Admin Moderation Panel</span>
+                      </DropdownMenuItem>
                     </div>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        switchDemoUser("alumnus");
-                        toast.success("Switched to Alumnus demo account (Vikramaditya Rathore)");
-                      }}
-                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center justify-between px-2 py-1.5"
-                    >
-                      <span className="flex items-center gap-2">
-                        <RefreshCw className="h-3.5 w-3.5 text-gold-400" />
-                        <span>Alumnus (Employer/Referrer)</span>
-                      </span>
-                      {currentUser.role !== "student" && (
-                        <span className="text-[10px] text-gold-400 font-bold">Active</span>
-                      )}
-                    </DropdownMenuItem>
 
-                    <DropdownMenuItem
-                      onClick={() => {
-                        switchDemoUser("student");
-                        toast.success("Switched to Student demo account (Aarav Mehta)");
-                      }}
-                      className="focus:bg-navy-800 focus:text-gold-300 cursor-pointer rounded-lg text-xs flex items-center justify-between px-2 py-1.5"
-                    >
-                      <span className="flex items-center gap-2">
-                        <RefreshCw className="h-3.5 w-3.5 text-emerald-400" />
-                        <span>Student (Applicant/Trainee)</span>
-                      </span>
-                      {currentUser.role === "student" && (
-                        <span className="text-[10px] text-emerald-400 font-bold">Active</span>
-                      )}
-                    </DropdownMenuItem>
+                    <div className="pt-2">
+                      <div className="px-2 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-ivory/50">
+                        Switch Demo Role
+                      </div>
+
+                      <div className="space-y-1">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            switchDemoUser("alumnus");
+                            toast.success("Switched to Alumnus demo account (Vikramaditya Rathore)");
+                          }}
+                          className={cn(
+                            "cursor-pointer rounded-xl p-2 text-xs flex items-center justify-between border transition-all",
+                            currentUser.role !== "student"
+                              ? "bg-gold-500/15 border-gold-500/40 text-gold-200 focus:bg-gold-500/20 data-highlighted:bg-gold-500/20"
+                              : "bg-navy-900/60 border-navy-800 text-ivory/80 hover:bg-navy-800 hover:text-ivory focus:bg-navy-800 focus:text-ivory data-highlighted:bg-navy-800 data-highlighted:text-ivory"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <RefreshCw className={cn("h-3.5 w-3.5 shrink-0", currentUser.role !== "student" ? "text-gold-400" : "text-ivory/50")} />
+                            <div className="min-w-0">
+                              <div className="font-semibold text-ivory text-xs leading-snug">Alumnus</div>
+                              <div className="text-[10px] text-ivory/60 leading-snug">Employer / Referrer</div>
+                            </div>
+                          </div>
+                          {currentUser.role !== "student" && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold-500/25 text-gold-300 border border-gold-500/40 shrink-0 ml-2">
+                              Active
+                            </span>
+                          )}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            switchDemoUser("student");
+                            toast.success("Switched to Student demo account (Aarav Mehta)");
+                          }}
+                          className={cn(
+                            "cursor-pointer rounded-xl p-2 text-xs flex items-center justify-between border transition-all",
+                            currentUser.role === "student"
+                              ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-200 focus:bg-emerald-500/20 data-highlighted:bg-emerald-500/20"
+                              : "bg-navy-900/60 border-navy-800 text-ivory/80 hover:bg-navy-800 hover:text-ivory focus:bg-navy-800 focus:text-ivory data-highlighted:bg-navy-800 data-highlighted:text-ivory"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <RefreshCw className={cn("h-3.5 w-3.5 shrink-0", currentUser.role === "student" ? "text-emerald-400" : "text-ivory/50")} />
+                            <div className="min-w-0">
+                              <div className="font-semibold text-ivory text-xs leading-snug">Student</div>
+                              <div className="text-[10px] text-ivory/60 leading-snug">Applicant / Mentee</div>
+                            </div>
+                          </div>
+                          {currentUser.role === "student" && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 shrink-0 ml-2">
+                              Active
+                            </span>
+                          )}
+                        </DropdownMenuItem>
+                      </div>
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
