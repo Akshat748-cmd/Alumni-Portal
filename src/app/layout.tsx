@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Playfair_Display, Inter, Manrope } from "next/font/google";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
@@ -18,6 +18,13 @@ const playfair = Playfair_Display({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
@@ -42,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${playfair.variable} ${inter.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning className={`${playfair.variable} ${inter.variable} ${manrope.variable} antialiased`}>
       <body suppressHydrationWarning className="min-h-screen bg-ivory text-ink font-sans flex flex-col antialiased selection:bg-gold-500/30 selection:text-navy-950">
         <SmoothScroll>
           <TooltipProvider delay={200}>

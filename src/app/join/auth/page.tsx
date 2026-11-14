@@ -310,9 +310,9 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-ivory text-ink">
       <PageHero
-        eyebrow="OPPORTUNITIES NETWORK & ALUMNI GATEWAY"
+        eyebrow="PODDAR ALUMNI NETWORK"
         title="Portal Access & Registration"
-        subtitle="Connect alumni and students across career postings, verified referrals, 1-on-1 messaging, and mentorship."
+        subtitle="Connect alumni and students through career opportunities, verified referrals, direct messaging, and mentorship."
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Join the Network", href: "/join" },
@@ -320,7 +320,7 @@ export default function AuthPage() {
         ]}
       />
 
-      <section className="py-12 md:py-20">
+      <section className="py-6 sm:py-10 md:py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
           {/* ALREADY SIGNED IN CARD */}
           {currentUser ? (
@@ -332,7 +332,7 @@ export default function AuthPage() {
               <div className="inline-flex p-3 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200 mb-6">
                 <ShieldCheck className="h-8 w-8" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-navy-950 mb-2">
+              <h2 className="text-2xl sm:text-3xl font-sans font-bold text-navy-950 mb-2">
                 You Are Currently Signed In
               </h2>
               <p className="text-sm text-muted mb-8">
@@ -444,7 +444,7 @@ export default function AuthPage() {
                 <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-3">
                   {registeredType === "student" ? "Instant Activation Confirmed" : "Enrollment Submitted"}
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-navy-950 mb-3">
+                <h2 className="text-2xl sm:text-3xl font-sans font-bold text-navy-950 mb-3">
                   {registeredType === "student"
                     ? "Welcome to Poddar Opportunities Network!"
                     : "Welcome to the Poddar Alumni Family!"}
@@ -616,7 +616,7 @@ export default function AuthPage() {
                       {registerRole === "student" ? (
                         <form onSubmit={handleRegisterSubmit} noValidate className="space-y-5">
                           <div className="border-b border-line pb-3">
-                            <h3 className="text-base sm:text-lg font-serif font-bold text-navy-950 flex items-center gap-2 flex-wrap">
+                            <h3 className="text-base sm:text-lg font-sans font-bold text-navy-950 flex items-center gap-2 flex-wrap">
                               <span>Student Registration</span>
                               <span className="text-[11px] sm:text-xs font-normal text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full shrink-0">
                                 Instant Access • No Admin Waiting
@@ -804,7 +804,7 @@ export default function AuthPage() {
                         /* ALUMNUS FORM */
                         <form onSubmit={handleRegisterSubmit} noValidate className="space-y-6">
                           <div className="border-b border-line pb-3">
-                            <h3 className="text-lg font-serif font-bold text-navy-950">
+                            <h3 className="text-lg font-sans font-bold text-navy-950">
                               Verified Alumni Registration
                             </h3>
                             <p className="text-xs text-muted mt-0.5">
@@ -1009,7 +1009,7 @@ export default function AuthPage() {
                     >
                       {/* QUICK 1-CLICK DEMO ACCOUNTS */}
                       <div className="p-4 rounded-2xl bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 text-white border border-gold-500/30">
-                        <div className="flex items-center gap-2 text-gold-300 font-serif font-bold text-sm mb-2">
+                        <div className="flex items-center gap-2 text-gold-300 font-sans font-bold text-sm mb-2">
                           <Sparkles className="h-4 w-4" />
                           <span>1-Click Evaluator Sign-In</span>
                         </div>

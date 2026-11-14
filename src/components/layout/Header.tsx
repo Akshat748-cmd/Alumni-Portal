@@ -532,41 +532,27 @@ export function Header() {
           </div>
 
           {/* 4. MOBILE / TABLET CONTROLS (Visible ONLY at < 1024px via lg:hidden) */}
-          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex lg:hidden items-center gap-2.5 sm:gap-3 shrink-0">
             {/* Mobile Auth Button (Login or Logout) */}
             {currentUser ? (
-              <div className="flex items-center gap-1.5">
-                <Link
-                  href="/messages"
-                  scroll={false}
-                  className="relative flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-navy-900 border border-navy-700 text-ivory"
-                  aria-label="Direct Messages"
-                >
-                  <MessageSquare className="h-4 w-4 text-gold-400" />
-                  {unreadMessagesCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-gold-400" />
-                  )}
-                </Link>
-
-                <NotificationsPopover />
-
+              <div className="flex items-center gap-2">
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-navy-900 border border-navy-700 text-rose-300 hover:text-white text-xs font-semibold"
+                  className="flex items-center justify-center h-10 w-10 rounded-full bg-navy-950/60 border border-gold-400/50 text-gold-300 hover:text-white hover:border-gold-300 active:scale-95 transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-400/50"
                   aria-label="Logout"
                   title="Logout"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <LogOut className="h-5 w-5" strokeWidth={1.75} />
                 </button>
               </div>
             ) : (
               <Link
                 href="/join/auth?tab=login"
-                className="flex items-center justify-center min-w-[40px] h-9 sm:h-10 px-3 rounded-xl border border-gold-500/80 text-gold-300 hover:bg-gold-500/15 text-xs font-semibold"
+                className="flex items-center justify-center h-10 w-10 rounded-full bg-navy-950/60 border border-gold-400/50 text-gold-300 hover:text-white hover:border-gold-300 active:scale-95 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-gold-400/50"
                 aria-label="Login"
+                title="Login"
               >
-                <LogIn className="h-4 w-4" />
-                <span className="hidden sm:inline ml-1.5">Login</span>
+                <LogIn className="h-5 w-5" strokeWidth={1.75} />
               </Link>
             )}
 
@@ -575,12 +561,12 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="relative flex lg:hidden h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-navy-900 border border-navy-700 text-ivory active:scale-95 transition-transform cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-400"
+                className="relative flex items-center justify-center h-10 w-10 rounded-full bg-navy-950/60 border border-gold-400/50 text-gold-300 hover:border-gold-300 active:scale-95 transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-400/50"
                 aria-label="Open Navigation Menu"
               >
-                <Menu className="h-5 w-5 text-gold-400" strokeWidth={2} />
+                <Menu className="h-5 w-5" strokeWidth={1.75} />
                 {(unreadMessagesCount > 0 || unreadNotifsCount > 0) && (
-                  <span className="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-gold-400 border-2 border-navy-950 animate-pulse" />
+                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-gold-400 border border-navy-950 animate-pulse" />
                 )}
               </button>
 

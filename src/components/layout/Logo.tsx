@@ -1,7 +1,7 @@
 "use client";
 
-import { INSTITUTION } from "@/data/institution";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -20,18 +20,23 @@ export function Logo({ theme = "navy", className = "", onClick }: LogoProps) {
       className={cn("group inline-flex items-center gap-2.5 select-none", className)}
       aria-label="Poddar Alumni Network Home"
     >
-      {/* SVG Crest Monogram */}
-      <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg border border-gold-500/40 bg-gradient-to-br from-navy-900 to-navy-950 shadow-xs transition-transform duration-200 group-hover:scale-105">
-        <span className="font-serif text-base sm:text-lg font-bold tracking-tight text-gold-300">P</span>
-        {/* Subtle decorative gold inner corner accent */}
-        <div className="absolute top-1 right-1 h-1 w-1 rounded-full bg-gold-400" />
+      {/* Official Poddar Institution Crest Logo */}
+      <div className="relative flex h-9 w-9 sm:h-9.5 sm:w-9.5 shrink-0 items-center justify-center rounded-xl border border-gold-400/40 bg-gradient-to-br from-navy-900/90 to-navy-950/90 p-1 shadow-xs transition-transform duration-200 group-hover:scale-105">
+        <Image
+          src="/images/poddar-emblem.png"
+          alt="Poddar Group of Institutions Logo"
+          width={36}
+          height={36}
+          priority
+          className="h-full w-full object-contain filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+        />
       </div>
 
       {/* Typography */}
       <div className="flex flex-col leading-none">
         <span
           className={cn(
-            "font-serif text-[15.5px] sm:text-[18px] font-semibold tracking-[-0.01em] transition-colors leading-tight",
+            "font-sans text-[15.5px] sm:text-[17.5px] font-bold tracking-[-0.01em] transition-colors leading-tight",
             isDarkSurface
               ? "text-ivory group-hover:text-gold-300"
               : "text-navy-950 group-hover:text-gold-600"
@@ -39,8 +44,8 @@ export function Logo({ theme = "navy", className = "", onClick }: LogoProps) {
         >
           Poddar Alumni
         </span>
-        <span className="text-[9.5px] sm:text-[10px] uppercase font-semibold tracking-[0.08em] text-gold-500/90 font-sans mt-0.5">
-          Network{INSTITUTION.foundingYear ? ` • Est. ${INSTITUTION.foundingYear}` : ""}
+        <span className="text-[10px] sm:text-[10.5px] uppercase font-bold tracking-[0.12em] text-[#D5B568] font-sans mt-0.5">
+          NETWORK
         </span>
       </div>
     </Link>

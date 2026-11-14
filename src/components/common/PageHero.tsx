@@ -36,7 +36,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-[#101A30] text-white pt-16 sm:pt-20 lg:pt-[88px] pb-5 sm:pb-8 lg:pb-12 border-b border-navy-800 min-h-[190px] sm:min-h-[250px] lg:min-h-[330px] flex items-center",
+        "relative overflow-hidden bg-[#0B1426] text-white pt-[64px] sm:pt-20 lg:pt-[88px] pb-4 sm:pb-7 lg:pb-12 border-b border-navy-800 min-h-0 sm:min-h-[250px] lg:min-h-[330px] flex items-center",
         className
       )}
     >
@@ -45,40 +45,40 @@ export function PageHero({
       <div className="absolute -top-20 right-1/4 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="container relative z-10 mx-auto px-3.5 sm:px-6 lg:px-8 max-w-7xl w-full">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 lg:gap-8 xl:gap-10">
           {/* Left Content Column */}
           <div className="w-full lg:w-[58%] xl:w-[56%] max-w-2xl">
-            {/* Breadcrumb nav in real HTML text */}
+            {/* Breadcrumb nav: Ultra-compact & subtle (never distracts user focus) */}
             <nav
               aria-label="Breadcrumb"
-              className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-[12.5px] text-ivory/70 mb-1.5 sm:mb-2.5 flex-wrap"
+              className="flex items-center gap-1 sm:gap-1.5 text-[8px] sm:text-[10px] lg:text-[11px] text-white/50 mb-1 sm:mb-1.5 flex-wrap"
             >
               <Link
                 href="/"
-                className="flex items-center gap-1 hover:text-gold-300 transition-colors py-0.5"
+                className="flex items-center gap-1 text-white/45 hover:text-gold-300 transition-colors py-0.5"
                 aria-label="Home"
               >
-                <Home className="h-3.5 w-3.5" strokeWidth={1.75} />
+                <Home className="h-2 w-2 sm:h-2.5 sm:w-2.5" strokeWidth={1.5} />
               </Link>
 
               {cleanBreadcrumbs.map((crumb, idx) => {
                 const isLast = idx === cleanBreadcrumbs.length - 1;
                 return (
                   <React.Fragment key={idx}>
-                    <ChevronRight className="h-3 w-3 text-ivory/30 shrink-0" strokeWidth={1.75} />
+                    <ChevronRight className="h-1.5 w-1.5 sm:h-2 sm:w-2 text-white/30 shrink-0" strokeWidth={1.5} />
                     {crumb.href && !isLast ? (
                       <Link
                         href={crumb.href}
-                        className="hover:text-gold-300 transition-colors py-0.5 line-clamp-1"
+                        className="hover:text-gold-300 transition-colors py-0.5 line-clamp-1 text-white/50"
                       >
                         {crumb.label}
                       </Link>
                     ) : (
                       <span
                         className={cn(
-                          "line-clamp-1 py-0.5 font-medium",
-                          isLast ? "text-gold-400" : "text-ivory/80"
+                          "line-clamp-1 py-0.5",
+                          isLast ? "text-white/75 font-medium" : "text-white/45"
                         )}
                         aria-current={isLast ? "page" : undefined}
                       >
@@ -90,24 +90,31 @@ export function PageHero({
               })}
             </nav>
 
-            {/* Eyebrow in real HTML text with Champagne Gold accent line */}
+            {/* Eyebrow: Tiny, subtle secondary label */}
             {eyebrow && (
-              <div className="flex items-center gap-2 mb-1.5 sm:mb-2.5">
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.12em] text-[#D5B568]">
+              <div className="flex items-center gap-2 mb-1 sm:mb-1.5">
+                <span className="text-[8px] sm:text-[9.5px] lg:text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#D5B568]/85">
                   {eyebrow}
                 </span>
-                <div className="h-[1px] w-8 sm:w-10 bg-[#D5B568]/60" />
+                <div className="h-[1px] w-5 sm:w-8 bg-[#D5B568]/50" />
               </div>
             )}
 
-            {/* Title in real HTML text */}
-            <h1 className="font-serif font-bold text-white tracking-tight text-xl sm:text-2xl lg:text-[32px] xl:text-[38px] leading-[1.2] text-balance mb-1.5 sm:mb-2.5">
-              {title}
+            {/* Title in real HTML text with simple, normal, modern typography */}
+            <h1 className="font-sans font-bold text-white tracking-tight text-[21px] sm:text-[25px] md:text-[30px] lg:text-[36px] xl:text-[40px] leading-[1.2] text-balance mb-1.5 sm:mb-2">
+              {title === "Portal Access & Registration" ? (
+                <>
+                  <span className="block sm:inline">Portal Access &amp;</span>{" "}
+                  <span className="block sm:inline">Registration</span>
+                </>
+              ) : (
+                title
+              )}
             </h1>
 
-            {/* Subtitle in real HTML text */}
+            {/* Subtitle in real HTML text: 1 compact subtle line on mobile */}
             {subtitle && (
-              <p className="text-[12px] sm:text-[13.5px] lg:text-[14.5px] text-slate-300 max-w-[60ch] leading-relaxed text-pretty">
+              <p className="font-sans text-[10px] sm:text-[12.5px] lg:text-[14px] text-slate-300/75 leading-normal line-clamp-1 sm:line-clamp-none max-w-[48ch] sm:max-w-[60ch]">
                 {subtitle}
               </p>
             )}
