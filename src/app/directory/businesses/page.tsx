@@ -321,7 +321,7 @@ export default function BusinessDirectoryPage() {
                   <div>
                     {/* Header: Logo Initial Monogram + Name + Industry */}
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-gold-500/40 bg-gradient-to-br from-navy-900 to-navy-950 text-gold-300 font-serif font-bold text-lg shadow-sm shrink-0">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-gold-500/40 bg-gradient-to-br from-navy-900 to-navy-950 text-gold-300 font-sans font-bold text-lg shadow-sm shrink-0">
                         {biz.logoPlaceholder}
                       </div>
 
@@ -329,7 +329,7 @@ export default function BusinessDirectoryPage() {
                         <span className="inline-block rounded-full bg-gold-500/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gold-700 border border-gold-500/30 mb-1">
                           {biz.industry}
                         </span>
-                        <h3 className="font-serif text-lg font-bold text-navy-950 truncate">
+                        <h3 className="font-sans text-lg font-bold text-navy-950 truncate">
                           {biz.name}
                         </h3>
                         <p className="text-xs text-muted">
@@ -412,7 +412,7 @@ export default function BusinessDirectoryPage() {
             <span className="text-xs uppercase font-bold tracking-widest text-gold-400 block">
               Entrepreneurship & Enterprise Network
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ivory">
+            <h2 className="font-sans text-2xl sm:text-3xl font-bold text-ivory">
               Own a Business? List it in the Directory
             </h2>
             <p className="text-xs sm:text-sm text-ivory/80 leading-relaxed text-pretty">
@@ -456,7 +456,7 @@ export default function BusinessDirectoryPage() {
                 <span className="text-[10px] uppercase font-bold text-gold-400 tracking-widest block mb-1">
                   Directory Enrollment
                 </span>
-                <h3 className="font-serif text-xl font-bold text-ivory">
+                <h3 className="font-sans text-xl font-bold text-ivory">
                   Register Your Alumni Enterprise
                 </h3>
                 <p className="text-xs text-ivory/70 mt-1">

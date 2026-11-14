@@ -61,7 +61,7 @@ export function AdminAchievementsQueue() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="font-serif text-lg text-navy-950">
+              <CardTitle className="font-sans text-lg text-navy-950">
                 Alumni Spotlight & Achievement Stories
               </CardTitle>
               <CardDescription className="text-xs">
@@ -178,7 +178,7 @@ export function AdminAchievementsQueue() {
                   </Badge>
                 )}
               </div>
-              <DialogTitle className="font-serif text-xl text-navy-950 mt-1">
+              <DialogTitle className="font-sans text-xl text-navy-950 mt-1">
                 {selectedItem.payload?.title || "Alumni Achievement"}
               </DialogTitle>
               <DialogDescription className="text-xs">
@@ -190,7 +190,7 @@ export function AdminAchievementsQueue() {
               {selectedItem.payload?.pullQuote && (
                 <div className="p-3 rounded-xl bg-gold-50/60 border border-gold-200 text-navy-950 italic flex items-start gap-2">
                   <Quote className="h-4 w-4 text-gold-600 shrink-0 mt-0.5" />
-                  <p className="font-serif font-medium">{selectedItem.payload.pullQuote}</p>
+                  <p className="font-sans font-medium">{selectedItem.payload.pullQuote}</p>
                 </div>
               )}
 
@@ -251,7 +251,7 @@ export function AdminAchievementsQueue() {
         <Dialog open={!!rejectingItem} onOpenChange={(open) => !open && setRejectingItem(null)}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="font-serif text-lg text-rose-700 flex items-center gap-2">
+              <DialogTitle className="font-sans text-lg text-rose-700 flex items-center gap-2">
                 <XCircle className="h-5 w-5" />
                 Reject Achievement Story
               </DialogTitle>

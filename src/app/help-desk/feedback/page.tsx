@@ -120,7 +120,7 @@ export default function SuggestionsFeedbackPage() {
                   <MessageSquare className="h-4 w-4" />
                   <span>Quality Assurance & Community Voice</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+                <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                   Share Your Recommendations
                 </h2>
                 <p className="text-xs sm:text-sm text-muted mt-1">

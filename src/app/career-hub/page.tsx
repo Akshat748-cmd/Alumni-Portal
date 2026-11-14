@@ -111,7 +111,7 @@ export default function CareerHubPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             {STATS.map((stat, i) => (
               <div key={i} className="p-2 sm:p-2.5">
-                <div className="text-[24px] sm:text-[28px] font-serif font-semibold text-gold-400 tabular-nums">
+                <div className="text-[24px] sm:text-[28px] font-sans font-semibold text-gold-400 tabular-nums">
                   {stat.value}
                 </div>
                 <div className="text-[11px] sm:text-xs text-ivory/70 font-semibold uppercase tracking-wider mt-0.5">
@@ -132,7 +132,7 @@ export default function CareerHubPage() {
                 <Sparkles className="h-3 w-3 text-amber-600" />
                 <span>Opportunities Network • New Module</span>
               </div>
-              <h2 className="text-[22px] sm:text-[26px] font-serif font-semibold text-navy-950">
+              <h2 className="text-[22px] sm:text-[26px] font-sans font-semibold text-navy-950">
                 Alumni-Student Hiring & Referral Loop
               </h2>
               <p className="text-xs sm:text-[13px] text-muted mt-0.5 max-w-[62ch]">
@@ -167,7 +167,7 @@ export default function CareerHubPage() {
                       <div className="text-[11px] font-semibold text-gold-700 uppercase tracking-wider mb-1">
                         {card.badge}
                       </div>
-                      <h3 className="text-[17px] sm:text-[18px] font-semibold font-serif text-navy-950 mb-1.5">
+                      <h3 className="text-[17px] sm:text-[18px] font-semibold font-sans text-navy-950 mb-1.5">
                         {card.title}
                       </h3>
                       <p className="text-xs sm:text-[13px] text-muted leading-relaxed mb-4">
@@ -216,7 +216,7 @@ export default function CareerHubPage() {
                             {pillar.badge}
                           </span>
                         </div>
-                        <h3 className="text-[17px] sm:text-[18px] font-semibold font-serif text-navy-950 mb-1.5">
+                        <h3 className="text-[17px] sm:text-[18px] font-semibold font-sans text-navy-950 mb-1.5">
                           {pillar.title}
                         </h3>
                         <p className="text-xs sm:text-[13px] text-muted leading-relaxed mb-4">

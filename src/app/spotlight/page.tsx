@@ -124,7 +124,7 @@ export default function SpotlightOverviewPage() {
                             {track.badge}
                           </Badge>
                         </div>
-                        <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                        <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                           {track.title}
                         </h3>
                         <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
@@ -171,7 +171,7 @@ export default function SpotlightOverviewPage() {
                     </span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl font-serif font-bold leading-snug">
+                  <h2 className="text-2xl sm:text-3xl font-sans font-bold leading-snug">
                     {featuredStory.title}
                   </h2>
 
@@ -235,7 +235,7 @@ export default function SpotlightOverviewPage() {
                       <div className="text-xs text-amber-600 font-semibold mb-1">
                         {story.alumniName} (Class of {story.batch})
                       </div>
-                      <h4 className="text-base font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                      <h4 className="text-base font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
                         {story.title}
                       </h4>
                       <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
@@ -261,7 +261,7 @@ export default function SpotlightOverviewPage() {
               <span className="text-xs font-bold uppercase tracking-wider text-amber-600">
                 Community Recognition
               </span>
-              <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 mt-1">
+              <h3 className="text-xl sm:text-2xl font-sans font-bold text-slate-900 dark:text-slate-100 mt-1">
                 Have a recent career milestone or achievement to celebrate?
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
@@ -290,7 +290,7 @@ export default function SpotlightOverviewPage() {
                     Class of {selectedStory.batch} • {selectedStory.course}
                   </span>
                 </div>
-                <DialogTitle className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-xl sm:text-2xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
                   {selectedStory.title}
                 </DialogTitle>
                 <DialogDescription className="text-left text-amber-600 font-semibold pt-0.5">

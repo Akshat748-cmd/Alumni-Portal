@@ -63,7 +63,7 @@ export default function EntrepreneursPage() {
               className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm"
             >
               <div className="text-xs text-slate-500 font-medium">{m.label}</div>
-              <div className="text-lg sm:text-xl font-bold font-serif text-slate-900 dark:text-slate-100 mt-0.5">
+              <div className="text-lg sm:text-xl font-bold font-sans text-slate-900 dark:text-slate-100 mt-0.5">
                 {m.value}
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function EntrepreneursPage() {
               <Card className="border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-xl transition-all h-full flex flex-col justify-between group overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-navy-950 text-amber-400 font-serif font-bold text-lg flex items-center justify-center shrink-0 border border-amber-500/30">
+                    <div className="w-12 h-12 rounded-xl bg-navy-950 text-amber-400 font-sans font-bold text-lg flex items-center justify-center shrink-0 border border-amber-500/30">
                       {biz.logoPlaceholder || biz.name.substring(0, 2).toUpperCase()}
                     </div>
                     <Badge variant="outline" className="text-xs">
@@ -105,7 +105,7 @@ export default function EntrepreneursPage() {
                     </Badge>
                   </div>
 
-                  <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                  <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                     {biz.name}
                   </h3>
 

@@ -82,7 +82,7 @@ export function AdminGiveBackQueue() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="font-serif text-lg text-navy-950">
+                <CardTitle className="font-sans text-lg text-navy-950">
                   Institutional Contribution & Give Back Pledges
                 </CardTitle>
                 <CardDescription className="text-xs">
@@ -169,7 +169,7 @@ export function AdminGiveBackQueue() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="font-serif text-lg text-navy-950">
+                <CardTitle className="font-sans text-lg text-navy-950">
                   Reunions & Gathering Registrations
                 </CardTitle>
                 <CardDescription className="text-xs">

@@ -71,7 +71,7 @@ export default function MyPostingsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+              <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                 Created Opportunities ({myPostings.length})
               </h2>
               <p className="text-xs sm:text-sm text-muted mt-0.5">
@@ -125,7 +125,7 @@ export default function MyPostingsPage() {
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-serif font-bold text-navy-950 mb-1">
+                      <h3 className="text-lg font-sans font-bold text-navy-950 mb-1">
                         {job.title}
                       </h3>
                       <div className="text-xs font-semibold text-navy-800 flex items-center gap-1.5 mb-3">

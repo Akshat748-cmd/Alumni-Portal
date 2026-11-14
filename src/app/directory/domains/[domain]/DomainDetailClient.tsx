@@ -193,7 +193,7 @@ export function DomainDetailClient({ domainData }: DomainDetailClientProps) {
                 Industry Domain Cohort
               </span>
             </div>
-            <h2 className="font-serif text-[22px] sm:text-[26px] font-semibold text-navy-950">
+            <h2 className="font-sans text-[22px] sm:text-[26px] font-semibold text-navy-950">
               {domainData.name}
             </h2>
             <p className="text-[12px] sm:text-[13px] text-muted mt-0.5 max-w-xl">
@@ -204,7 +204,7 @@ export function DomainDetailClient({ domainData }: DomainDetailClientProps) {
 
         {/* Counter Badge */}
         <div className="rounded-lg bg-ivory border border-line p-3 sm:p-3.5 text-center shrink-0 w-full sm:w-auto">
-          <div className="font-serif text-[24px] sm:text-[28px] font-semibold text-navy-950 leading-none tabular-nums">
+          <div className="font-sans text-[24px] sm:text-[28px] font-semibold text-navy-950 leading-none tabular-nums">
             <CountUp end={domainData.sampleCount} />
           </div>
           <span className="text-[10px] sm:text-[11px] uppercase font-semibold text-muted tracking-wider block mt-1">

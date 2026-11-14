@@ -195,7 +195,7 @@ export default function ReferralCenterPage() {
                           </span>
                         </div>
 
-                        <h3 className="text-base font-serif font-bold text-navy-950 truncate">
+                        <h3 className="text-base font-sans font-bold text-navy-950 truncate">
                           {ref.jobTitle}
                         </h3>
                         <div className="text-xs text-muted flex items-center gap-1.5 mt-0.5">
@@ -361,7 +361,7 @@ export default function ReferralCenterPage() {
       <Dialog open={Boolean(declineRefId)} onOpenChange={(open) => !open && setDeclineRefId(null)}>
         <DialogContent className="sm:max-w-md bg-white rounded-3xl p-6" data-lenis-prevent>
           <DialogHeader className="border-b border-line pb-3">
-            <DialogTitle className="text-lg font-serif font-bold text-navy-950">
+            <DialogTitle className="text-lg font-sans font-bold text-navy-950">
               Decline Referral Request
             </DialogTitle>
             <DialogDescription className="text-xs text-muted">

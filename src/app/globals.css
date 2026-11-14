@@ -42,9 +42,9 @@
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-serif: var(--font-playfair), Georgia, serif;
-  --font-heading: var(--font-playfair), Georgia, serif;
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-manrope), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-manrope), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-manrope), var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-inter), system-ui, -apple-system, sans-serif;
 
   /* Global typography scale override (compact & refined) */
@@ -150,15 +150,10 @@
     position: relative;
   }
 
-  h1, h2, h3, h4, h5, h6, .font-heading {
-    font-family: var(--font-manrope), var(--font-inter), system-ui, -apple-system, sans-serif;
+  h1, h2, h3, h4, h5, h6, .font-heading, .font-sans {
+    font-family: var(--font-manrope), var(--font-inter), system-ui, -apple-system, sans-serif !important;
     letter-spacing: -0.015em;
     font-weight: 700;
-  }
-
-  .font-serif {
-    font-family: var(--font-playfair), Georgia, serif;
-    letter-spacing: -0.01em;
   }
 
   /* Refined typography scale: compact on mobile, majestic on desktop */
@@ -185,7 +180,7 @@
   }
 
   p {
-    font-size: clamp(0.78rem, 0.6vw + 0.55rem, 0.9375rem);
+    font-size: clamp(0.72rem, 0.4vw + 0.52rem, 0.8125rem);
     line-height: 1.52;
   }
 

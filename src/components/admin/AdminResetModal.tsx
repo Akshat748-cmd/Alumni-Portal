@@ -40,7 +40,7 @@ export function AdminResetModal({ open, onOpenChange }: AdminResetModalProps) {
               Secretariat Demonstration Control
             </span>
           </div>
-          <DialogTitle className="font-serif text-xl text-navy-950">
+          <DialogTitle className="font-sans text-xl text-navy-950">
             Reset All Prototype Data?
           </DialogTitle>
           <DialogDescription className="text-xs leading-relaxed pt-2">

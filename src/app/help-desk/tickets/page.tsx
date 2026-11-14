@@ -215,7 +215,7 @@ export default function MyTicketsPage() {
                 <StatusBadge status={selectedTicket.status} size="sm" />
               </div>
             )}
-            <DialogTitle className="font-serif text-xl sm:text-2xl font-bold text-navy-950">
+            <DialogTitle className="font-sans text-xl sm:text-2xl font-bold text-navy-950">
               {selectedTicket?.subject}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted">

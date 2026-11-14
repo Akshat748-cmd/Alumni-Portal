@@ -56,7 +56,7 @@ export function TicketSuccessState({
           Support Request Logged
         </div>
 
-        <h2 className="text-[20px] sm:text-[24px] font-serif font-semibold text-navy-950 mb-1.5">
+        <h2 className="text-[20px] sm:text-[24px] font-sans font-semibold text-navy-950 mb-1.5">
           Ticket Filed Successfully
         </h2>
 

@@ -184,7 +184,7 @@ export default function PostOpportunityPage() {
               <div className="inline-flex p-4 rounded-2xl bg-navy-50 text-navy-900 mb-4">
                 <Briefcase className="h-8 w-8" />
               </div>
-              <h2 className="text-2xl font-serif font-bold text-navy-950 mb-2">
+              <h2 className="text-2xl font-sans font-bold text-navy-950 mb-2">
                 Alumni Sign-In Required
               </h2>
               <p className="text-sm text-muted mb-6">
@@ -224,7 +224,7 @@ export default function PostOpportunityPage() {
               <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold uppercase tracking-wider mb-3">
                 Live on Opportunities Network
               </div>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-navy-950 mb-3">
+              <h2 className="text-2xl sm:text-3xl font-sans font-bold text-navy-950 mb-3">
                 Opportunity Published Successfully!
               </h2>
               <p className="text-sm text-muted max-w-lg mx-auto mb-6 leading-relaxed">
@@ -282,7 +282,7 @@ export default function PostOpportunityPage() {
             <div className="bg-white rounded-3xl p-6 sm:p-10 border border-line shadow-xl">
               <div className="border-b border-line pb-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+                  <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                     Opportunity Listing Details
                   </h2>
                   <p className="text-xs sm:text-sm text-muted mt-1">

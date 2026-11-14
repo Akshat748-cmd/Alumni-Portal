@@ -118,10 +118,10 @@ export default function BulletinOverviewPage() {
                             {sec.count}
                           </Badge>
                         </div>
-                        <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                        <h3 className="text-base sm:text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                           {sec.title}
                         </h3>
-                        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                        <p className="mt-1.5 text-[11.5px] sm:text-[12.5px] text-slate-500 dark:text-slate-400 line-clamp-2 font-normal leading-normal">
                           {sec.description}
                         </p>
                       </div>
@@ -148,7 +148,7 @@ export default function BulletinOverviewPage() {
                   High-Priority Notification
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold max-w-3xl leading-snug">
+              <h2 className="text-xl sm:text-2xl font-sans font-bold max-w-3xl leading-snug">
                 {highPriorityNotices[0].title}
               </h2>
               <p className="mt-3 text-slate-300 text-sm sm:text-base max-w-3xl line-clamp-2">
@@ -222,7 +222,7 @@ export default function BulletinOverviewPage() {
                       </span>
                     </div>
 
-                    <h4 className="text-base font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                    <h4 className="text-base font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
                       {notice.title}
                     </h4>
                     <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
@@ -260,7 +260,7 @@ export default function BulletinOverviewPage() {
                   </Badge>
                   <span className="text-xs text-slate-500">{latestNewsletter.publishDate}</span>
                 </div>
-                <h3 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-2xl font-sans font-bold text-slate-900 dark:text-slate-100">
                   {latestNewsletter.title}
                 </h3>
                 <p className="mt-2 text-sm sm:text-base text-slate-600 dark:text-slate-400">

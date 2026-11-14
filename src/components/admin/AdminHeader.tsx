@@ -51,7 +51,7 @@ export function AdminHeader({
 
         {/* Title: 1 line with ellipsis truncation, font size 16px on mobile */}
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <h1 className="font-serif text-base sm:text-lg font-bold text-navy-950 tracking-tight truncate leading-none">
+          <h1 className="font-sans text-base sm:text-lg font-bold text-navy-950 tracking-tight truncate leading-none">
             <span className="sm:hidden truncate">{shortTitle}</span>
             <span className="hidden sm:inline truncate">{currentTabLabel}</span>
           </h1>

@@ -68,7 +68,7 @@ export default function WhoWeAreOverviewPage() {
         <Reveal className="mb-16">
           <div className="rounded-3xl border border-amber-500/30 bg-gradient-to-r from-navy-950 via-navy-900 to-slate-900 text-white p-6 sm:p-10 shadow-2xl relative overflow-hidden">
             <div className="flex flex-col lg:flex-row items-center gap-8">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-navy-950 font-serif font-bold text-3xl sm:text-4xl flex items-center justify-center shrink-0 shadow-xl border border-amber-300">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-navy-950 font-sans font-bold text-3xl sm:text-4xl flex items-center justify-center shrink-0 shadow-xl border border-amber-300">
                 P
               </div>
 
@@ -77,7 +77,7 @@ export default function WhoWeAreOverviewPage() {
                   <Sparkles className="w-3.5 h-3.5" />
                   Office of Alumni Relations & Institutional Advancement
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold">
+                <h2 className="text-2xl sm:text-3xl font-sans font-bold">
                   "Once a Poddarian, Forever a Pillar of Our Alma Mater"
                 </h2>
                 <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
@@ -109,7 +109,7 @@ export default function WhoWeAreOverviewPage() {
                         </Badge>
                       </div>
 
-                      <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                      <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                         {sec.title}
                       </h3>
 
@@ -167,7 +167,7 @@ export default function WhoWeAreOverviewPage() {
                   <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h4 className="text-base font-serif font-bold text-slate-900 dark:text-slate-100 mb-2">
+                  <h4 className="text-base font-sans font-bold text-slate-900 dark:text-slate-100 mb-2">
                     {pillar.title}
                   </h4>
                   <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">

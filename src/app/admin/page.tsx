@@ -197,7 +197,7 @@ function AdminPanelContent() {
 
             {activeTab === "reset" && (
               <div className="p-8 max-w-xl mx-auto text-center rounded-2xl bg-card border border-line shadow-navy-soft space-y-4">
-                <h3 className="font-serif text-xl font-bold text-navy-950">
+                <h3 className="font-sans text-xl font-bold text-navy-950">
                   Prototype Environment Reset
                 </h3>
                 <p className="text-xs text-muted leading-relaxed">

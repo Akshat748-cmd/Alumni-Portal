@@ -120,7 +120,7 @@ export default function SubmitQueryPage() {
                   <HelpCircle className="h-4 w-4" />
                   <span>General Support Request</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+                <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                   Ticket Information
                 </h2>
                 <p className="text-xs sm:text-sm text-muted mt-1">

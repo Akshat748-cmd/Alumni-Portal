@@ -48,7 +48,7 @@ export function AdminStudents() {
       {/* HEADER & CONTROLS */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-line shadow-sm">
         <div>
-          <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950 flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950 flex items-center gap-2">
             <GraduationCap className="h-6 w-6 text-gold-600" />
             <span>Enrolled Students Registry ({students.length})</span>
           </h2>

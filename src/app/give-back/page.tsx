@@ -101,7 +101,7 @@ export default function GiveBackOverviewPage() {
               className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm"
             >
               <div className="text-xs text-slate-500 font-medium">{stat.label}</div>
-              <div className="text-2xl font-serif font-bold text-amber-600 dark:text-amber-400 mt-1">
+              <div className="text-2xl font-sans font-bold text-amber-600 dark:text-amber-400 mt-1">
                 {stat.value}
               </div>
               <div className="text-xs text-slate-400 mt-1">{stat.desc}</div>
@@ -134,7 +134,7 @@ export default function GiveBackOverviewPage() {
                         </Badge>
                       </div>
 
-                      <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                      <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                         {track.title}
                       </h3>
 

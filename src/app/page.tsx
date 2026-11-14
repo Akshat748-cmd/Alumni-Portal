@@ -269,7 +269,7 @@ export default function HomePage() {
               initial={{ y: "100%" }}
               animate={{ y: "0%" }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="font-serif font-semibold text-ivory tracking-tight text-balance text-[22px] sm:text-[34px] lg:text-[44px] leading-[1.18]"
+              className="font-sans font-semibold text-ivory tracking-tight text-balance text-[22px] sm:text-[34px] lg:text-[44px] leading-[1.18]"
             >
               Once Poddar, always Poddar.
             </motion.h1>
@@ -390,10 +390,10 @@ export default function HomePage() {
                       <div className="flex h-7.5 w-7.5 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-gold-500/15 text-gold-600 mb-2 sm:mb-2.5 group-hover:bg-navy-900 group-hover:text-gold-300 transition-colors">
                         <Icon className="h-4 w-4 sm:h-4.5 sm:w-4.5" strokeWidth={1.75} />
                       </div>
-                      <h4 className="font-serif font-semibold text-[13px] sm:text-[15px] text-navy-950 group-hover:text-gold-600 transition-colors mb-0.5 sm:mb-1">
+                      <h4 className="font-sans font-semibold text-[13px] sm:text-[15px] text-navy-950 group-hover:text-gold-600 transition-colors mb-0.5 sm:mb-1">
                         {tile.title}
                       </h4>
-                      <p className="text-[11px] sm:text-[13px] text-muted leading-tight line-clamp-2">
+                      <p className="text-[10.5px] sm:text-[11.5px] text-slate-500 font-normal leading-normal line-clamp-2">
                         {tile.desc}
                       </p>
                     </div>
@@ -439,24 +439,24 @@ export default function HomePage() {
                 <div className="flex flex-col justify-between h-full rounded-xl border border-line bg-card p-3.5 sm:p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-sm">
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-gold-600">
+                      <span className="text-[9.5px] sm:text-[10.5px] font-semibold uppercase tracking-wider text-gold-600">
                         {item.category}
                       </span>
-                      <span className="text-[11px] sm:text-xs text-muted tabular-nums">{item.date}</span>
+                      <span className="text-[10.5px] sm:text-[11px] text-slate-400 tabular-nums">{item.date}</span>
                     </div>
 
-                    <h4 className="font-serif text-[15px] sm:text-[17px] font-semibold text-navy-950 line-clamp-2 mb-1.5 sm:mb-2 leading-snug">
+                    <h4 className="font-sans text-[15px] sm:text-[17px] font-semibold text-navy-950 line-clamp-2 mb-1.5 sm:mb-2 leading-snug">
                       {item.title}
                     </h4>
 
-                    <p className="text-[12px] sm:text-[13px] text-muted leading-relaxed line-clamp-3 mb-3 sm:mb-4">
+                    <p className="text-[11px] sm:text-[12px] text-slate-500/90 font-normal leading-normal line-clamp-3 mb-3 sm:mb-3.5">
                       {item.excerpt}
                     </p>
                   </div>
 
                   <Link
                     href={`/bulletin/announcements`}
-                    className="inline-flex items-center text-xs font-semibold text-navy-900 hover:text-gold-600 transition-colors pt-2 sm:pt-2.5 border-t border-line/60"
+                    className="inline-flex items-center text-[11px] sm:text-[12px] font-semibold text-navy-900 hover:text-gold-600 transition-colors pt-2 sm:pt-2.5 border-t border-line/60"
                   >
                     <span>Read Full Brief</span>
                     <ArrowRight className="h-3 w-3 ml-1" />
@@ -550,7 +550,7 @@ export default function HomePage() {
                       <span className="block text-[9px] sm:text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider leading-none">
                         {new Date(evt.date).toLocaleString("default", { month: "short" }).toUpperCase()}
                       </span>
-                      <span className="block text-base sm:text-lg font-serif font-bold text-white leading-none mt-0.5 tabular-nums">
+                      <span className="block text-base sm:text-lg font-sans font-bold text-white leading-none mt-0.5 tabular-nums">
                         {new Date(evt.date).getDate()}
                       </span>
                     </div>
@@ -564,16 +564,16 @@ export default function HomePage() {
                         <span className="tabular-nums">{evt.time}</span>
                       </div>
 
-                      <h4 className="font-serif text-[13.5px] sm:text-[16px] font-semibold text-navy-950 line-clamp-1 sm:line-clamp-2 leading-snug mb-1">
+                      <h4 className="font-sans text-[13.5px] sm:text-[16px] font-semibold text-navy-950 line-clamp-1 sm:line-clamp-2 leading-snug mb-1">
                         {evt.title}
                       </h4>
 
-                      <div className="flex items-start gap-1.5 text-[11px] sm:text-xs text-ink/75 mb-1.5 line-clamp-1">
+                      <div className="flex items-start gap-1.5 text-[10.5px] sm:text-[11.5px] text-slate-500 mb-1.5 line-clamp-1">
                         <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-600 shrink-0 mt-0.5" />
                         <span className="truncate">{evt.location}</span>
                       </div>
 
-                      <p className="text-[11.5px] sm:text-[13px] text-muted line-clamp-2 leading-relaxed">
+                      <p className="text-[10.5px] sm:text-[11.5px] text-slate-500 font-normal line-clamp-2 leading-normal">
                         {evt.description}
                       </p>
                     </div>
@@ -677,7 +677,7 @@ export default function HomePage() {
                   </span>
                 </div>
 
-                <h3 className="font-serif text-[17px] sm:text-[22px] lg:text-[24px] font-semibold text-ivory leading-tight mb-2 sm:mb-3">
+                <h3 className="font-sans text-[17px] sm:text-[22px] lg:text-[24px] font-semibold text-ivory leading-tight mb-2 sm:mb-3">
                   {heroStory.title}
                 </h3>
 
@@ -731,11 +731,11 @@ export default function HomePage() {
                       </span>
                     </div>
 
-                    <h4 className="font-serif text-[14.5px] sm:text-[17px] font-semibold text-ivory line-clamp-2 leading-snug mb-1 sm:mb-1.5">
+                    <h4 className="font-sans text-[14.5px] sm:text-[17px] font-semibold text-ivory line-clamp-2 leading-snug mb-1 sm:mb-1.5">
                       {story.title}
                     </h4>
 
-                    <p className="text-[12px] sm:text-[13px] text-ivory/70 line-clamp-2 leading-relaxed mb-2 sm:mb-3">
+                    <p className="text-[11px] sm:text-[12px] text-ivory/65 font-normal line-clamp-2 leading-normal mb-2 sm:mb-3">
                       {story.summary}
                     </p>
                   </div>
@@ -780,7 +780,7 @@ export default function HomePage() {
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5">
-                    <span className="h-6.5 w-6.5 sm:h-7 sm:w-7 rounded-lg bg-gold-500/15 text-gold-600 flex items-center justify-center font-serif font-semibold text-xs">
+                    <span className="h-6.5 w-6.5 sm:h-7 sm:w-7 rounded-lg bg-gold-500/15 text-gold-600 flex items-center justify-center font-sans font-semibold text-xs">
                       {dom.name[0]}
                     </span>
                     <span className="inline-flex items-center rounded-full bg-navy-950 px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-[#F3DC9C] border border-navy-800 tabular-nums">
@@ -788,11 +788,11 @@ export default function HomePage() {
                     </span>
                   </div>
 
-                  <h4 className="font-serif text-[14px] sm:text-[16px] font-semibold text-navy-950 group-hover:text-gold-600 transition-colors mb-0.5 sm:mb-1">
+                  <h4 className="font-sans text-[14px] sm:text-[16px] font-semibold text-navy-950 group-hover:text-gold-600 transition-colors mb-0.5 sm:mb-1">
                     {dom.name}
                   </h4>
 
-                  <p className="text-[11.5px] sm:text-[13px] text-muted leading-relaxed line-clamp-2">
+                  <p className="text-[11px] sm:text-[12px] text-slate-500 font-normal leading-normal line-clamp-2">
                     {dom.description}
                   </p>
                 </div>
@@ -811,17 +811,17 @@ export default function HomePage() {
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5">
-                  <span className="h-6.5 w-6.5 sm:h-7 sm:w-7 rounded-lg bg-gold-500/20 text-gold-400 border border-gold-500/30 flex items-center justify-center font-serif font-semibold text-xs">
+                  <span className="h-6.5 w-6.5 sm:h-7 sm:w-7 rounded-lg bg-gold-500/20 text-gold-400 border border-gold-500/30 flex items-center justify-center font-sans font-semibold text-xs">
                     ✦
                   </span>
                   <span className="text-[10px] sm:text-[11px] uppercase font-bold text-gold-400 tracking-wider">
                     Full Network
                   </span>
                 </div>
-                <h4 className="font-serif text-[14.5px] sm:text-[16px] font-semibold text-ivory group-hover:text-gold-300 transition-colors mb-0.5 sm:mb-1">
+                <h4 className="font-sans text-[14.5px] sm:text-[16px] font-semibold text-ivory group-hover:text-gold-300 transition-colors mb-0.5 sm:mb-1">
                   260+ Verified Profiles
                 </h4>
-                <p className="text-[11.5px] sm:text-[13px] text-ivory/70 leading-relaxed line-clamp-2">
+                <p className="text-[11px] sm:text-[12px] text-ivory/65 font-normal leading-normal line-clamp-2">
                   Search by batch, course, graduation year, corporate designation, and city.
                 </p>
               </div>
@@ -844,7 +844,7 @@ export default function HomePage() {
           <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted">
             Alumni Footprints • Leading Organizations
           </span>
-          <h3 className="font-serif text-[16px] sm:text-[20px] font-semibold text-navy-950 mt-0.5 sm:mt-1">
+          <h3 className="font-sans text-[16px] sm:text-[20px] font-semibold text-navy-950 mt-0.5 sm:mt-1">
             Our Alumni Lead & Innovate
           </h3>
         </div>
@@ -874,7 +874,7 @@ export default function HomePage() {
           <span className="text-[10px] sm:text-[11px] uppercase font-semibold tracking-widest text-gold-400 block mb-1">
             Institutional Partnership & Legacy
           </span>
-          <h2 className="font-serif text-[18px] sm:text-[24px] md:text-[30px] font-semibold text-ivory mb-2 sm:mb-3">
+          <h2 className="font-sans text-[18px] sm:text-[24px] md:text-[30px] font-semibold text-ivory mb-2 sm:mb-3">
             Inspire the Next Generation of Poddar Scholars
           </h2>
           <p className="text-[12.5px] sm:text-[14px] lg:text-[15px] text-ivory/80 leading-relaxed mb-4 sm:mb-6 text-pretty max-w-[62ch] mx-auto">
@@ -911,7 +911,7 @@ export default function HomePage() {
               <span className="text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-gold-600 block mb-0.5 sm:mb-1">
                 Stay Informed
               </span>
-              <h3 className="font-serif text-[16px] sm:text-[20px] font-semibold text-navy-950 mb-0.5 sm:mb-1">
+              <h3 className="font-sans text-[16px] sm:text-[20px] font-semibold text-navy-950 mb-0.5 sm:mb-1">
                 Subscribe to the Alumni Newsletter
               </h3>
               <p className="text-[11.5px] sm:text-[13px] text-muted">

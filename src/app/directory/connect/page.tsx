@@ -142,7 +142,7 @@ export default function ConnectPage() {
                     </div>
                   </div>
 
-                  <h3 className="font-serif text-lg font-bold text-navy-950 mb-1">
+                  <h3 className="font-sans text-lg font-bold text-navy-950 mb-1">
                     {s.title}
                   </h3>
                   <span className="text-xs font-semibold text-gold-700 block mb-2.5">
@@ -214,7 +214,7 @@ export default function ConnectPage() {
                       >
                         <AvatarInitials name={person.name} src={person.avatarUrl} size="md" />
                         <div className="min-w-0 flex-1">
-                          <h4 className="font-serif text-sm font-bold text-navy-950 truncate hover:text-gold-600 transition-colors">
+                          <h4 className="font-sans text-sm font-bold text-navy-950 truncate hover:text-gold-600 transition-colors">
                             {person.name}
                           </h4>
                           <p className="text-[11px] text-gold-700 font-semibold truncate">

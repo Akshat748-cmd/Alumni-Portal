@@ -73,7 +73,7 @@ export function AdminDashboard({
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="font-serif text-lg font-bold text-navy-950">
+            <h2 className="font-sans text-lg font-bold text-navy-950">
               Pending Moderation Queues
             </h2>
             <p className="text-xs text-muted">
@@ -190,7 +190,7 @@ export function AdminDashboard({
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="font-serif text-[15px] sm:text-[16px] text-navy-950">
+                <CardTitle className="font-sans text-[15px] sm:text-[16px] text-navy-950">
                   Submissions Volume by Workflow
                 </CardTitle>
                 <CardDescription className="text-xs">
@@ -226,7 +226,7 @@ export function AdminDashboard({
         {/* Chart 2: Status Breakdown Donut/Segments */}
         <Card className="border-line shadow-xs rounded-xl flex flex-col">
           <CardHeader>
-            <CardTitle className="font-serif text-[15px] sm:text-[16px] text-navy-950">
+            <CardTitle className="font-sans text-[15px] sm:text-[16px] text-navy-950">
               Moderation Pipeline Status
             </CardTitle>
             <CardDescription className="text-xs">
@@ -282,7 +282,7 @@ export function AdminDashboard({
                   />
                 </svg>
                 <div className="absolute text-center">
-                  <span className="font-serif text-xl font-bold text-navy-950 block leading-tight tabular-nums">
+                  <span className="font-sans text-xl font-bold text-navy-950 block leading-tight tabular-nums">
                     {queue.length}
                   </span>
                   <span className="text-[10px] uppercase font-semibold text-muted">
@@ -298,7 +298,7 @@ export function AdminDashboard({
                 <span className="block text-[10px] uppercase font-semibold text-emerald-800">
                   Approved
                 </span>
-                <span className="font-serif text-[15px] font-bold text-emerald-700 tabular-nums">
+                <span className="font-sans text-[15px] font-bold text-emerald-700 tabular-nums">
                   {approvedCount}
                 </span>
               </div>
@@ -306,7 +306,7 @@ export function AdminDashboard({
                 <span className="block text-[10px] uppercase font-semibold text-amber-800">
                   Pending
                 </span>
-                <span className="font-serif text-[15px] font-bold text-amber-700 tabular-nums">
+                <span className="font-sans text-[15px] font-bold text-amber-700 tabular-nums">
                   {pendingCount}
                 </span>
               </div>
@@ -314,7 +314,7 @@ export function AdminDashboard({
                 <span className="block text-[10px] uppercase font-semibold text-rose-800">
                   Rejected
                 </span>
-                <span className="font-serif text-[15px] font-bold text-rose-700 tabular-nums">
+                <span className="font-sans text-[15px] font-bold text-rose-700 tabular-nums">
                   {rejectedCount}
                 </span>
               </div>
@@ -328,7 +328,7 @@ export function AdminDashboard({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="font-serif text-base text-navy-950">
+              <CardTitle className="font-sans text-base text-navy-950">
                 Recent Queue Activity Log
               </CardTitle>
               <CardDescription className="text-xs">

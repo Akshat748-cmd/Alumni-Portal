@@ -280,7 +280,7 @@ export default function FindMentorPage() {
                     <div className="flex items-start gap-4 mb-4">
                       <AvatarInitials name={mentor.name} size="lg" className="ring-2 ring-gold-500/20 shrink-0" />
                       <div>
-                        <h3 className="text-lg font-serif font-bold text-navy-950">
+                        <h3 className="text-lg font-sans font-bold text-navy-950">
                           {mentor.name}
                         </h3>
                         <p className="text-xs font-semibold text-navy-900 leading-tight">
@@ -351,7 +351,7 @@ export default function FindMentorPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg bg-white border-line p-6 sm:p-8 rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl font-bold text-navy-950">
+            <DialogTitle className="font-sans text-2xl font-bold text-navy-950">
               {dialogSuccess ? "Mentorship Request Transmitted" : `Connect with ${activeMentor?.name}`}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted">

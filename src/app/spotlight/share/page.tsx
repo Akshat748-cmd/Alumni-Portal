@@ -133,7 +133,7 @@ export default function ShareAchievementPage() {
                     Editorial Submission Portal
                   </span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold">
+                <h2 className="text-2xl sm:text-3xl font-sans font-bold">
                   Tell Us About Your Milestone
                 </h2>
                 <p className="mt-2 text-sm text-slate-300">
@@ -146,7 +146,7 @@ export default function ShareAchievementPage() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Section 1: Alumnus Coordinates */}
                   <div>
-                    <h3 className="text-sm font-serif font-bold uppercase tracking-wider text-amber-600 mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <h3 className="text-sm font-sans font-bold uppercase tracking-wider text-amber-600 mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
                       1. Alumnus Credentials
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -227,7 +227,7 @@ export default function ShareAchievementPage() {
 
                   {/* Section 2: Current Organization */}
                   <div>
-                    <h3 className="text-sm font-serif font-bold uppercase tracking-wider text-amber-600 mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <h3 className="text-sm font-sans font-bold uppercase tracking-wider text-amber-600 mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
                       2. Current Professional Position
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -260,7 +260,7 @@ export default function ShareAchievementPage() {
 
                   {/* Section 3: Milestone Details */}
                   <div>
-                    <h3 className="text-sm font-serif font-bold uppercase tracking-wider text-amber-600 mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <h3 className="text-sm font-sans font-bold uppercase tracking-wider text-amber-600 mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
                       3. Achievement Highlights
                     </h3>
                     <div className="space-y-4">

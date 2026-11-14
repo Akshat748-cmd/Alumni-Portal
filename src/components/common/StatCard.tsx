@@ -39,7 +39,7 @@ export function StatCard({
           <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.08em] text-muted block mb-0.5 sm:mb-1">
             {label}
           </span>
-          <div className="font-serif text-[18px] sm:text-[26px] md:text-[32px] font-semibold text-navy-950 tracking-[-0.01em] tabular-nums leading-tight">
+          <div className="font-sans text-[18px] sm:text-[26px] md:text-[32px] font-semibold text-navy-950 tracking-[-0.01em] tabular-nums leading-tight">
             <CountUp end={value} prefix={prefix} suffix={suffix} />
           </div>
         </div>

@@ -84,7 +84,7 @@ export default function PromotionsAndAwardsPage() {
                     <div className="text-xs text-amber-600 font-semibold mb-1">
                       {item.alumniName} • Class of {item.batch}
                     </div>
-                    <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                    <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
                       {item.title}
                     </h3>
                     <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
@@ -123,7 +123,7 @@ export default function PromotionsAndAwardsPage() {
                     Batch of {selectedAward.batch} • {selectedAward.course}
                   </span>
                 </div>
-                <DialogTitle className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-xl sm:text-2xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
                   {selectedAward.title}
                 </DialogTitle>
                 <DialogDescription className="text-left text-amber-600 font-semibold pt-0.5">

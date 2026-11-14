@@ -141,7 +141,7 @@ export default function DashboardProfilePage() {
             <div className="flex items-center gap-4 pb-6 border-b border-line">
               <AvatarInitials name={name} size="lg" className="border-2 border-gold-400" />
               <div>
-                <h2 className="text-xl font-serif font-bold text-navy-950">{currentUser.name}</h2>
+                <h2 className="text-xl font-sans font-bold text-navy-950">{currentUser.name}</h2>
                 <div className="flex items-center gap-2 mt-1">
                   <span
                     className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
@@ -332,7 +332,7 @@ export default function DashboardProfilePage() {
           {/* BLOCKED USERS SECTION */}
           {blockedUserIds && blockedUserIds.length > 0 && (
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-line shadow-sm space-y-4">
-              <div className="flex items-center gap-2 text-navy-950 font-serif font-bold text-lg">
+              <div className="flex items-center gap-2 text-navy-950 font-sans font-bold text-lg">
                 <Lock className="h-5 w-5 text-red-600" />
                 <span>Blocked Accounts ({blockedUserIds.length})</span>
               </div>

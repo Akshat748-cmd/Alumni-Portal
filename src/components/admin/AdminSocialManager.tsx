@@ -100,7 +100,7 @@ export function AdminSocialManager() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="font-serif text-lg text-navy-950">
+              <CardTitle className="font-sans text-lg text-navy-950">
                 Institutional Social Media Handles
               </CardTitle>
               <CardDescription className="text-xs">

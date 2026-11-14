@@ -61,7 +61,7 @@ export function AdminBusinessesQueue() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="font-serif text-lg text-navy-950">
+              <CardTitle className="font-sans text-lg text-navy-950">
                 Alumni Business & Venture Directory Queue
               </CardTitle>
               <CardDescription className="text-xs">
@@ -180,7 +180,7 @@ export function AdminBusinessesQueue() {
                   {selectedItem.payload?.category || "Business"}
                 </Badge>
               </div>
-              <DialogTitle className="font-serif text-xl text-navy-950 mt-1">
+              <DialogTitle className="font-sans text-xl text-navy-950 mt-1">
                 {selectedItem.payload?.businessName || selectedItem.payload?.name}
               </DialogTitle>
               <DialogDescription className="text-xs">
@@ -260,7 +260,7 @@ export function AdminBusinessesQueue() {
         <Dialog open={!!rejectingItem} onOpenChange={(open) => !open && setRejectingItem(null)}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="font-serif text-lg text-rose-700 flex items-center gap-2">
+              <DialogTitle className="font-sans text-lg text-rose-700 flex items-center gap-2">
                 <XCircle className="h-5 w-5" />
                 Reject Business Submission
               </DialogTitle>

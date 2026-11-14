@@ -54,7 +54,7 @@ export function AvatarInitials({
           onError={() => setImageError(true)}
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-navy-900 via-navy-800 to-navy-950 font-serif font-bold text-gold-300 select-none">
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-navy-900 via-navy-800 to-navy-950 font-sans font-bold text-gold-300 select-none">
           {initials}
         </div>
       )}

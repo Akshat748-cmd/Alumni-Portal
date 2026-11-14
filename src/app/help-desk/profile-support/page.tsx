@@ -117,7 +117,7 @@ export default function ProfileSupportPage() {
                   <UserCheck className="h-4 w-4" />
                   <span>Credential Verification Desk</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+                <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                   Profile Correction Requisition
                 </h2>
                 <p className="text-xs sm:text-sm text-muted mt-1">

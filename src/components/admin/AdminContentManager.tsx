@@ -158,7 +158,7 @@ export function AdminContentManager() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="font-serif text-lg text-navy-950">
+              <CardTitle className="font-sans text-lg text-navy-950">
                 Active Published {activeKind === "notices" ? "Bulletin Notices" : activeKind === "newsStories" ? "Spotlight Features" : "Campus Events"}
               </CardTitle>
               <CardDescription className="text-xs">
@@ -249,7 +249,7 @@ export function AdminContentManager() {
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-serif text-xl text-navy-950">
+            <DialogTitle className="font-sans text-xl text-navy-950">
               Publish New {activeKind === "notices" ? "Notice" : activeKind === "newsStories" ? "Spotlight Story" : "Alumni Event"}
             </DialogTitle>
             <DialogDescription className="text-xs">
@@ -367,7 +367,7 @@ export function AdminContentManager() {
                   <span className="text-[11px] font-semibold text-gold-700 block mb-1">
                     {date || "Today"} {location ? `• ${location}` : ""}
                   </span>
-                  <h4 className="font-serif text-base font-bold text-navy-950 leading-tight">
+                  <h4 className="font-sans text-base font-bold text-navy-950 leading-tight">
                     {title || "Card Headline Preview"}
                   </h4>
                   <p className="text-xs text-ink/75 mt-1.5 line-clamp-3 leading-relaxed">
@@ -390,7 +390,7 @@ export function AdminContentManager() {
         <Dialog open={!!editingItem} onOpenChange={(open) => !open && setEditingItem(null)}>
           <DialogContent className="max-w-xl">
             <DialogHeader>
-              <DialogTitle className="font-serif text-lg text-navy-950">
+              <DialogTitle className="font-sans text-lg text-navy-950">
                 Edit Content Item
               </DialogTitle>
               <DialogDescription className="text-xs">

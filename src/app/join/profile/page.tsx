@@ -197,7 +197,7 @@ export default function ProfilePage() {
                 <AvatarInitials name={name || currentUser.name} size="xl" className="ring-4 ring-gold-500/30" />
                 <div>
                   <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
-                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-navy-950">
+                    <h2 className="text-2xl sm:text-3xl font-sans font-bold text-navy-950">
                       {name || currentUser.name}
                     </h2>
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
@@ -241,7 +241,7 @@ export default function ProfilePage() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span className="text-base font-bold font-serif text-navy-950">{completeness}%</span>
+                    <span className="text-base font-bold font-sans text-navy-950">{completeness}%</span>
                   </div>
                 </div>
 
@@ -272,7 +272,7 @@ export default function ProfilePage() {
           <div className="bg-white rounded-3xl border border-line shadow-xl p-6 sm:p-10">
             <div className="flex items-center justify-between border-b border-line pb-4 mb-6">
               <div>
-                <h3 className="text-lg sm:text-xl font-serif font-bold text-navy-950">
+                <h3 className="text-lg sm:text-xl font-sans font-bold text-navy-950">
                   Professional Identity & Directory Records
                 </h3>
                 <p className="text-xs text-muted mt-0.5">

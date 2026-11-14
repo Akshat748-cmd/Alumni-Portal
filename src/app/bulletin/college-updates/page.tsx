@@ -70,7 +70,7 @@ export default function CollegeUpdatesPage() {
                 </div>
                 <div>
                   <div className="text-xs text-slate-500 font-medium">{stat.label}</div>
-                  <div className="text-base sm:text-lg font-bold font-serif text-slate-900 dark:text-slate-100">
+                  <div className="text-base sm:text-lg font-bold font-sans text-slate-900 dark:text-slate-100">
                     {stat.value}
                   </div>
                 </div>
@@ -105,7 +105,7 @@ export default function CollegeUpdatesPage() {
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                  <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
                     {update.title}
                   </h3>
 
@@ -139,7 +139,7 @@ export default function CollegeUpdatesPage() {
                     {selectedUpdate.date}
                   </span>
                 </div>
-                <DialogTitle className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-xl sm:text-2xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
                   {selectedUpdate.title}
                 </DialogTitle>
                 <DialogDescription className="text-left text-slate-600 dark:text-slate-400 font-medium pt-1">

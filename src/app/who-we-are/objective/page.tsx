@@ -97,7 +97,7 @@ export default function ObjectivesCharterPage() {
                 <Target className="w-3.5 h-3.5" />
                 Charter Mission Statement
               </div>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold leading-snug">
+              <h2 className="text-2xl sm:text-3xl font-sans font-bold leading-snug">
                 To build an enduring, symbiotic bridge uniting alumni, students, and faculty in the shared pursuit of ethical leadership, professional excellence, and institutional pride.
               </h2>
               <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">
@@ -126,12 +126,12 @@ export default function ObjectivesCharterPage() {
                       <div className={`p-3 rounded-xl ${pillar.color}`}>
                         <Icon className="w-6 h-6" />
                       </div>
-                      <Badge variant="outline" className="text-xs font-serif font-bold">
+                      <Badge variant="outline" className="text-xs font-sans font-bold">
                         {pillar.title}
                       </Badge>
                     </div>
 
-                    <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 mb-2">
+                    <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 mb-2">
                       {pillar.headline}
                     </h3>
 

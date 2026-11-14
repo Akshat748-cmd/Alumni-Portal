@@ -107,7 +107,7 @@ export default function MyApplicationsPage() {
           {/* HEADER SUMMARY */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+              <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                 Application Pipeline ({userApplications.length})
               </h2>
               <p className="text-xs sm:text-sm text-muted mt-0.5">
@@ -168,7 +168,7 @@ export default function MyApplicationsPage() {
                           </span>
                         </div>
 
-                        <h3 className="text-base sm:text-lg font-serif font-bold text-navy-950 truncate">
+                        <h3 className="text-base sm:text-lg font-sans font-bold text-navy-950 truncate">
                           {app.jobTitle}
                         </h3>
                         <div className="text-xs text-navy-800 font-semibold flex items-center gap-1.5 mt-0.5">

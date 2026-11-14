@@ -100,7 +100,7 @@ export default function BusinessCollaborationPage() {
               key={s.step}
               className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm"
             >
-              <div className="text-xs font-bold text-indigo-600 font-serif">{s.step}</div>
+              <div className="text-xs font-bold text-indigo-600 font-sans">{s.step}</div>
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{s.desc}</p>
             </div>
           ))}
@@ -132,7 +132,7 @@ export default function BusinessCollaborationPage() {
                     Alumni Commerce Desk
                   </span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold">
+                <h2 className="text-2xl sm:text-3xl font-sans font-bold">
                   Offer B2B Collaboration or Community Perks
                 </h2>
                 <p className="mt-2 text-sm text-slate-300">

@@ -84,7 +84,7 @@ export default function NewslettersPage() {
                     <span className="text-xs text-slate-400">{latestIssue.publishDate}</span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold leading-tight">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-sans font-bold leading-tight">
                     {latestIssue.title}
                   </h2>
 
@@ -150,7 +150,7 @@ export default function NewslettersPage() {
                       <Calendar className="w-3.5 h-3.5" />
                       {issue.publishDate}
                     </div>
-                    <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                    <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                       {issue.title}
                     </h3>
                     <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
@@ -198,7 +198,7 @@ export default function NewslettersPage() {
                     {selectedIssue.volume} • {selectedIssue.issue}
                   </span>
                 </div>
-                <DialogTitle className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
                   {selectedIssue.title}
                 </DialogTitle>
                 <DialogDescription className="text-left text-slate-600 dark:text-slate-400 font-medium">

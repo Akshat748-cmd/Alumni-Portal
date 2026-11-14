@@ -567,7 +567,7 @@ export default function SearchAlumniPage() {
               <div className="flex items-center justify-between pb-3 border-b border-line">
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="h-4 w-4 text-gold-600" />
-                  <span className="font-serif font-bold text-navy-950 text-sm">Filter Criteria</span>
+                  <span className="font-sans font-bold text-navy-950 text-sm">Filter Criteria</span>
                 </div>
                 {activeFilters.length > 0 && (
                   <button
@@ -730,7 +730,7 @@ export default function SearchAlumniPage() {
                               className="shrink-0"
                             />
                             <div className="min-w-0 flex-1">
-                              <h3 className="font-serif text-[15px] font-semibold text-navy-950 group-hover:text-gold-600 transition-colors truncate">
+                              <h3 className="font-sans text-[15px] font-semibold text-navy-950 group-hover:text-gold-600 transition-colors truncate">
                                 {person.name}
                               </h3>
                               <p className="text-xs text-gold-700 font-semibold truncate">

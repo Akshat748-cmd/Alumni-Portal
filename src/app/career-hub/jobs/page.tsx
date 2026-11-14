@@ -80,7 +80,7 @@ function getCompanyBranding(company: string) {
   if (c.includes("fintura") || c.includes("apex") || c.includes("capital") || c.includes("finance")) {
     return {
       companyBg: "bg-gradient-to-br from-indigo-700 to-purple-800",
-      companyIcon: <span className="font-serif italic font-bold text-sm text-white">F</span>,
+      companyIcon: <span className="font-sans italic font-bold text-sm text-white">F</span>,
     };
   }
   if (c.includes("amitech") || c.includes("zenith") || c.includes("agri") || c.includes("innov")) {
@@ -402,9 +402,9 @@ export default function JobsPage() {
             </div>
 
             {/* Heading: Jobs & Internships for Poddar Alumni (Fluid responsive font) */}
-            <h1 className="font-serif text-xl sm:text-3xl md:text-4xl lg:text-[36px] xl:text-[42px] font-bold text-white tracking-tight leading-[1.16] mb-2 sm:mb-3">
+            <h1 className="font-sans text-xl sm:text-3xl md:text-4xl lg:text-[36px] xl:text-[42px] font-bold text-white tracking-tight leading-[1.16] mb-2 sm:mb-3">
               Jobs & Internships <br />
-              <span className="font-serif italic font-normal text-[#D5B568]">
+              <span className="font-sans italic font-normal text-[#D5B568]">
                 for Poddar Alumni
               </span>
             </h1>
@@ -677,7 +677,7 @@ export default function JobsPage() {
                     </div>
 
                     {/* Job Title */}
-                    <h3 className="font-serif font-bold text-[17px] sm:text-lg text-[#101A30] group-hover:text-[#b89547] transition-colors line-clamp-1 mb-2.5">
+                    <h3 className="font-sans font-bold text-[17px] sm:text-lg text-[#101A30] group-hover:text-[#b89547] transition-colors line-clamp-1 mb-2.5">
                       {job.title}
                     </h3>
 
@@ -742,7 +742,7 @@ export default function JobsPage() {
                   )}
                   <span className="text-xs text-slate-500 font-medium">{activeJob.domain}</span>
                 </div>
-                <SheetTitle className="text-2xl font-serif font-bold text-[#101A30]">
+                <SheetTitle className="text-2xl font-sans font-bold text-[#101A30]">
                   {activeJob.title}
                 </SheetTitle>
                 <SheetDescription className="text-sm font-semibold text-slate-900 flex items-center gap-1.5 mt-1">
@@ -882,7 +882,7 @@ export default function JobsPage() {
       <Dialog open={Boolean(applyModalJob)} onOpenChange={(open) => !open && setApplyModalJob(null)}>
         <DialogContent className="sm:max-w-lg bg-white rounded-3xl p-6 sm:p-8" data-lenis-prevent>
           <DialogHeader className="border-b border-slate-200 pb-3">
-            <DialogTitle className="text-xl font-serif font-bold text-[#101A30]">
+            <DialogTitle className="text-xl font-sans font-bold text-[#101A30]">
               Apply for {applyModalJob?.title}
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-500">
@@ -982,7 +982,7 @@ export default function JobsPage() {
       <Dialog open={Boolean(referralModalJob)} onOpenChange={(open) => !open && setReferralModalJob(null)}>
         <DialogContent className="sm:max-w-lg bg-white rounded-3xl p-6 sm:p-8" data-lenis-prevent>
           <DialogHeader className="border-b border-slate-200 pb-3">
-            <DialogTitle className="text-xl font-serif font-bold text-[#101A30] flex items-center gap-2">
+            <DialogTitle className="text-xl font-sans font-bold text-[#101A30] flex items-center gap-2">
               <Award className="h-5 w-5 text-[#D5B568]" />
               <span>Request Internal Referral</span>
             </DialogTitle>

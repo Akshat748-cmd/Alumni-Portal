@@ -93,7 +93,7 @@ export default async function SlugPage({ params }: SlugPageProps) {
                 <FileText className="h-5 w-5" strokeWidth={1.75} />
               </div>
               <div>
-                <h3 className="font-serif text-lg font-bold text-navy-950">
+                <h3 className="font-sans text-lg font-bold text-navy-950">
                   {subItem.title} Overview
                 </h3>
                 <span className="text-xs text-muted">

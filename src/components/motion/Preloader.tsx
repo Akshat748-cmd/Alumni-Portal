@@ -58,7 +58,7 @@ export function Preloader() {
               className="relative mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-gold-500/40 bg-navy-900 shadow-2xl"
             >
               <div className="flex flex-col items-center leading-none">
-                <span className="font-serif text-3xl font-bold tracking-wider text-gold-300">P</span>
+                <span className="font-sans text-3xl font-bold tracking-wider text-gold-300">P</span>
                 <span className="text-[9px] uppercase tracking-widest text-gold-500/80 font-sans mt-0.5">ALUMNI</span>
               </div>
             </motion.div>
@@ -68,7 +68,7 @@ export function Preloader() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.4 }}
-              className="font-serif text-2xl font-bold tracking-tight text-ivory mb-1"
+              className="font-sans text-2xl font-bold tracking-tight text-ivory mb-1"
             >
               Poddar Alumni Network
             </motion.h2>

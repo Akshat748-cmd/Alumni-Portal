@@ -126,7 +126,7 @@ export default function ReunionsOverviewPage() {
                             {track.badge}
                           </Badge>
                         </div>
-                        <h3 className="text-base font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                        <h3 className="text-base font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                           {track.title}
                         </h3>
                         <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
@@ -176,7 +176,7 @@ export default function ReunionsOverviewPage() {
                     </Badge>
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold leading-tight">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-sans font-bold leading-tight">
                     {flagshipEvent.title}
                   </h2>
 
@@ -263,7 +263,7 @@ export default function ReunionsOverviewPage() {
                       <span className="block text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
                         {new Date(event.date).toLocaleString("default", { month: "short" }).toUpperCase()}
                       </span>
-                      <span className="block text-xl font-serif font-bold text-white leading-none mt-0.5">
+                      <span className="block text-xl font-sans font-bold text-white leading-none mt-0.5">
                         {new Date(event.date).getDate()}
                       </span>
                     </div>
@@ -285,7 +285,7 @@ export default function ReunionsOverviewPage() {
                         {event.date} • {event.time}
                       </div>
 
-                      <h4 className="text-base font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                      <h4 className="text-base font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
                         {event.title}
                       </h4>
 

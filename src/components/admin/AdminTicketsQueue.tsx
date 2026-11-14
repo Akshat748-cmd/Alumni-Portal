@@ -111,7 +111,7 @@ export function AdminTicketsQueue() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="font-serif text-lg text-navy-950">
+              <CardTitle className="font-sans text-lg text-navy-950">
                 Help Desk & Secretariat Support Inquiries
               </CardTitle>
               <CardDescription className="text-xs">
@@ -234,7 +234,7 @@ export function AdminTicketsQueue() {
                   {activeTicket.category}
                 </Badge>
               </div>
-              <DialogTitle className="font-serif text-lg text-navy-950 mt-1">
+              <DialogTitle className="font-sans text-lg text-navy-950 mt-1">
                 {activeTicket.subject}
               </DialogTitle>
               <DialogDescription className="text-xs">

@@ -190,7 +190,7 @@ function MessagesContent() {
           <div className="h-14 w-14 rounded-2xl bg-[#00a884] text-white flex items-center justify-center mx-auto mb-4 shadow-md">
             <MessageSquare className="h-7 w-7 text-white" />
           </div>
-          <h2 className="text-2xl font-serif font-bold text-navy-950 mb-2">
+          <h2 className="text-2xl font-sans font-bold text-navy-950 mb-2">
             Sign In to Access Messages
           </h2>
           <p className="text-xs text-muted mb-6">
@@ -784,7 +784,7 @@ function MessagesContent() {
                 <div className="h-20 w-20 rounded-full bg-[#00a884]/10 text-[#00a884] flex items-center justify-center mb-5 shadow-xs">
                   <MessageSquare className="h-10 w-10 text-[#00a884]" />
                 </div>
-                <h3 className="text-xl font-serif font-bold text-[#111b21] mb-2">
+                <h3 className="text-xl font-sans font-bold text-[#111b21] mb-2">
                   Poddar Opportunities Network Messenger
                 </h3>
                 <p className="text-xs text-[#667781] max-w-md mb-6 leading-relaxed">
@@ -808,7 +808,7 @@ function MessagesContent() {
       <Dialog open={newChatModalOpen} onOpenChange={setNewChatModalOpen}>
         <DialogContent className="sm:max-w-md bg-white rounded-3xl p-6" data-lenis-prevent>
           <DialogHeader className="border-b border-line pb-3">
-            <DialogTitle className="text-lg font-serif font-bold text-navy-950">
+            <DialogTitle className="text-lg font-sans font-bold text-navy-950">
               New Message
             </DialogTitle>
             <DialogDescription className="text-xs text-muted">
@@ -871,7 +871,7 @@ function MessagesContent() {
       <Dialog open={reportModalOpen} onOpenChange={setReportModalOpen}>
         <DialogContent className="sm:max-w-md bg-white rounded-3xl p-6" data-lenis-prevent>
           <DialogHeader className="border-b border-line pb-3">
-            <DialogTitle className="text-lg font-serif font-bold text-navy-950 flex items-center gap-2">
+            <DialogTitle className="text-lg font-sans font-bold text-navy-950 flex items-center gap-2">
               <ShieldAlert className="h-5 w-5 text-red-600" />
               <span>Report Conversation</span>
             </DialogTitle>

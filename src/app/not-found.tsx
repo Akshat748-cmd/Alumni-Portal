@@ -25,7 +25,7 @@ export default function NotFound() {
           <Compass className="h-14 w-14 text-gold-400 animate-pulse" strokeWidth={1.5} />
         </div>
 
-        <h2 className="font-serif text-3xl sm:text-4xl font-bold text-navy-950 mb-3">
+        <h2 className="font-sans text-3xl sm:text-4xl font-bold text-navy-950 mb-3">
           Looking for a specific directory or document?
         </h2>
         <p className="text-muted text-base max-w-md mx-auto mb-8 leading-relaxed">

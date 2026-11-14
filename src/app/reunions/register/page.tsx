@@ -164,14 +164,14 @@ function RegisterForm() {
             {/* Digital Pass Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500 text-navy-950 flex items-center justify-center font-bold font-serif text-xl shadow-md">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500 text-navy-950 flex items-center justify-center font-bold font-sans text-xl shadow-md">
                   P
                 </div>
                 <div>
                   <div className="text-xs font-semibold text-amber-600 tracking-wider uppercase">
                     Official Event Pass
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 dark:text-slate-100">
+                  <h3 className="text-xl sm:text-2xl font-sans font-bold text-slate-900 dark:text-slate-100">
                     Poddar Alumni Association
                   </h3>
                 </div>
@@ -194,7 +194,7 @@ function RegisterForm() {
                   <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                     Conclave / Reunion Title
                   </div>
-                  <h4 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 mt-1">
+                  <h4 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 mt-1">
                     {confirmedPass.event.title}
                   </h4>
                 </div>
@@ -279,7 +279,7 @@ function RegisterForm() {
                   Online Registration Pass
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold">
+              <h2 className="text-2xl sm:text-3xl font-sans font-bold">
                 Reserve Your Event Seat
               </h2>
               <p className="mt-2 text-sm text-slate-300">
@@ -323,7 +323,7 @@ function RegisterForm() {
 
                 {/* Attendee Details */}
                 <div className="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <h3 className="text-xs uppercase tracking-wider font-bold text-amber-600 font-serif">
+                  <h3 className="text-xs uppercase tracking-wider font-bold text-amber-600 font-sans">
                     Attendee Coordinates
                   </h3>
 
@@ -403,7 +403,7 @@ function RegisterForm() {
 
                 {/* Logistics */}
                 <div className="space-y-4 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <h3 className="text-xs uppercase tracking-wider font-bold text-amber-600 font-serif">
+                  <h3 className="text-xs uppercase tracking-wider font-bold text-amber-600 font-sans">
                     Preferences & Hospitality
                   </h3>
 

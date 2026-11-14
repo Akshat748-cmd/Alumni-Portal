@@ -54,7 +54,7 @@ export default function DashboardPage() {
               <div className="h-16 w-16 mx-auto rounded-2xl bg-navy-950 flex items-center justify-center text-gold-300 mb-6">
                 <User className="h-8 w-8 text-gold-300" />
               </div>
-              <h2 className="text-2xl font-serif font-bold text-navy-950 mb-3">
+              <h2 className="text-2xl font-sans font-bold text-navy-950 mb-3">
                 Member Session Required
               </h2>
               <p className="text-xs sm:text-sm text-muted mb-8">
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                       : `Class of ${currentUser.batch || 2008}`}
                   </span>
                 </div>
-                <h1 className="text-xl sm:text-2xl font-serif font-bold text-ivory truncate">
+                <h1 className="text-xl sm:text-2xl font-sans font-bold text-ivory truncate">
                   Welcome back, {currentUser.name}
                 </h1>
                 <p className="text-xs text-navy-200 truncate mt-0.5">
@@ -316,7 +316,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between pb-4 border-b border-line mb-4">
                   <div className="flex items-center gap-2">
                     <FileText className="h-5 w-5 text-gold-600" />
-                    <h2 className="text-lg font-serif font-bold text-navy-950">
+                    <h2 className="text-lg font-sans font-bold text-navy-950">
                       Recent Applications
                     </h2>
                   </div>
@@ -381,7 +381,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between pb-4 border-b border-line mb-4">
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-gold-600" />
-                    <h2 className="text-lg font-serif font-bold text-navy-950">
+                    <h2 className="text-lg font-sans font-bold text-navy-950">
                       Opportunities for Students
                     </h2>
                   </div>
@@ -440,7 +440,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between pb-4 border-b border-line mb-4">
                   <div className="flex items-center gap-2">
                     <Briefcase className="h-5 w-5 text-gold-600" />
-                    <h2 className="text-lg font-serif font-bold text-navy-950">
+                    <h2 className="text-lg font-sans font-bold text-navy-950">
                       My Active Postings
                     </h2>
                   </div>
@@ -507,7 +507,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between pb-4 border-b border-line mb-4">
                   <div className="flex items-center gap-2">
                     <Award className="h-5 w-5 text-gold-600" />
-                    <h2 className="text-lg font-serif font-bold text-navy-950">
+                    <h2 className="text-lg font-sans font-bold text-navy-950">
                       Referral Requests Received
                     </h2>
                   </div>

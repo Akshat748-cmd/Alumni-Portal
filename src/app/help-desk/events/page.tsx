@@ -123,7 +123,7 @@ export default function EventQueriesPage() {
                   <Calendar className="h-4 w-4" />
                   <span>Reunions & Masterclasses Desk</span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+                <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                   Event Inquiry Dispatch
                 </h2>
                 <p className="text-xs sm:text-sm text-muted mt-1">

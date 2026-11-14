@@ -176,7 +176,7 @@ export default function HelpDeskPage() {
                           </span>
                         </div>
 
-                        <h3 className="text-[17px] sm:text-[18px] font-serif font-semibold text-navy-950 mb-1.5">
+                        <h3 className="text-[17px] sm:text-[18px] font-sans font-semibold text-navy-950 mb-1.5">
                           {cat.title}
                         </h3>
 
@@ -209,7 +209,7 @@ export default function HelpDeskPage() {
               <span className="text-[11px] font-semibold text-gold-400 uppercase tracking-wider mb-1.5 block">
                 Direct Contact Points
               </span>
-              <h2 className="text-[22px] sm:text-[26px] font-serif font-semibold text-white mb-3">
+              <h2 className="text-[22px] sm:text-[26px] font-sans font-semibold text-white mb-3">
                 Poddar Alumni Office Coordinates
               </h2>
               <p className="text-xs sm:text-[13px] text-ivory/80 leading-relaxed mb-4 max-w-[62ch]">

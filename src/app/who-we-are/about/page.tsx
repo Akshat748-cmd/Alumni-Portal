@@ -100,7 +100,7 @@ export default function AboutAlumniNetworkPage() {
                 <Badge variant="outline" className="text-amber-600 border-amber-500/40">
                   A Legacy of Academic Distinction
                 </Badge>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-slate-100">
+                <h2 className="text-2xl sm:text-3xl font-sans font-bold text-slate-900 dark:text-slate-100">
                   An Enduring Bond That Transcends Generations
                 </h2>
                 <p>
@@ -127,7 +127,7 @@ export default function AboutAlumniNetworkPage() {
               className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm"
             >
               <div className="text-xs text-slate-500 font-medium">{m.label}</div>
-              <div className="text-2xl font-serif font-bold text-amber-600 dark:text-amber-400 mt-1">
+              <div className="text-2xl font-sans font-bold text-amber-600 dark:text-amber-400 mt-1">
                 {m.value}
               </div>
               <div className="text-xs text-slate-400 mt-0.5">{m.desc}</div>

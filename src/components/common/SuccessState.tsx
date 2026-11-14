@@ -51,7 +51,7 @@ export function SuccessState({
         </svg>
       </div>
 
-      <h3 className="font-serif text-[20px] font-semibold text-navy-950 mb-1.5">{title}</h3>
+      <h3 className="font-sans text-[20px] font-semibold text-navy-950 mb-1.5">{title}</h3>
       <p className="text-[13.5px] sm:text-[14px] text-muted max-w-sm leading-relaxed mb-3.5">{message}</p>
 
       {referenceId && (

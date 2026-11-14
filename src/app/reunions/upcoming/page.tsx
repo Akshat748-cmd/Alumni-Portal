@@ -134,7 +134,7 @@ export default function UpcomingEventsPage() {
                         <span className="block text-[10px] sm:text-[11px] font-bold text-[#E9C46A] uppercase tracking-wider">
                           {new Date(event.date).toLocaleString("default", { month: "short" }).toUpperCase()}
                         </span>
-                        <span className="block text-lg font-serif font-bold text-white leading-none mt-0.5 tabular-nums">
+                        <span className="block text-lg font-sans font-bold text-white leading-none mt-0.5 tabular-nums">
                           {new Date(event.date).getDate()}
                         </span>
                       </div>
@@ -160,7 +160,7 @@ export default function UpcomingEventsPage() {
                           <span className="tabular-nums">{event.date} • {event.time}</span>
                         </div>
 
-                        <h3 className="text-[15px] sm:text-[16px] font-serif font-semibold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
+                        <h3 className="text-[15px] sm:text-[16px] font-sans font-semibold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
                           {event.title}
                         </h3>
 
@@ -239,7 +239,7 @@ export default function UpcomingEventsPage() {
                     {selectedEvent.date}
                   </span>
                 </div>
-                <DialogTitle className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
                   {selectedEvent.title}
                 </DialogTitle>
                 <DialogDescription className="text-left text-slate-600 dark:text-slate-400 text-xs">

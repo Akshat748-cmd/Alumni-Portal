@@ -68,7 +68,7 @@ export function FilterDrawer({
             className="rounded-t-2xl max-h-[85vh] overflow-y-auto p-5 bg-card border-line"
           >
             <SheetHeader className="pb-4 border-b border-line flex flex-row items-center justify-between text-left space-y-0">
-              <SheetTitle className="font-serif text-lg font-bold text-navy-950 flex items-center gap-2">
+              <SheetTitle className="font-sans text-lg font-bold text-navy-950 flex items-center gap-2">
                 <SlidersHorizontal className="h-4 w-4 text-gold-600" strokeWidth={1.75} />
                 {title}
               </SheetTitle>

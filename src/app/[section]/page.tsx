@@ -66,7 +66,7 @@ export default async function SectionPage({ params }: SectionPageProps) {
                 <span className="text-xs tabular-nums font-bold text-gold-600 block mb-2">
                   0{idx + 1}
                 </span>
-                <h3 className="font-serif text-lg font-bold text-navy-950 group-hover:text-gold-600 transition-colors mb-2">
+                <h3 className="font-sans text-lg font-bold text-navy-950 group-hover:text-gold-600 transition-colors mb-2">
                   {sub.title}
                 </h3>
                 {sub.description && (

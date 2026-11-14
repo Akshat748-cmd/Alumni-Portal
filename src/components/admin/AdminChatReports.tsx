@@ -43,7 +43,7 @@ export function AdminChatReports() {
       {/* HEADER */}
       <div className="bg-white p-6 rounded-3xl border border-line shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950 flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950 flex items-center gap-2">
             <ShieldAlert className="h-6 w-6 text-red-600" />
             <span>Chat Safety Reports ({chatReports.length})</span>
           </h2>
@@ -98,7 +98,7 @@ export function AdminChatReports() {
                       </span>
                     </div>
 
-                    <h3 className="font-serif font-bold text-base text-navy-950">
+                    <h3 className="font-sans font-bold text-base text-navy-950">
                       Report against <span className="text-red-700">{report.reportedUserName}</span>
                     </h3>
                     <div className="text-xs text-muted mt-0.5">
@@ -176,7 +176,7 @@ export function AdminChatReports() {
       >
         <DialogContent className="sm:max-w-lg bg-white rounded-3xl p-6" data-lenis-prevent>
           <DialogHeader className="border-b border-line pb-3">
-            <DialogTitle className="text-lg font-serif font-bold text-navy-950 flex items-center gap-2">
+            <DialogTitle className="text-lg font-sans font-bold text-navy-950 flex items-center gap-2">
               <MessageSquare className="h-5 w-5 text-gold-600" />
               <span>Conversation Transcript</span>
             </DialogTitle>

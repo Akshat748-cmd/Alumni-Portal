@@ -145,7 +145,7 @@ export default function AnnouncementsPage() {
                             </span>
                           </div>
 
-                          <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
+                          <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors">
                             {notice.title}
                           </h3>
 

@@ -63,7 +63,7 @@ export default function AlumniOfficePage() {
                 <Badge variant="outline" className="text-xs mb-1 text-amber-600 border-amber-500/40">
                   Directorate
                 </Badge>
-                <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100">
                   {office.leadership.director}
                 </h3>
                 <div className="text-xs sm:text-sm text-amber-600 font-semibold mt-0.5">
@@ -89,7 +89,7 @@ export default function AlumniOfficePage() {
                 <Badge variant="outline" className="text-xs mb-1 text-blue-600 border-blue-500/40">
                   Secretariat Operations
                 </Badge>
-                <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100">
                   {office.leadership.secretary}
                 </h3>
                 <div className="text-xs sm:text-sm text-blue-600 font-semibold mt-0.5">
@@ -114,7 +114,7 @@ export default function AlumniOfficePage() {
                     <Building2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100">
+                    <h4 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100">
                       Physical Headquarters
                     </h4>
                     <p className="text-xs text-slate-500">{office.department}</p>
@@ -207,7 +207,7 @@ export default function AlumniOfficePage() {
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100">
+                    <h4 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100">
                       Visiting & Consultation Hours
                     </h4>
                     <p className="text-xs text-slate-500">In-person campus alumni visits</p>
@@ -238,7 +238,7 @@ export default function AlumniOfficePage() {
                   />
                   <div className="absolute inset-0 bg-navy-950/40 backdrop-blur-[1px] flex flex-col items-center justify-center p-4 text-center text-white">
                     <MapPin className="w-8 h-8 text-amber-400 animate-bounce mb-1" />
-                    <div className="text-sm font-bold font-serif">Poddar Campus Quadrangle</div>
+                    <div className="text-sm font-bold font-sans">Poddar Campus Quadrangle</div>
                     <div className="text-xs text-slate-200">Mansarovar, Jaipur, Rajasthan 302020</div>
                     <a
                       href="https://maps.google.com/?q=Poddar+Group+of+Institutions+Jaipur"

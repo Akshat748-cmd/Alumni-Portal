@@ -78,7 +78,7 @@ export default function WebinarsPage() {
                       {webinar.date} • {webinar.time}
                     </div>
 
-                    <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                    <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
                       {webinar.title}
                     </h3>
 

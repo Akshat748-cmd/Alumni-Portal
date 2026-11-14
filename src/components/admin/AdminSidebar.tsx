@@ -160,12 +160,12 @@ export function AdminSidebar({
           )}
           title="Return to Public Portal"
         >
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-serif font-black text-base shadow-xs shrink-0">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-950 font-sans font-black text-base shadow-xs shrink-0">
             P
           </div>
           {!collapsed && (
             <div className="leading-tight truncate">
-              <span className="font-serif font-semibold text-[13.5px] tracking-wide text-ivory block truncate">
+              <span className="font-sans font-semibold text-[13.5px] tracking-wide text-ivory block truncate">
                 Poddar Secretariat
               </span>
               <span className="text-[10px] tracking-widest uppercase text-gold-400/90 font-medium">

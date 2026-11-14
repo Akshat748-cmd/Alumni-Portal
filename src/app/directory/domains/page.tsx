@@ -125,7 +125,7 @@ export default function ExploreDomainsPage() {
                     </span>
                   </div>
 
-                  <div className="font-serif text-[30px] sm:text-[34px] font-semibold text-ivory tracking-tight mb-1.5 tabular-nums">
+                  <div className="font-sans text-[30px] sm:text-[34px] font-semibold text-ivory tracking-tight mb-1.5 tabular-nums">
                     <CountUp end={TOTAL_DOMAINS_SAMPLE_COUNT} suffix="+" />
                   </div>
 
@@ -167,7 +167,7 @@ export default function ExploreDomainsPage() {
                       </div>
 
                       {/* Domain Title */}
-                      <h3 className="font-serif text-[16px] sm:text-[17px] font-semibold text-navy-950 mb-1.5 leading-snug">
+                      <h3 className="font-sans text-[16px] sm:text-[17px] font-semibold text-navy-950 mb-1.5 leading-snug">
                         {dom.name}
                       </h3>
 
@@ -201,7 +201,7 @@ export default function ExploreDomainsPage() {
             <span className="text-[11px] font-semibold uppercase tracking-wider text-gold-600 block mb-1">
               Distribution Metrics
             </span>
-            <h3 className="font-serif text-[18px] sm:text-[20px] font-semibold text-navy-950">
+            <h3 className="font-sans text-[18px] sm:text-[20px] font-semibold text-navy-950">
               Proportional Domain Distribution
             </h3>
             <p className="text-xs sm:text-[13px] text-muted mt-0.5">

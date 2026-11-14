@@ -60,7 +60,7 @@ export function EmptyState({
         </svg>
       </div>
 
-      <h3 className="font-serif text-[18px] font-semibold text-navy-950 mb-1.5">{title}</h3>
+      <h3 className="font-sans text-[18px] font-semibold text-navy-950 mb-1.5">{title}</h3>
       <p className="text-[13.5px] text-muted max-w-sm leading-relaxed mb-4">{description}</p>
 
       {actionLabel && onAction && (

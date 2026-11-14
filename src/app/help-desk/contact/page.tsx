@@ -130,7 +130,7 @@ export default function ContactAlumniOfficePage() {
                     <PhoneCall className="h-4 w-4" />
                     <span>Liaison Appointment Request</span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-serif font-bold text-navy-950">
+                  <h2 className="text-xl sm:text-2xl font-sans font-bold text-navy-950">
                     Schedule a Consultation
                   </h2>
                   <p className="text-xs sm:text-sm text-muted mt-1">
@@ -306,7 +306,7 @@ export default function ContactAlumniOfficePage() {
               {/* DIRECT CONTACT SIDEBAR */}
               <div className="lg:col-span-4 space-y-6">
                 <div className="p-6 rounded-3xl bg-navy-950 text-ivory border border-navy-800 shadow-xl">
-                  <h3 className="text-lg font-serif font-bold text-white mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-sans font-bold text-white mb-4 flex items-center gap-2">
                     <Building className="h-5 w-5 text-gold-400" />
                     <span>Campus Secretariat</span>
                   </h3>

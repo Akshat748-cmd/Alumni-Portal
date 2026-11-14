@@ -91,7 +91,7 @@ export function AdminMentorshipQueue() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="font-serif text-lg text-navy-950">
+                <CardTitle className="font-sans text-lg text-navy-950">
                   Alumni Volunteer Mentor Applications
                 </CardTitle>
                 <CardDescription className="text-xs">
@@ -201,7 +201,7 @@ export function AdminMentorshipQueue() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="font-serif text-lg text-navy-950">
+                <CardTitle className="font-sans text-lg text-navy-950">
                   Student & Alumni Mentorship Requests
                 </CardTitle>
                 <CardDescription className="text-xs">
@@ -289,7 +289,7 @@ export function AdminMentorshipQueue() {
                   {selectedItem.type}
                 </Badge>
               </div>
-              <DialogTitle className="font-serif text-xl text-navy-950 mt-1">
+              <DialogTitle className="font-sans text-xl text-navy-950 mt-1">
                 {selectedItem.payload?.name || selectedItem.payload?.studentName}
               </DialogTitle>
               <DialogDescription className="text-xs">
@@ -362,7 +362,7 @@ export function AdminMentorshipQueue() {
         <Dialog open={!!rejectingItem} onOpenChange={(open) => !open && setRejectingItem(null)}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="font-serif text-lg text-rose-700 flex items-center gap-2">
+              <DialogTitle className="font-sans text-lg text-rose-700 flex items-center gap-2">
                 <XCircle className="h-5 w-5" />
                 Reject Mentorship Application
               </DialogTitle>

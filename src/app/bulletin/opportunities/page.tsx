@@ -125,7 +125,7 @@ export default function OpportunitiesPage() {
                       </span>
                     </div>
 
-                    <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
+                    <h3 className="text-lg font-sans font-bold text-slate-900 dark:text-slate-100 group-hover:text-amber-600 transition-colors line-clamp-2">
                       {opp.title}
                     </h3>
 
@@ -178,7 +178,7 @@ export default function OpportunitiesPage() {
                     Closes in {selectedOpp.deadlineDays} days
                   </span>
                 </div>
-                <DialogTitle className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
                   {selectedOpp.title}
                 </DialogTitle>
                 <DialogDescription className="text-left text-slate-600 dark:text-slate-400 pt-1">
@@ -214,7 +214,7 @@ export default function OpportunitiesPage() {
           {selectedOpp && isApplying && (
             <form onSubmit={handleApplySubmit} className="space-y-4">
               <DialogHeader>
-                <DialogTitle className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 text-left">
+                <DialogTitle className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
                   Apply for Opportunity
                 </DialogTitle>
                 <DialogDescription className="text-left text-slate-600 dark:text-slate-400 text-xs">

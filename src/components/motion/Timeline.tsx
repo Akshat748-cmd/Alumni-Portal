@@ -70,7 +70,7 @@ export function Timeline({
               >
                 <div className="rounded-xl border border-line bg-card p-5 shadow-navy-soft transition-all hover:-translate-y-1 hover:shadow-navy-hover">
                   <div className={`flex items-center gap-2 mb-2 flex-wrap ${isEven ? "md:justify-end" : ""}`}>
-                    <span className="font-serif text-lg font-bold text-navy-950">{item.yearOrDate}</span>
+                    <span className="font-sans text-lg font-bold text-navy-950">{item.yearOrDate}</span>
                     {item.badge && (
                       <span className="rounded-full bg-gold-500/15 px-2.5 py-0.5 text-xs font-semibold text-gold-600">
                         {item.badge}

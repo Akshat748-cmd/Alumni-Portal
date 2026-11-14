@@ -193,7 +193,7 @@ export default function MembershipPage() {
                       <div>
                         <div className="mb-4">
                           <h3
-                            className={`text-xl sm:text-2xl font-serif font-bold ${
+                            className={`text-xl sm:text-2xl font-sans font-bold ${
                               isRec ? "text-ivory" : "text-navy-950"
                             }`}
                           >
@@ -210,7 +210,7 @@ export default function MembershipPage() {
 
                         <div className="flex items-baseline gap-1.5 my-6 pb-6 border-b border-line/20">
                           <span
-                            className={`text-3xl sm:text-4xl font-serif font-bold ${
+                            className={`text-3xl sm:text-4xl font-sans font-bold ${
                               isRec ? "text-gold-400" : "text-navy-950"
                             }`}
                           >
@@ -271,7 +271,7 @@ export default function MembershipPage() {
             <div className="inline-flex p-3 rounded-2xl bg-gold-500/15 text-gold-700 border border-gold-500/30 mb-4">
               <Gift className="h-6 w-6" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-navy-950 mb-3">
+            <h2 className="text-2xl sm:text-3xl font-sans font-bold text-navy-950 mb-3">
               Voluntary Alumni Scholarship Fund
             </h2>
             <p className="text-sm text-muted max-w-xl mx-auto mb-8">
@@ -352,7 +352,7 @@ export default function MembershipPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg bg-white border-line p-6 sm:p-8 rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl font-bold text-navy-950">
+            <DialogTitle className="font-sans text-2xl font-bold text-navy-950">
               {isSuccess ? "Membership Inquiry Received" : `Join ${selectedTier?.name}`}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted">

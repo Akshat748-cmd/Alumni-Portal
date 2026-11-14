@@ -120,7 +120,7 @@ export default function UpskillingPage() {
                     </div>
 
                     {/* TITLE */}
-                    <h3 className="text-lg sm:text-xl font-serif font-bold text-navy-950 mb-2 leading-snug line-clamp-2">
+                    <h3 className="text-lg sm:text-xl font-sans font-bold text-navy-950 mb-2 leading-snug line-clamp-2">
                       {program.title}
                     </h3>
 
@@ -191,7 +191,7 @@ export default function UpskillingPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-lg bg-white border-line p-6 sm:p-8 rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl font-bold text-navy-950">
+            <DialogTitle className="font-sans text-2xl font-bold text-navy-950">
               Claim Alumni Course Privilege
             </DialogTitle>
             <DialogDescription className="text-xs text-muted">

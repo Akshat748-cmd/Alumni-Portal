@@ -87,7 +87,7 @@ export default function JoinNetworkPage() {
                             {pillar.badge}
                           </span>
                         </div>
-                        <h3 className="text-[17px] sm:text-[18px] font-semibold font-serif text-navy-950 mb-2">
+                        <h3 className="text-[17px] sm:text-[18px] font-semibold font-sans text-navy-950 mb-2">
                           {pillar.title}
                         </h3>
                         <p className="text-xs sm:text-[13px] text-muted leading-relaxed mb-4">
@@ -123,7 +123,7 @@ export default function JoinNetworkPage() {
                   <Sparkles className="h-3.5 w-3.5" />
                   <span>Institutional Charter Privileges</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-ivory mb-4">
+                <h2 className="text-2xl sm:text-3xl font-sans font-bold text-ivory mb-4">
                   Why Keep Your Alumni Enrollment Active?
                 </h2>
                 <p className="text-sm text-ivory/80 leading-relaxed mb-6">
@@ -141,7 +141,7 @@ export default function JoinNetworkPage() {
               </div>
 
               <div className="lg:col-span-5 flex flex-col items-center justify-center p-6 bg-navy-900/80 rounded-2xl border border-navy-800 text-center">
-                <div className="text-3xl sm:text-4xl font-serif font-bold text-gold-400 mb-1">
+                <div className="text-3xl sm:text-4xl font-sans font-bold text-gold-400 mb-1">
                   100% Free
                 </div>
                 <div className="text-xs uppercase tracking-wider text-ivory/70 font-semibold mb-4">

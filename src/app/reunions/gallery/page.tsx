@@ -146,7 +146,7 @@ export default function ReunionsGalleryPage() {
                 </div>
 
                 <div className="absolute bottom-4 left-4 right-4 text-white pointer-events-none">
-                  <h3 className="text-base font-serif font-bold group-hover:text-amber-400 transition-colors line-clamp-1">
+                  <h3 className="text-base font-sans font-bold group-hover:text-amber-400 transition-colors line-clamp-1">
                     {item.title}
                   </h3>
                   <p className="mt-1 text-xs text-slate-300 line-clamp-2">
@@ -219,7 +219,7 @@ export default function ReunionsGalleryPage() {
 
           {/* Bottom Caption Bar */}
           <div className="text-center text-white max-w-2xl mx-auto z-10">
-            <h4 className="text-lg font-serif font-bold text-amber-300">
+            <h4 className="text-lg font-sans font-bold text-amber-300">
               {filteredItems[lightboxIndex].title}
             </h4>
             <p className="mt-1 text-xs sm:text-sm text-slate-300">

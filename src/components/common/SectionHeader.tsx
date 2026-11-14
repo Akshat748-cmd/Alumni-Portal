@@ -56,7 +56,7 @@ export function SectionHeader({
 
       <h2
         className={cn(
-          "font-serif font-semibold tracking-[-0.01em] text-[18px] sm:text-[22px] md:text-[28px] leading-[1.2] sm:leading-[1.25] text-balance",
+          "font-sans font-semibold tracking-[-0.01em] text-[18px] sm:text-[22px] md:text-[28px] leading-[1.2] sm:leading-[1.25] text-balance",
           isNavy ? "text-ivory" : "text-navy-950"
         )}
       >
@@ -74,8 +74,8 @@ export function SectionHeader({
       {displaySubtitle && (
         <p
           className={cn(
-            "text-[12.5px] sm:text-[14px] md:text-[15.5px] leading-relaxed max-w-[62ch] text-pretty",
-            isNavy ? "text-ivory/70" : "text-muted"
+            "text-[11.5px] sm:text-[13px] md:text-[13.5px] leading-relaxed max-w-[62ch] text-pretty font-normal",
+            isNavy ? "text-ivory/70" : "text-slate-500"
           )}
         >
           {displaySubtitle}

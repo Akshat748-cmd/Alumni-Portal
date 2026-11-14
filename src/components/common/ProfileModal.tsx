@@ -103,7 +103,7 @@ export function ProfileModal({
                   </span>
                 )}
               </div>
-              <h2 className="font-serif text-[18px] sm:text-[20px] font-semibold text-ivory truncate">
+              <h2 className="font-sans text-[18px] sm:text-[20px] font-semibold text-ivory truncate">
                 {profile.name}
               </h2>
               <p className="text-[13px] text-gold-300 font-medium truncate">
