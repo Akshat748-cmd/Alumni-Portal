@@ -288,13 +288,18 @@ export default function AuthPage() {
       });
       toast.success("Signed in as Student! Welcome to Opportunities Network.");
     } else {
+      const isVikram = loginEmail.toLowerCase().includes("vikram");
       login({
-        id: `usr-${Date.now()}`,
-        name: loginEmail.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Alumni Member",
+        id: isVikram ? "alm-1" : `usr-${Date.now()}`,
+        name: isVikram
+          ? "Vikramaditya Rathore"
+          : loginEmail.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Alumni Member",
         email: loginEmail.trim(),
         role: "alumni",
-        batch: 2018,
+        batch: isVikram ? 2008 : 2018,
         course: "MBA (Finance & Strategy)",
+        company: isVikram ? "Apex Capital Advisory" : undefined,
+        designation: isVikram ? "Managing Director" : undefined,
       });
       toast.success("Signed in as Alumnus! Welcome back to Poddar Alumni Portal.");
     }

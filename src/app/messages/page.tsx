@@ -16,12 +16,19 @@ import {
   Sparkles,
   Check,
   CheckCheck,
-  Clock,
   Briefcase,
   GraduationCap,
   Plus,
   AlertCircle,
   X,
+  Smile,
+  Paperclip,
+  Mic,
+  Phone,
+  Video,
+  FileText,
+  UserCheck,
+  CornerDownLeft,
 } from "lucide-react";
 import { AvatarInitials } from "@/components/common/AvatarInitials";
 import { EmptyState } from "@/components/common/EmptyState";
@@ -34,6 +41,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const REPORT_REASONS = [
   "Spam or unsolicited marketing",
@@ -43,10 +57,37 @@ const REPORT_REASONS = [
   "Other platform violation",
 ];
 
+const QUICK_EMOJIS = ["👍", "👋", "🎓", "💼", "🙏", "😊", "🔥", "✨", "🤝", "🚀"];
+
+function formatMessageTime(dateStr: string) {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return "";
+  }
+}
+
+function formatGroupDate(dateStr: string) {
+  try {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const isYesterday = date.toDateString() === yesterday.toDateString();
+
+    if (isToday) return "Today";
+    if (isYesterday) return "Yesterday";
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  } catch {
+    return "Earlier";
+  }
+}
+
 function MessagesContent() {
   const searchParams = useSearchParams();
   const startWithParam = searchParams.get("startWith");
-  const nameParam = searchParams.get("name");
   const convParam = searchParams.get("conv");
 
   const {
@@ -67,6 +108,7 @@ function MessagesContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // Mobile navigation: whether thread is open on mobile
   const [mobileThreadOpen, setMobileThreadOpen] = useState(false);
@@ -81,6 +123,7 @@ function MessagesContent() {
   const [reportNotes, setReportNotes] = useState("");
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const urlParamConsumedRef = useRef<string | null>(null);
 
   // Ensure body scroll is locked and window stays at top when opening messages
@@ -88,16 +131,20 @@ function MessagesContent() {
     window.scrollTo(0, 0);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const rafId = requestAnimationFrame(() => {
-      window.scrollTo(0, 0);
-    });
     return () => {
       document.body.style.overflow = prevOverflow;
-      cancelAnimationFrame(rafId);
     };
   }, []);
 
-  // Initialize or select conversation from URL (only once per URL param to allow free switching)
+  // Auto-resize textarea to fit content (up to max 120px)
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+    }
+  }, [inputText]);
+
+  // Initialize or select conversation from URL
   useEffect(() => {
     if (!currentUser) return;
 
@@ -125,29 +172,33 @@ function MessagesContent() {
     }
   }, [activeConvId, markConversationRead]);
 
-  // Scroll ONLY the internal chat container to bottom (never scroll the main window/page!)
-  useEffect(() => {
+  // Scroll internal chat container to bottom
+  const scrollToBottom = () => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
   }, [messages, activeConvId, isTyping]);
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-ivory text-ink flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl p-8 max-w-md w-full border border-line shadow-xl text-center">
-          <div className="h-14 w-14 rounded-2xl bg-navy-950 text-gold-300 flex items-center justify-center mx-auto mb-4">
-            <MessageSquare className="h-7 w-7 text-gold-300" />
+      <div className="min-h-screen bg-[#efeae2] text-navy-950 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl p-8 max-w-md w-full border border-line shadow-2xl text-center">
+          <div className="h-14 w-14 rounded-2xl bg-[#00a884] text-white flex items-center justify-center mx-auto mb-4 shadow-md">
+            <MessageSquare className="h-7 w-7 text-white" />
           </div>
           <h2 className="text-2xl font-serif font-bold text-navy-950 mb-2">
             Sign In to Access Messages
           </h2>
           <p className="text-xs text-muted mb-6">
-            Opportunities Network direct messaging connects students with alumni hiring mentors.
+            Opportunities Network direct messaging connects students with alumni mentors in real time.
           </p>
           <Link
             href="/join/auth"
-            className="w-full py-3 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm block"
+            className="w-full py-3 rounded-xl bg-[#00a884] hover:bg-[#008f6f] text-white font-bold text-sm block transition-colors shadow-md"
           >
             Sign In or Try Evaluator Demo
           </Link>
@@ -158,11 +209,29 @@ function MessagesContent() {
 
   const isStudent = currentUser.role === "student";
 
+  // Helper to determine if a participant is the logged-in user (handles ID mismatch or name variations)
+  const isMeMatch = (p: { id: string; name: string }) => {
+    if (!currentUser) return false;
+    if (p.id === currentUser.id) return true;
+    const curName = currentUser.name.toLowerCase().replace(/[^a-z]/g, "");
+    const pName = p.name.toLowerCase().replace(/[^a-z]/g, "");
+    if (curName && pName && (curName === pName || (curName.includes("vikram") && pName.includes("vikram")))) {
+      return true;
+    }
+    return false;
+  };
+
+  // Helper to get the OTHER person in a 2-person conversation
+  const getOtherParticipant = (conv: ChatConversation) => {
+    const found = conv.participants.find((p) => !isMeMatch(p));
+    return found || conv.participants[1] || conv.participants[0];
+  };
+
   // Filter conversations by search
   const filteredConversations = conversations.filter((c) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
-    const other = c.participants.find((p) => p.id !== currentUser.id);
+    const other = getOtherParticipant(c);
     return (
       other?.name.toLowerCase().includes(q) ||
       other?.role.toLowerCase().includes(q) ||
@@ -173,9 +242,7 @@ function MessagesContent() {
   });
 
   const activeConversation = conversations.find((c) => c.id === activeConvId);
-  const activeOtherParticipant = activeConversation?.participants.find(
-    (p) => p.id !== currentUser.id
-  );
+  const activeOtherParticipant = activeConversation ? getOtherParticipant(activeConversation) : undefined;
   const activeMessages = activeConvId ? messages[activeConvId] || [] : [];
   const isBlocked = activeConversation?.isBlocked;
 
@@ -185,7 +252,13 @@ function MessagesContent() {
 
     const textToSend = inputText.trim();
     setInputText("");
+    setShowEmojiPicker(false);
     sendMessage(activeConvId, textToSend);
+
+    // Reset textarea height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
 
     // Simulate typing indicator
     setIsTyping(true);
@@ -199,6 +272,11 @@ function MessagesContent() {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleAddEmoji = (emoji: string) => {
+    setInputText((prev) => prev + emoji);
+    textareaRef.current?.focus();
   };
 
   const handleReportSubmit = () => {
@@ -228,7 +306,6 @@ function MessagesContent() {
   };
 
   // Directory users for New Message dialog
-  // Assumption: students can message alumni; alumni can message alumni and students; students CANNOT message students.
   const eligibleRecipients = isStudent
     ? alumni.map((a) => ({ id: a.id, name: a.name, role: "alumnus" as const, subtitle: `${a.designation} @ ${a.company}` }))
     : [
@@ -242,61 +319,79 @@ function MessagesContent() {
   );
 
   return (
-    <div className="fixed inset-0 top-0 pt-[58px] sm:pt-[64px] flex flex-col bg-ivory overflow-hidden z-20">
-      <div className="flex-1 min-h-0 container mx-auto px-2 sm:px-4 lg:px-6 py-2 sm:py-2.5 max-w-7xl flex flex-col">
-        {/* MAIN TWO-PANE CHAT CONTAINER (LOCKED VIEWPORT) */}
-        <div className="flex-1 min-h-0 bg-white rounded-xl border border-line shadow-md overflow-hidden flex h-full">
-          {/* LEFT PANE: CONVERSATION LIST (COMPACT SIDEBAR) */}
+    <div className="fixed inset-0 top-0 pt-14 lg:pt-16 flex flex-col bg-[#efeae2] overflow-hidden z-20">
+      {/* WRAPPER: Edge-to-edge on mobile, sleek WhatsApp Web container on laptop */}
+      <div className="flex-1 min-h-0 w-full md:max-w-[1600px] md:mx-auto md:p-3 lg:p-4 flex flex-col">
+        {/* MAIN TWO-PANE CHAT CONTAINER */}
+        <div className="flex-1 min-h-0 bg-white md:rounded-2xl border-0 md:border md:border-[#d1d7db] md:shadow-xl overflow-hidden flex h-full">
+          {/* ========================================================= */}
+          {/* LEFT PANE: CONVERSATION LIST (WHATSAPP SIDEBAR)           */}
+          {/* ========================================================= */}
           <div
-            className={`w-full md:w-64 lg:w-72 shrink-0 border-r border-line flex flex-col bg-ivory/30 min-h-0 h-full ${
+            className={`w-full md:w-80 lg:w-96 shrink-0 border-r border-[#e9edef] flex flex-col bg-white min-h-0 h-full ${
               mobileThreadOpen ? "hidden md:flex" : "flex"
             }`}
           >
-            {/* LEFT HEADER */}
-            <div className="shrink-0 p-3 sm:p-3.5 border-b border-line bg-white flex items-center justify-between">
-              <div>
-                <h1 className="text-base font-serif font-semibold text-navy-950 flex items-center gap-1.5">
-                  <span>Direct Messages</span>
-                  <span className="text-[11px] px-1.5 py-0.2 rounded-full bg-gold-400/20 text-navy-950 font-sans font-bold tabular-nums">
-                    {conversations.length}
-                  </span>
-                </h1>
-                <p className="text-[10px] text-muted truncate">Signed in as {currentUser.name}</p>
+            {/* SIDEBAR HEADER */}
+            <div className="shrink-0 h-16 px-3.5 sm:px-4 bg-[#f0f2f5] border-b border-[#e9edef] flex items-center justify-between">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <AvatarInitials name={currentUser.name} size="sm" className="ring-2 ring-white shrink-0" />
+                <div className="min-w-0">
+                  <h1 className="text-sm font-bold text-[#111b21] truncate flex items-center gap-1.5">
+                    <span>Chats</span>
+                    <span className="text-[11px] px-1.5 py-0.2 rounded-full bg-[#00a884]/15 text-[#00a884] font-bold tabular-nums">
+                      {conversations.length}
+                    </span>
+                  </h1>
+                  <p className="text-[10px] text-[#667781] truncate">Signed in as {currentUser.name}</p>
+                </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setNewChatModalOpen(true)}
-                className="p-1.5 rounded-lg bg-navy-950 text-gold-300 hover:bg-navy-900 transition-colors shadow-xs"
-                title="Start a new message"
-              >
-                <Plus className="h-4 w-4" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setNewChatModalOpen(true)}
+                  className="h-9 w-9 rounded-full hover:bg-black/5 text-[#54656f] hover:text-[#111b21] flex items-center justify-center transition-colors cursor-pointer"
+                  title="New chat"
+                  aria-label="Start new chat"
+                >
+                  <Plus className="h-5 w-5" />
+                </button>
+              </div>
             </div>
 
             {/* SEARCH BOX */}
-            <div className="shrink-0 p-2 sm:p-2.5 border-b border-line bg-white/70">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted pointer-events-none" />
+            <div className="shrink-0 px-3 py-2 bg-white border-b border-[#f0f2f5]">
+              <div className="relative flex items-center">
+                <Search className="absolute left-3 h-4 w-4 text-[#54656f] pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Search participants..."
+                  placeholder="Search or start new chat"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-8 pl-8 pr-2.5 rounded-lg border border-line bg-white text-xs focus:outline-none focus:ring-1 focus:ring-gold-500/40"
+                  className="w-full h-9 pl-9 pr-8 rounded-lg bg-[#f0f2f5] text-xs text-[#111b21] placeholder:text-[#54656f] focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#00a884] transition-all"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 text-[#54656f] hover:text-[#111b21]"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
               </div>
             </div>
 
             {/* CONVERSATION LIST ITEMS */}
-            <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-line/60">
+            <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-[#f0f2f5]">
               {filteredConversations.length === 0 ? (
-                <div className="p-4 text-center text-xs text-muted">
-                  No conversations match your search.
+                <div className="p-8 text-center text-xs text-[#667781]">
+                  No chats match your search.
                 </div>
               ) : (
                 filteredConversations.map((conv) => {
-                  const other = conv.participants.find((p) => p.id !== currentUser.id);
+                  const other = getOtherParticipant(conv);
                   const unread = conv.unreadCount[currentUser.id] || 0;
                   const isSelected = conv.id === activeConvId;
 
@@ -311,50 +406,46 @@ function MessagesContent() {
                           window.history.replaceState({}, "", `/messages?conv=${conv.id}`);
                         }
                       }}
-                      className={`w-full px-2.5 py-2 sm:py-2.5 text-left transition-all flex items-start gap-2.5 cursor-pointer ${
+                      className={`w-full px-3.5 py-3 text-left transition-colors flex items-center gap-3 cursor-pointer ${
                         isSelected
-                          ? "bg-navy-900/5 border-l-[3px] border-l-gold-500"
-                          : "hover:bg-ivory/80"
+                          ? "bg-[#f0f2f5]"
+                          : "hover:bg-[#f5f6f6]"
                       }`}
                     >
-                      <AvatarInitials name={other?.name || "Member"} size="sm" className="shrink-0 mt-0.5" />
+                      <div className="relative shrink-0">
+                        <AvatarInitials name={other?.name || "Member"} size="md" />
+                        <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#25d366] border-2 border-white ring-1 ring-black/5" />
+                      </div>
+
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="font-semibold text-xs text-navy-950 truncate">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold text-xs sm:text-sm text-[#111b21] truncate">
                             {other?.name}
                           </span>
-                          <span suppressHydrationWarning className="text-[10px] text-muted shrink-0 tabular-nums">
-                            {conv.lastMessageAt ? new Date(conv.lastMessageAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
+                          <span suppressHydrationWarning className="text-[10px] sm:text-[11px] text-[#667781] shrink-0 tabular-nums">
+                            {conv.lastMessageAt ? formatMessageTime(conv.lastMessageAt) : ""}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1 mb-0.5">
-                          <span
-                            className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
-                              other?.role === "student"
-                                ? "bg-amber-100 text-amber-900"
-                                : "bg-navy-100 text-navy-900"
-                            }`}
-                          >
-                            {other?.role}
-                          </span>
-                          {conv.jobContext && (
-                            <span className="text-[10px] text-muted truncate">
-                              • {conv.jobContext.jobTitle}
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs text-[#667781] truncate leading-tight flex items-center gap-1">
+                            {conv.lastMessage ? (
+                              <>
+                                <CheckCheck className="h-3 w-3 text-[#53bdeb] shrink-0 inline" />
+                                <span className="truncate">{conv.lastMessage}</span>
+                              </>
+                            ) : (
+                              <span className="italic text-[#8696a0]">Tap to chat</span>
+                            )}
+                          </p>
+
+                          {unread > 0 && (
+                            <span className="h-4.5 min-w-[18px] px-1.5 rounded-full bg-[#25d366] text-white font-bold text-[10px] flex items-center justify-center shrink-0 tabular-nums shadow-xs">
+                              {unread}
                             </span>
                           )}
                         </div>
-
-                        <p className="text-[11px] text-muted truncate leading-tight">
-                          {conv.lastMessage || "No messages yet"}
-                        </p>
                       </div>
-
-                      {unread > 0 && (
-                        <span className="h-4 min-w-[16px] px-1 rounded-full bg-gold-500 text-navy-950 font-bold text-[9px] flex items-center justify-center shrink-0 tabular-nums">
-                          {unread}
-                        </span>
-                      )}
                     </button>
                   );
                 })
@@ -362,198 +453,351 @@ function MessagesContent() {
             </div>
           </div>
 
-          {/* RIGHT PANE: THREAD VIEW */}
+          {/* ========================================================= */}
+          {/* RIGHT PANE: WHATSAPP ACTIVE THREAD VIEW                    */}
+          {/* ========================================================= */}
           <div
-            className={`flex-1 min-h-0 flex flex-col bg-white h-full ${
+            className={`flex-1 min-h-0 flex flex-col bg-[#efeae2] relative h-full ${
               !mobileThreadOpen ? "hidden md:flex" : "flex"
             }`}
           >
             {activeConversation && activeOtherParticipant ? (
               <>
-                {/* THREAD TOP HEADER */}
-                <div className="shrink-0 p-3 sm:p-4 border-b border-line bg-white flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0">
+                {/* WHATSAPP CHAT HEADER */}
+                <div className="shrink-0 h-16 px-3 sm:px-4 bg-[#f0f2f5] border-b border-[#e9edef] flex items-center justify-between gap-2 z-10 shadow-xs">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <button
                       type="button"
                       onClick={() => setMobileThreadOpen(false)}
-                      className="md:hidden p-1.5 -ml-1 text-muted hover:text-navy-950"
-                      aria-label="Back to conversations"
+                      className="md:hidden p-1.5 -ml-1 text-[#54656f] hover:text-[#111b21] hover:bg-black/5 rounded-full transition-colors"
+                      aria-label="Back to chats"
                     >
                       <ArrowLeft className="h-5 w-5" />
                     </button>
 
-                    <AvatarInitials name={activeOtherParticipant.name} size="md" className="shrink-0" />
+                    <div className="relative shrink-0">
+                      <AvatarInitials name={activeOtherParticipant.name} size="md" />
+                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-[#25d366] border-2 border-white ring-1 ring-black/5" />
+                    </div>
+
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <h2 className="font-serif font-bold text-sm sm:text-base text-navy-950 truncate">
+                        <h2 className="font-semibold text-sm sm:text-base text-[#111b21] truncate">
                           {activeOtherParticipant.name}
                         </h2>
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                          className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
                             activeOtherParticipant.role === "student"
                               ? "bg-amber-100 text-amber-900 border border-amber-300"
-                              : "bg-navy-100 text-navy-900"
+                              : "bg-[#00a884]/15 text-[#00a884] border border-[#00a884]/30"
                           }`}
                         >
                           {activeOtherParticipant.role}
                         </span>
                       </div>
-                      {activeConversation.jobContext && (
-                        <div className="text-[11px] text-muted truncate">
-                          Context: <strong className="text-navy-950 font-semibold">{activeConversation.jobContext.jobTitle} ({activeConversation.jobContext.company})</strong>
-                        </div>
-                      )}
+                      <div className="text-[11px] text-[#667781] truncate flex items-center gap-1.5">
+                        <span className="text-[#00a884] font-medium">online</span>
+                        {activeConversation.jobContext && (
+                          <>
+                            <span>•</span>
+                            <span className="truncate">
+                              Context: <strong className="text-[#111b21] font-medium">{activeConversation.jobContext.jobTitle}</strong>
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  {/* THREAD ACTIONS: REPORT & BLOCK */}
+                  {/* HEADER ACTIONS MENU */}
                   <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setReportModalOpen(true)}
-                      className="p-2 rounded-xl text-muted hover:text-amber-700 hover:bg-amber-50 text-xs font-semibold flex items-center gap-1"
-                      title="Report Conversation"
-                    >
-                      <ShieldAlert className="h-4 w-4" />
-                      <span className="hidden sm:inline">Report</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={handleToggleBlock}
-                      className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors ${
-                        isBlocked
-                          ? "bg-red-50 text-red-700 border border-red-200"
-                          : "text-muted hover:text-red-700 hover:bg-red-50"
-                      }`}
-                      title={isBlocked ? "Unblock user" : "Block user"}
-                    >
-                      {isBlocked ? <Unlock className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-                      <span className="hidden sm:inline">{isBlocked ? "Unblock" : "Block"}</span>
-                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        type="button"
+                        className="h-9 w-9 rounded-full hover:bg-black/5 text-[#54656f] hover:text-[#111b21] flex items-center justify-center transition-colors cursor-pointer"
+                        aria-label="More options"
+                      >
+                        <MoreVertical className="h-5 w-5" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 bg-white rounded-xl shadow-xl border border-line p-1">
+                        <DropdownMenuItem
+                          onClick={() => setReportModalOpen(true)}
+                          className="text-xs font-medium text-amber-700 focus:bg-amber-50 cursor-pointer flex items-center gap-2"
+                        >
+                          <ShieldAlert className="h-4 w-4" />
+                          <span>Report Chat</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={handleToggleBlock}
+                          className={`text-xs font-medium cursor-pointer flex items-center gap-2 ${
+                            isBlocked ? "text-emerald-700 focus:bg-emerald-50" : "text-red-700 focus:bg-red-50"
+                          }`}
+                        >
+                          {isBlocked ? <Unlock className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                          <span>{isBlocked ? "Unblock Contact" : "Block Contact"}</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
 
                 {/* BLOCKED BANNER */}
                 {isBlocked && (
-                  <div className="shrink-0 bg-red-50 border-b border-red-200 px-4 py-2 text-xs text-red-800 flex items-center justify-between">
+                  <div className="shrink-0 bg-red-50 border-b border-red-200 px-4 py-2 text-xs text-red-800 flex items-center justify-between z-10">
                     <span className="flex items-center gap-1.5 font-medium">
-                      <AlertCircle className="h-4 w-4 text-red-600" />
-                      You have blocked this conversation. Neither party can send new messages.
+                      <AlertCircle className="h-4 w-4 text-red-600 shrink-0" />
+                      You have blocked this contact. Unblock to resume messaging.
                     </span>
                     <button
                       type="button"
                       onClick={handleToggleBlock}
-                      className="font-bold underline hover:text-red-950"
+                      className="font-bold underline hover:text-red-950 shrink-0 ml-2"
                     >
                       Unblock
                     </button>
                   </div>
                 )}
 
-                {/* MESSAGE STREAM (INTERNAL SCROLL ONLY) */}
+                {/* WHATSAPP MESSAGE STREAM WITH DOODLE WALLPAPER */}
                 <div
                   ref={messageContainerRef}
-                  className="flex-1 min-h-0 p-4 sm:p-6 overflow-y-auto space-y-4 bg-ivory/20 scroll-smooth"
+                  className="flex-1 min-h-0 p-3 sm:p-5 overflow-y-auto space-y-2 relative scroll-smooth overscroll-contain"
                   data-lenis-prevent
                 >
+                  {/* Subtle Authentic WhatsApp doodle background pattern */}
+                  <div
+                    className="absolute inset-0 pointer-events-none opacity-[0.04] bg-repeat"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' /%3E%3C/g%3E%3C/svg%3E")`,
+                    }}
+                  />
+
+                  {/* Centered Date Separator Pill */}
+                  <div className="flex justify-center my-3 relative z-1">
+                    <span className="bg-white/90 backdrop-blur-xs text-[#54656f] text-[11px] font-medium px-3 py-1 rounded-lg shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] uppercase tracking-wider">
+                      {activeMessages.length > 0 ? formatGroupDate(activeMessages[0].createdAt) : "Today"}
+                    </span>
+                  </div>
+
                   {activeMessages.length === 0 ? (
-                    <div className="h-full flex items-center justify-center text-center p-8 text-muted text-xs">
-                      Send a message to start this connection.
+                    <div className="h-full flex items-center justify-center text-center p-8 text-[#667781] text-xs relative z-1">
+                      No messages yet. Send a greeting to start chatting!
                     </div>
                   ) : (
-                    activeMessages.map((msg) => {
-                      const isMe = msg.senderId === currentUser.id;
+                    activeMessages.map((msg, index) => {
+                      // WhatsApp separation:
+                      // If the message is from activeOtherParticipant -> INCOMING (Left side, White bubble)
+                      // If the message is from sender / current user -> OUTGOING (Right side, WhatsApp Green bubble)
+                      const isOutgoing = activeOtherParticipant
+                        ? msg.senderId !== activeOtherParticipant.id
+                        : msg.senderId === currentUser.id;
+
+                      const prevMsg = activeMessages[index - 1];
+                      const showDateDivider =
+                        prevMsg && formatGroupDate(msg.createdAt) !== formatGroupDate(prevMsg.createdAt);
 
                       return (
-                        <div
-                          key={msg.id}
-                          className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}
-                        >
+                        <React.Fragment key={msg.id}>
+                          {showDateDivider && (
+                            <div className="flex justify-center my-3 relative z-1 w-full">
+                              <span className="bg-white/90 backdrop-blur-xs text-[#54656f] text-[11px] font-medium px-3.5 py-1 rounded-lg shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] border border-black/5 uppercase tracking-wider">
+                                {formatGroupDate(msg.createdAt)}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* MESSAGE ROW: Left for receiver/incoming, Right for sender/outgoing */}
                           <div
-                            className={`max-w-[85%] sm:max-w-[70%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm ${
-                              isMe
-                                ? "bg-navy-950 text-white rounded-br-none"
-                                : "bg-white text-navy-950 border border-line rounded-bl-none"
-                            }`}
+                            className={`w-full flex ${
+                              isOutgoing ? "justify-end" : "justify-start"
+                            } relative z-1 my-1`}
                           >
-                            <p className="whitespace-pre-wrap">{msg.text}</p>
+                            {/* WHATSAPP CHAT BUBBLE */}
+                            <div
+                              className={`max-w-[85%] sm:max-w-[70%] px-3.5 py-2 text-[13px] sm:text-[14px] leading-relaxed shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] relative group ${
+                                isOutgoing
+                                  ? "bg-[#d9fdd3] text-[#111b21] rounded-2xl rounded-tr-xs border border-[#c1e8b7]/50"
+                                  : "bg-white text-[#111b21] rounded-2xl rounded-tl-xs border border-black/5"
+                              }`}
+                            >
+                              <div className="whitespace-pre-wrap break-words">{msg.text}</div>
+
+                              {/* WhatsApp Embedded Timestamp & Read Receipts */}
+                              <div className="float-right ml-3 mt-1 inline-flex items-center gap-1 select-none leading-none">
+                                <span suppressHydrationWarning className="text-[10px] text-[#667781] tabular-nums">
+                                  {formatMessageTime(msg.createdAt)}
+                                </span>
+                                {isOutgoing && (
+                                  <CheckCheck className="h-3.5 w-3.5 text-[#53bdeb] inline shrink-0" />
+                                )}
+                              </div>
+                              <div className="clear-both" />
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1 mt-1 text-[10px] text-muted px-1">
-                            <span suppressHydrationWarning>
-                              {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </span>
-                            {isMe && (
-                              <CheckCheck className="h-3 w-3 text-gold-500 inline" />
-                            )}
-                          </div>
-                        </div>
+                        </React.Fragment>
                       );
                     })
                   )}
 
-                  {/* TYPING INDICATOR */}
+                  {/* TYPING INDICATOR (WHATSAPP BOUNCING DOTS) */}
                   {isTyping && (
-                    <div className="flex items-center gap-2 text-xs text-muted italic">
-                      <AvatarInitials name={activeOtherParticipant.name} size="sm" />
-                      <div className="p-2.5 rounded-2xl bg-white border border-line text-muted flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-gold-500 animate-pulse" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-gold-500 animate-pulse delay-150" />
-                        <span className="h-1.5 w-1.5 rounded-full bg-gold-500 animate-pulse delay-300" />
-                        <span className="ml-1 text-[11px]">{activeOtherParticipant.name} is typing...</span>
+                    <div className="flex items-center gap-2 relative z-1">
+                      <div className="px-3.5 py-2.5 rounded-2xl rounded-tl-xs bg-white shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] text-[#667781] flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#00a884] animate-bounce" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#00a884] animate-bounce delay-150" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#00a884] animate-bounce delay-300" />
+                        <span className="ml-1 text-[11px] italic text-[#667781]">{activeOtherParticipant.name} is typing...</span>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* COMPOSER (STICKY AT BOTTOM) */}
-                <div className="shrink-0 p-2.5 sm:p-3 border-t border-line bg-white">
+                {/* QUICK EMOJI BAR (ACCORDION / POPOVER) */}
+                {showEmojiPicker && (
+                  <div className="shrink-0 px-3 py-2 bg-white border-t border-[#e9edef] flex items-center gap-2 overflow-x-auto z-10 shadow-xs">
+                    <span className="text-[11px] text-[#667781] font-semibold shrink-0">Quick emojis:</span>
+                    {QUICK_EMOJIS.map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => handleAddEmoji(emoji)}
+                        className="text-lg hover:scale-125 transition-transform p-1 cursor-pointer shrink-0"
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* ========================================================= */}
+                {/* WHATSAPP TYPING BOX (COMPOSER)                            */}
+                {/* ========================================================= */}
+                <div className="shrink-0 px-2 sm:px-3 py-2 bg-[#f0f2f5] border-t border-[#e9edef] z-10 pb-safe">
                   {isBlocked ? (
-                    <div className="text-center p-2.5 text-xs text-muted bg-gray-50 rounded-lg">
-                      Composer disabled because conversation is blocked.
+                    <div className="text-center py-2.5 px-4 text-xs text-[#667781] bg-white rounded-xl shadow-xs">
+                      Composer disabled because this conversation is blocked.
                     </div>
                   ) : (
-                    <form onSubmit={handleSendMessage} className="space-y-1.5">
-                      <div className="relative">
+                    <form onSubmit={handleSendMessage} className="flex items-end gap-1.5 sm:gap-2">
+                      {/* EMOJI BUTTON */}
+                      <button
+                        type="button"
+                        onClick={() => setShowEmojiPicker((prev) => !prev)}
+                        className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 transition-colors cursor-pointer mb-0.5 ${
+                          showEmojiPicker ? "bg-black/10 text-[#00a884]" : "text-[#54656f] hover:text-[#111b21] hover:bg-black/5"
+                        }`}
+                        title="Emojis"
+                        aria-label="Add emoji"
+                      >
+                        <Smile className="h-5 w-5" />
+                      </button>
+
+                      {/* QUICK RESUME / ATTACHMENT SHORTCUT */}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          type="button"
+                          className="h-10 w-10 rounded-full text-[#54656f] hover:text-[#111b21] hover:bg-black/5 flex items-center justify-center shrink-0 transition-colors cursor-pointer mb-0.5"
+                          title="Attach or quick share"
+                          aria-label="Attachment options"
+                        >
+                          <Paperclip className="h-5 w-5" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" side="top" className="w-56 bg-white rounded-xl shadow-xl border border-line p-1">
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setInputText("Hi! I would appreciate your guidance on interview preparation and career opportunities.");
+                              textareaRef.current?.focus();
+                            }}
+                            className="text-xs text-[#111b21] cursor-pointer flex items-center gap-2"
+                          >
+                            <MessageSquare className="h-4 w-4 text-[#00a884]" />
+                            <span>Quick: Career Guidance</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setInputText("I have reviewed your profile and would love to refer you for open opportunities.");
+                              textareaRef.current?.focus();
+                            }}
+                            className="text-xs text-[#111b21] cursor-pointer flex items-center gap-2"
+                          >
+                            <UserCheck className="h-4 w-4 text-[#00a884]" />
+                            <span>Quick: Referral Note</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setInputText("Sharing my updated CV/portfolio for your kind review.");
+                              textareaRef.current?.focus();
+                            }}
+                            className="text-xs text-[#111b21] cursor-pointer flex items-center gap-2"
+                          >
+                            <FileText className="h-4 w-4 text-[#00a884]" />
+                            <span>Quick: Portfolio & Resume</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      {/* ROUNDED WHATSAPP INPUT PILL */}
+                      <div className="flex-1 min-h-[42px] max-h-32 bg-white rounded-3xl px-4 py-2 border border-transparent shadow-xs flex items-center">
                         <textarea
-                          rows={2}
+                          ref={textareaRef}
+                          rows={1}
                           maxLength={1000}
                           value={inputText}
                           onChange={(e) => setInputText(e.target.value)}
                           onKeyDown={handleKeyDown}
-                          placeholder={`Message ${activeOtherParticipant.name}... (Press Enter to send)`}
-                          className="w-full p-2.5 pr-14 rounded-xl border border-line text-xs sm:text-sm focus:outline-none focus:ring-1 focus:ring-gold-500/40 resize-none bg-ivory/20 placeholder:text-muted"
+                          placeholder="Type a message..."
+                          className="w-full text-xs sm:text-sm text-[#111b21] placeholder:text-[#8696a0] focus:outline-none resize-none bg-transparent leading-relaxed max-h-28 overflow-y-auto"
                         />
-                        <button
-                          type="submit"
-                          disabled={!inputText.trim()}
-                          className={`absolute right-2.5 bottom-2.5 h-8 w-8 rounded-lg flex items-center justify-center transition-all ${
-                            inputText.trim()
-                              ? "bg-navy-950 text-gold-300 hover:bg-navy-900 shadow-xs cursor-pointer active:scale-95"
-                              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          }`}
-                          aria-label="Send message"
-                        >
-                          <Send className="h-3.5 w-3.5" />
-                        </button>
                       </div>
 
-                      <div className="flex items-center justify-between text-[10px] text-muted px-0.5">
-                        <span>Press Enter to send • Shift + Enter for new line</span>
-                        <span className="tabular-nums">{inputText.length} / 1000</span>
-                      </div>
+                      {/* CIRCULAR SEND BUTTON (WHATSAPP ICONIC GREEN) */}
+                      {inputText.trim() ? (
+                        <button
+                          type="submit"
+                          className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white flex items-center justify-center shrink-0 shadow-md transition-all duration-150 active:scale-90 cursor-pointer mb-0.5"
+                          aria-label="Send message"
+                          title="Send message (Enter)"
+                        >
+                          <Send className="h-4.5 w-4.5 ml-0.5" />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleAddEmoji("👍");
+                          }}
+                          className="h-10 w-10 sm:h-11 sm:w-11 rounded-full text-[#54656f] hover:bg-black/5 hover:text-[#111b21] flex items-center justify-center shrink-0 transition-colors cursor-pointer mb-0.5"
+                          aria-label="Send thumbs up"
+                          title="Quick Thumbs Up"
+                        >
+                          <span className="text-xl">👍</span>
+                        </button>
+                      )}
                     </form>
                   )}
                 </div>
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center p-8">
-                <EmptyState
-                  title="Select a Conversation"
-                  description="Choose an existing chat thread or start a new conversation with an alumnus or candidate."
-                  actionLabel="Start New Conversation"
-                  onAction={() => setNewChatModalOpen(true)}
-                />
+              /* EMPTY STATE: WHATSAPP WEB STYLE WELCOME SCREEN */
+              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-[#f0f2f5]">
+                <div className="h-20 w-20 rounded-full bg-[#00a884]/10 text-[#00a884] flex items-center justify-center mb-5 shadow-xs">
+                  <MessageSquare className="h-10 w-10 text-[#00a884]" />
+                </div>
+                <h3 className="text-xl font-serif font-bold text-[#111b21] mb-2">
+                  Poddar Opportunities Network Messenger
+                </h3>
+                <p className="text-xs text-[#667781] max-w-md mb-6 leading-relaxed">
+                  Send and receive messages directly with verified alumni and students. Stay connected for career advice, mentorship, and job referrals.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setNewChatModalOpen(true)}
+                  className="px-5 py-2.5 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer inline-flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Start New Conversation</span>
+                </button>
               </div>
             )}
           </div>
@@ -582,7 +826,7 @@ function MessagesContent() {
                 placeholder="Search member by name or role..."
                 value={newChatSearch}
                 onChange={(e) => setNewChatSearch(e.target.value)}
-                className="w-full h-10 pl-9 pr-3 rounded-xl border border-line text-xs focus:outline-none focus:ring-2 focus:ring-gold-500/30"
+                className="w-full h-10 pl-9 pr-3 rounded-xl border border-line text-xs focus:outline-none focus:ring-2 focus:ring-[#00a884]/30"
               />
             </div>
 
@@ -603,7 +847,7 @@ function MessagesContent() {
                       setNewChatModalOpen(false);
                       toast.success(`Conversation ready with ${rec.name}`);
                     }}
-                    className="w-full p-3 text-left hover:bg-ivory flex items-center justify-between gap-3 transition-colors"
+                    className="w-full p-3 text-left hover:bg-[#f0f2f5] flex items-center justify-between gap-3 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <AvatarInitials name={rec.name} size="sm" />
@@ -692,7 +936,7 @@ export default function MessagesPage() {
   return (
     <React.Suspense
       fallback={
-        <div className="min-h-screen bg-ivory flex items-center justify-center text-xs tabular-nums text-muted">
+        <div className="min-h-screen bg-[#efeae2] flex items-center justify-center text-xs tabular-nums text-muted">
           Loading Opportunities Network Messages...
         </div>
       }
