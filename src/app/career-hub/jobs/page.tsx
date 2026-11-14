@@ -337,8 +337,8 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen bg-[#F6F4EF] text-slate-800 font-sans">
-      {/* 1. HERO SECTION (Desktop Clearance for Fixed Header, 48% Left / 52% Right, Deep Navy #101A30) */}
-      <div className="relative bg-[#101A30] text-white overflow-hidden pt-20 sm:pt-24 lg:pt-[84px] pb-14 sm:pb-16 lg:pb-12 min-h-[420px] lg:h-[430px] flex items-center">
+      {/* 1. HERO SECTION (Desktop Clearance for Fixed Header, Responsive Left / Right, Deep Navy #101A30) */}
+      <div className="relative bg-[#101A30] text-white overflow-hidden pt-20 sm:pt-24 lg:pt-[88px] pb-12 sm:pb-14 lg:pb-12 min-h-[380px] lg:min-h-[420px] h-auto flex items-center">
         {/* Right side: Authentic Poddar Campus Photograph (Full building visible without clipping) */}
         <div className="hidden lg:block absolute top-0 right-0 bottom-0 w-[50%] xl:w-[52%] z-0 overflow-hidden pointer-events-none select-none bg-white">
           <img
@@ -390,19 +390,19 @@ export default function JobsPage() {
           </div>
         </div>
 
-        {/* Hero Content Left (48% width, ~64px padding) */}
-        <div className="container mx-auto px-4 sm:px-8 lg:px-16 max-w-[1328px] relative z-10 w-full py-4 lg:py-0">
-          <div className="w-full lg:w-[48%] max-w-xl">
+        {/* Hero Content Left (Fluid responsive width & padding for all laptops) */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1328px] relative z-10 w-full py-4 lg:py-0">
+          <div className="w-full lg:w-[50%] xl:w-[48%] max-w-xl">
             {/* Label: CAREER HUB */}
-            <div className="flex items-center gap-3 mb-3.5">
+            <div className="flex items-center gap-3 mb-2.5 sm:mb-3">
               <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#D5B568]">
                 CAREER HUB
               </span>
               <div className="h-[1px] w-12 bg-[#D5B568]/60" />
             </div>
 
-            {/* Heading: Jobs & Internships for Poddar Alumni (48-54px serif) */}
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-[46px] font-bold text-white tracking-tight leading-[1.12] mb-3">
+            {/* Heading: Jobs & Internships for Poddar Alumni (Fluid responsive font) */}
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[36px] xl:text-[42px] font-bold text-white tracking-tight leading-[1.14] mb-3">
               Jobs & Internships <br />
               <span className="font-serif italic font-normal text-[#D5B568]">
                 for Poddar Alumni
@@ -410,19 +410,19 @@ export default function JobsPage() {
             </h1>
 
             {/* Description */}
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-6 max-w-lg">
+            <p className="text-slate-300 text-xs sm:text-sm lg:text-base leading-relaxed mb-5 sm:mb-6 max-w-lg">
               Explore meaningful career opportunities, connect with fellow alumni and take the next step in your professional journey.
             </p>
 
-            {/* Two CTA Buttons (46px height) */}
-            <div className="flex flex-wrap items-center gap-3">
+            {/* Two CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               <button
                 type="button"
                 onClick={() => {
                   const el = document.getElementById("search-filters-panel");
                   el?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="inline-flex items-center gap-2 h-[46px] px-5 rounded-xl bg-[#D5B568] hover:bg-[#c6a350] text-[#101A30] font-semibold text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-2 h-[42px] sm:h-[46px] px-4 sm:px-5 rounded-xl bg-[#D5B568] hover:bg-[#c6a350] text-[#101A30] font-semibold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
               >
                 <Search className="h-4 w-4" />
                 <span>Explore Opportunities</span>
@@ -432,7 +432,7 @@ export default function JobsPage() {
               {currentUser?.role !== "student" ? (
                 <Link
                   href="/career-hub/post"
-                  className="inline-flex items-center gap-2 h-[46px] px-5 rounded-xl border border-[#D5B568]/60 hover:border-[#D5B568] text-white hover:text-[#D5B568] bg-[#101A30]/60 hover:bg-[#101A30] font-semibold text-sm transition-all shadow-sm active:scale-95"
+                  className="inline-flex items-center gap-2 h-[42px] sm:h-[46px] px-4 sm:px-5 rounded-xl border border-[#D5B568]/60 hover:border-[#D5B568] text-white hover:text-[#D5B568] bg-[#101A30]/60 hover:bg-[#101A30] font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-95"
                 >
                   <Upload className="h-4 w-4 text-[#D5B568]" />
                   <span>Post an Opportunity</span>
@@ -440,7 +440,7 @@ export default function JobsPage() {
               ) : (
                 <Link
                   href="/dashboard/applications"
-                  className="inline-flex items-center gap-2 h-[46px] px-5 rounded-xl border border-slate-600 hover:border-slate-400 text-white hover:text-slate-200 bg-white/5 font-semibold text-sm transition-all shadow-sm active:scale-95"
+                  className="inline-flex items-center gap-2 h-[42px] sm:h-[46px] px-4 sm:px-5 rounded-xl border border-slate-600 hover:border-slate-400 text-white hover:text-slate-200 bg-white/5 font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-95"
                 >
                   <Briefcase className="h-4 w-4 text-[#D5B568]" />
                   <span>My Applications</span>
@@ -622,7 +622,7 @@ export default function JobsPage() {
             onAction={resetFilters}
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[22px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 xl:gap-[22px]">
             {filteredJobs.map((job) => {
               const isSaved = savedJobIds.includes(job.id);
               const { companyIcon, companyBg } = getCompanyBranding(job.company);
@@ -631,7 +631,7 @@ export default function JobsPage() {
               return (
                 <div
                   key={job.id}
-                  className="bg-white rounded-[14px] border border-[#E8E1D2] hover:border-[#D5B568]/60 hover:shadow-md transition-all duration-200 p-[22px] flex flex-col justify-between group"
+                  className="bg-white rounded-[14px] border border-[#E8E1D2] hover:border-[#D5B568]/60 hover:shadow-md transition-all duration-200 p-4 sm:p-5 xl:p-[22px] flex flex-col justify-between group"
                 >
                   <div>
                     {/* Top Row: Employment Type & Work Mode badges + Bookmark */}

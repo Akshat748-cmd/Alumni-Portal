@@ -36,7 +36,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-[#101A30] text-white pt-20 sm:pt-24 lg:pt-[90px] pb-10 sm:pb-12 lg:pb-14 border-b border-navy-800 min-h-[320px] lg:min-h-[360px] flex items-center",
+        "relative overflow-hidden bg-[#101A30] text-white pt-20 sm:pt-24 lg:pt-[88px] pb-9 sm:pb-11 lg:pb-12 border-b border-navy-800 min-h-[290px] lg:min-h-[330px] flex items-center",
         className
       )}
     >
@@ -46,13 +46,13 @@ export function PageHero({
       <div className="absolute -bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 xl:gap-10">
           {/* Left Content Column */}
           <div className="w-full lg:w-[58%] xl:w-[56%] max-w-2xl">
             {/* Breadcrumb nav in real HTML text */}
             <nav
               aria-label="Breadcrumb"
-              className="flex items-center gap-1.5 text-[12px] sm:text-[13px] text-ivory/70 mb-3 flex-wrap"
+              className="flex items-center gap-1.5 text-[12px] sm:text-[13px] text-ivory/70 mb-2.5 flex-wrap"
             >
               <Link
                 href="/"
@@ -101,29 +101,29 @@ export function PageHero({
             )}
 
             {/* Title in real HTML text */}
-            <h1 className="font-serif font-bold text-white tracking-tight text-[26px] sm:text-[32px] lg:text-[38px] leading-[1.18] text-balance mb-2.5">
+            <h1 className="font-serif font-bold text-white tracking-tight text-2xl sm:text-3xl lg:text-[32px] xl:text-[38px] leading-[1.18] text-balance mb-2.5">
               {title}
             </h1>
 
             {/* Subtitle in real HTML text */}
             {subtitle && (
-              <p className="text-[14px] sm:text-[15px] text-slate-300 max-w-[60ch] leading-relaxed text-pretty">
+              <p className="text-[13.5px] sm:text-[14.5px] text-slate-300 max-w-[60ch] leading-relaxed text-pretty">
                 {subtitle}
               </p>
             )}
 
             {/* Action buttons if supplied */}
-            {actions && <div className="mt-5 flex flex-wrap items-center gap-2.5">{actions}</div>}
+            {actions && <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-2.5">{actions}</div>}
           </div>
 
           {/* Right Column: Modern 3D Isometric Campus & Alumni Hub Illustration */}
           <div className="hidden lg:flex w-full lg:w-[42%] xl:w-[44%] items-center justify-center relative select-none pointer-events-none">
             {/* Soft backdrop radial bloom */}
-            <div className="absolute w-80 h-80 rounded-full bg-gradient-to-tr from-gold-500/15 via-indigo-500/10 to-transparent blur-2xl" />
+            <div className="absolute w-72 h-72 xl:w-80 xl:h-80 rounded-full bg-gradient-to-tr from-gold-500/15 via-indigo-500/10 to-transparent blur-2xl" />
 
             {/* 3D Isometric Illustration */}
             <svg
-              className="w-full max-w-[440px] xl:max-w-[480px] h-auto max-h-[270px] drop-shadow-2xl"
+              className="w-full max-w-[320px] lg:max-w-[380px] xl:max-w-[460px] h-auto max-h-[250px] drop-shadow-2xl"
               viewBox="0 0 540 380"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
