@@ -21,8 +21,8 @@ export function Logo({ theme = "navy", className = "", onClick }: LogoProps) {
       aria-label="Poddar Alumni Network Home"
     >
       {/* SVG Crest Monogram */}
-      <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gold-500/40 bg-gradient-to-br from-navy-900 to-navy-950 shadow-xs transition-transform duration-200 group-hover:scale-105">
-        <span className="font-serif text-lg font-bold tracking-tight text-gold-300">P</span>
+      <div className="relative flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg border border-gold-500/40 bg-gradient-to-br from-navy-900 to-navy-950 shadow-xs transition-transform duration-200 group-hover:scale-105">
+        <span className="font-serif text-base sm:text-lg font-bold tracking-tight text-gold-300">P</span>
         {/* Subtle decorative gold inner corner accent */}
         <div className="absolute top-1 right-1 h-1 w-1 rounded-full bg-gold-400" />
       </div>
@@ -31,7 +31,7 @@ export function Logo({ theme = "navy", className = "", onClick }: LogoProps) {
       <div className="flex flex-col leading-none">
         <span
           className={cn(
-            "font-serif text-[17px] sm:text-[18px] font-semibold tracking-[-0.01em] transition-colors leading-tight",
+            "font-serif text-[15.5px] sm:text-[18px] font-semibold tracking-[-0.01em] transition-colors leading-tight",
             isDarkSurface
               ? "text-ivory group-hover:text-gold-300"
               : "text-navy-950 group-hover:text-gold-600"
@@ -39,7 +39,7 @@ export function Logo({ theme = "navy", className = "", onClick }: LogoProps) {
         >
           Poddar Alumni
         </span>
-        <span className="text-[10px] uppercase font-semibold tracking-[0.08em] text-gold-500/90 font-sans mt-0.5">
+        <span className="text-[9.5px] sm:text-[10px] uppercase font-semibold tracking-[0.08em] text-gold-500/90 font-sans mt-0.5">
           Network{INSTITUTION.foundingYear ? ` • Est. ${INSTITUTION.foundingYear}` : ""}
         </span>
       </div>

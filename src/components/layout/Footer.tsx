@@ -104,31 +104,31 @@ export function Footer() {
 
       {/* Slim Top Row: Brand & Inline Social Icons */}
       <div className="border-b border-navy-800/80 relative z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5">
+        <div className="container mx-auto px-3.5 sm:px-6 lg:px-8 py-1.5 sm:py-2">
           <div className="flex flex-row items-center justify-between gap-2 text-left">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <span className="text-[11px] sm:text-xs uppercase font-bold tracking-wider text-gold-400 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+              <span className="text-[10px] sm:text-xs uppercase font-bold tracking-wider text-gold-400 shrink-0">
                 Poddar Alumni
               </span>
               <span className="hidden sm:inline text-navy-600">•</span>
-              <h3 className="text-[11px] sm:text-xs font-medium text-ivory/80 truncate hidden xs:block">
+              <h3 className="text-[10px] sm:text-xs font-medium text-ivory/80 truncate hidden xs:block">
                 Stay Connected With Your Alma Mater
               </h3>
             </div>
 
             {/* Inline Social Icons */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
               {socialLinks.map((social) => {
                 const getIcon = () => {
                   switch (social.name.toLowerCase()) {
                     case "linkedin":
-                      return <LinkedInIcon className="h-3.5 w-3.5" />;
+                      return <LinkedInIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />;
                     case "instagram":
-                      return <InstagramIcon className="h-3.5 w-3.5" />;
+                      return <InstagramIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />;
                     case "facebook":
-                      return <FacebookIcon className="h-3.5 w-3.5" />;
+                      return <FacebookIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />;
                     default:
-                      return <ExternalLink className="h-3.5 w-3.5" />;
+                      return <ExternalLink className="h-3 w-3 sm:h-3.5 sm:w-3.5" />;
                   }
                 };
 
@@ -138,7 +138,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-navy-900 border border-navy-700 text-gold-400 transition-all duration-200 hover:bg-gold-500 hover:text-navy-950 hover:scale-105 shadow-sm"
+                    className="flex h-6 w-6 sm:h-7.5 sm:w-7.5 items-center justify-center rounded-md sm:rounded-lg bg-navy-900 border border-navy-700 text-gold-400 transition-all duration-200 hover:bg-gold-500 hover:text-navy-950 hover:scale-105 shadow-sm"
                     aria-label={social.label}
                   >
                     {getIcon()}
@@ -151,12 +151,12 @@ export function Footer() {
       </div>
 
       {/* Main 4-Column Footer Navigation (Compact) */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-5 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6 lg:gap-8">
+      <div className="container mx-auto px-3.5 sm:px-6 lg:px-8 py-2.5 sm:py-4 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1.5 md:gap-6 lg:gap-8">
           {/* Column 1: Brand & Statement (2 lines max) */}
-          <div className="space-y-1.5 pb-2 md:pb-0 border-b border-navy-800/60 md:border-b-0">
+          <div className="space-y-1 pb-1.5 md:pb-0 border-b border-navy-800/60 md:border-b-0">
             <Logo theme="navy" />
-            <p className="text-[11px] sm:text-xs text-ivory/70 leading-relaxed max-w-sm">
+            <p className="text-[10.5px] sm:text-xs text-ivory/70 leading-relaxed max-w-sm">
               Reconnect with your batch, find mentors, and discover career opportunities across our verified alumni community.
             </p>
           </div>
@@ -167,13 +167,13 @@ export function Footer() {
             <button
               type="button"
               onClick={() => toggleMobileSection("explore")}
-              className="w-full flex md:hidden items-center justify-between py-1.5 text-[11px] font-bold uppercase tracking-wider text-gold-400"
+              className="w-full flex md:hidden items-center justify-between py-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gold-400"
               aria-expanded={openMobileSection === "explore"}
             >
               <span>Explore</span>
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 text-gold-400 transition-transform duration-200",
+                  "h-3 w-3 text-gold-400 transition-transform duration-200",
                   openMobileSection === "explore" && "rotate-180"
                 )}
               />
@@ -187,8 +187,8 @@ export function Footer() {
             {/* Links List */}
             <div
               className={cn(
-                "space-y-1.5 text-xs",
-                openMobileSection === "explore" ? "block pb-2 pt-1" : "hidden md:block"
+                "space-y-1 text-[11px] sm:text-xs",
+                openMobileSection === "explore" ? "block pb-1.5 pt-0.5" : "hidden md:block"
               )}
             >
               {EXPLORE_LINKS.map((item) => (
@@ -210,13 +210,13 @@ export function Footer() {
             <button
               type="button"
               onClick={() => toggleMobileSection("community")}
-              className="w-full flex md:hidden items-center justify-between py-1.5 text-[11px] font-bold uppercase tracking-wider text-gold-400"
+              className="w-full flex md:hidden items-center justify-between py-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gold-400"
               aria-expanded={openMobileSection === "community"}
             >
               <span>Community</span>
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 text-gold-400 transition-transform duration-200",
+                  "h-3 w-3 text-gold-400 transition-transform duration-200",
                   openMobileSection === "community" && "rotate-180"
                 )}
               />
@@ -230,8 +230,8 @@ export function Footer() {
             {/* Links List */}
             <div
               className={cn(
-                "space-y-1.5 text-xs",
-                openMobileSection === "community" ? "block pb-2 pt-1" : "hidden md:block"
+                "space-y-1 text-[11px] sm:text-xs",
+                openMobileSection === "community" ? "block pb-1.5 pt-0.5" : "hidden md:block"
               )}
             >
               {COMMUNITY_LINKS.map((item) => (
@@ -253,13 +253,13 @@ export function Footer() {
             <button
               type="button"
               onClick={() => toggleMobileSection("office")}
-              className="w-full flex md:hidden items-center justify-between py-1.5 text-[11px] font-bold uppercase tracking-wider text-gold-400"
+              className="w-full flex md:hidden items-center justify-between py-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gold-400"
               aria-expanded={openMobileSection === "office"}
             >
               <span>Alumni Office</span>
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 text-gold-400 transition-transform duration-200",
+                  "h-3 w-3 text-gold-400 transition-transform duration-200",
                   openMobileSection === "office" && "rotate-180"
                 )}
               />
@@ -272,39 +272,39 @@ export function Footer() {
 
             <div
               className={cn(
-                "space-y-1.5 text-xs text-ivory/70",
-                openMobileSection === "office" ? "block pb-2 pt-1" : "hidden md:block"
+                "space-y-1 text-[10.5px] sm:text-xs text-ivory/70",
+                openMobileSection === "office" ? "block pb-1.5 pt-0.5" : "hidden md:block"
               )}
             >
-              <div className="flex items-start gap-2">
-                <MapPin className="h-3.5 w-3.5 text-gold-500 shrink-0 mt-0.5" />
-                <span className="text-[11px] sm:text-xs leading-tight">
+              <div className="flex items-start gap-1.5">
+                <MapPin className="h-3 w-3 text-gold-500 shrink-0 mt-0.5" />
+                <span className="text-[10.5px] sm:text-xs leading-tight">
                   {ALUMNI_OFFICE.address.line1}, {ALUMNI_OFFICE.address.line2}, {ALUMNI_OFFICE.address.city} {ALUMNI_OFFICE.address.pincode}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Phone className="h-3.5 w-3.5 text-gold-500 shrink-0" />
+              <div className="flex items-center gap-1.5">
+                <Phone className="h-3 w-3 text-gold-500 shrink-0" />
                 <a
                   href={`tel:${ALUMNI_OFFICE.contact.phonePrimary.replace(/\s+/g, "")}`}
-                  className="text-[12px] sm:text-[13px] text-ivory hover:text-gold-300 transition-colors tabular-nums font-medium"
+                  className="text-[11.5px] sm:text-[13px] text-ivory hover:text-gold-300 transition-colors tabular-nums font-medium"
                 >
                   {ALUMNI_OFFICE.contact.phonePrimary}
                 </a>
               </div>
 
-              <div className="flex items-center gap-2">
-                <Mail className="h-3.5 w-3.5 text-gold-500 shrink-0" />
+              <div className="flex items-center gap-1.5">
+                <Mail className="h-3 w-3 text-gold-500 shrink-0" />
                 <a
                   href={`mailto:${ALUMNI_OFFICE.contact.emailGeneral}`}
-                  className="text-[11px] sm:text-xs text-ivory hover:text-gold-300 transition-colors break-all"
+                  className="text-[10.5px] sm:text-xs text-ivory hover:text-gold-300 transition-colors break-all"
                 >
                   {ALUMNI_OFFICE.contact.emailGeneral}
                 </a>
               </div>
 
-              <div className="flex items-center gap-2 text-[11px] text-ivory/50 pt-0.5">
-                <Clock className="h-3 w-3 text-gold-500/70 shrink-0" />
+              <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-ivory/50 pt-0.5">
+                <Clock className="h-2.5 w-2.5 text-gold-500/70 shrink-0" />
                 <span>Mon – Fri: 09:30 AM – 05:30 PM</span>
               </div>
             </div>
@@ -312,12 +312,12 @@ export function Footer() {
         </div>
 
         {/* Thin Bottom Bar: Copyright & Admin Demo Link */}
-        <div className="mt-3 pt-2.5 border-t border-navy-800/80 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-ivory/50 text-center sm:text-left">
-          <div className="text-[11px] sm:text-xs">
+        <div className="mt-2.5 pt-2 border-t border-navy-800/80 flex flex-col sm:flex-row items-center justify-between gap-1.5 text-xs text-ivory/50 text-center sm:text-left">
+          <div className="text-[10px] sm:text-xs">
             © {new Date().getFullYear()} Poddar Alumni Network. All rights reserved.
           </div>
 
-          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 text-[11px] sm:text-xs">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2.5 text-[10px] sm:text-xs">
             <Link
               href="/help-desk"
               className="text-ivory/70 hover:text-gold-300 transition-colors inline-flex items-center gap-1"
@@ -329,7 +329,7 @@ export function Footer() {
               href="/admin"
               className="text-ivory/70 hover:text-gold-300 transition-colors inline-flex items-center gap-1.5"
             >
-              <ShieldCheck className="h-3.5 w-3.5 text-gold-500" />
+              <ShieldCheck className="h-3 w-3 text-gold-500" />
               <span>Admin demo</span>
             </Link>
           </div>

@@ -492,36 +492,36 @@ export default function AuthPage() {
             </motion.div>
           ) : (
             /* TABBED AUTH CONTAINER */
-            <div className="bg-white rounded-3xl border border-line shadow-xl overflow-hidden">
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-line shadow-lg sm:shadow-xl overflow-hidden">
               {/* TAB SELECTOR: REGISTER VS LOGIN */}
-              <div className="grid grid-cols-2 p-2 bg-ivory/80 border-b border-line">
+              <div className="grid grid-cols-2 p-1.5 sm:p-2 bg-ivory/80 border-b border-line">
                 <button
                   type="button"
                   onClick={() => setActiveTab("register")}
-                  className={`relative py-3.5 text-sm sm:text-base font-bold rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`relative py-2.5 sm:py-3.5 text-xs sm:text-base font-bold rounded-xl sm:rounded-2xl transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
                     activeTab === "register"
                       ? "bg-navy-950 text-gold-300 shadow-md"
                       : "text-muted hover:text-navy-950"
                   }`}
                 >
-                  <UserPlus className="h-4 w-4" />
+                  <UserPlus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span>Register Account</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab("login")}
-                  className={`relative py-3.5 text-sm sm:text-base font-bold rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                  className={`relative py-2.5 sm:py-3.5 text-xs sm:text-base font-bold rounded-xl sm:rounded-2xl transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
                     activeTab === "login"
                       ? "bg-navy-950 text-gold-300 shadow-md"
                       : "text-muted hover:text-navy-950"
                   }`}
                 >
-                  <LogIn className="h-4 w-4" />
+                  <LogIn className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span>Member Sign In</span>
                 </button>
               </div>
 
-              <div className="p-6 sm:p-10">
+              <div className="p-4 sm:p-8 md:p-10">
                 <AnimatePresence mode="wait">
                   {activeTab === "register" ? (
                     /* REGISTRATION FLOW */
@@ -531,34 +531,36 @@ export default function AuthPage() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 10 }}
                       transition={{ duration: 0.2 }}
-                      className="space-y-6"
+                      className="space-y-4 sm:space-y-6"
                     >
                       {/* ROLE SELECTOR: STUDENT VS ALUMNUS */}
-                      <div className="p-1.5 rounded-2xl bg-ivory border border-line">
-                        <div className="grid grid-cols-2 gap-2">
+                      <div className="p-1 sm:p-1.5 rounded-xl sm:rounded-2xl bg-ivory border border-line">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <button
                             type="button"
                             onClick={() => {
                               setRegisterRole("student");
                               setSubmitAttempted(false);
                             }}
-                            className={`p-3 rounded-xl text-left transition-all flex items-center gap-3 ${
+                            className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl text-left transition-all flex items-center gap-2.5 sm:gap-3 cursor-pointer ${
                               registerRole === "student"
                                 ? "bg-white shadow-sm border border-amber-300 text-navy-950 ring-2 ring-amber-400/20"
-                                : "text-muted hover:text-navy-950"
+                                : "text-muted hover:text-navy-950 hover:bg-white/60"
                             }`}
                           >
-                            <div className="p-2 rounded-lg bg-amber-50 text-amber-700">
-                              <GraduationCap className="h-5 w-5" />
+                            <div className="p-1.5 sm:p-2 rounded-lg bg-amber-50 text-amber-700 shrink-0">
+                              <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5" />
                             </div>
-                            <div>
-                              <div className="font-bold text-sm text-navy-950 flex items-center gap-1.5">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-bold text-xs sm:text-sm text-navy-950 flex items-center justify-between sm:justify-start gap-1.5 flex-wrap">
                                 <span>College Student</span>
-                                <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                                <span className="text-[9px] sm:text-[10px] uppercase font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 shrink-0">
                                   Instant
                                 </span>
                               </div>
-                              <div className="text-xs text-muted">Apply to jobs & request referrals</div>
+                              <div className="text-[11px] sm:text-xs text-muted truncate mt-0.5">
+                                Apply to jobs & request referrals
+                              </div>
                             </div>
                           </button>
 
@@ -568,18 +570,20 @@ export default function AuthPage() {
                               setRegisterRole("alumnus");
                               setSubmitAttempted(false);
                             }}
-                            className={`p-3 rounded-xl text-left transition-all flex items-center gap-3 ${
+                            className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl text-left transition-all flex items-center gap-2.5 sm:gap-3 cursor-pointer ${
                               registerRole === "alumnus"
                                 ? "bg-white shadow-sm border border-navy-950 text-navy-950 ring-2 ring-navy-900/10"
-                                : "text-muted hover:text-navy-950"
+                                : "text-muted hover:text-navy-950 hover:bg-white/60"
                             }`}
                           >
-                            <div className="p-2 rounded-lg bg-navy-50 text-navy-900">
-                              <Briefcase className="h-5 w-5" />
+                            <div className="p-1.5 sm:p-2 rounded-lg bg-navy-50 text-navy-900 shrink-0">
+                              <Briefcase className="h-4 w-4 sm:h-5 sm:w-5" />
                             </div>
-                            <div>
-                              <div className="font-bold text-sm text-navy-950">Poddar Alumnus</div>
-                              <div className="text-xs text-muted">Post jobs & join alumni directory</div>
+                            <div className="min-w-0 flex-1">
+                              <div className="font-bold text-xs sm:text-sm text-navy-950 truncate">Poddar Alumnus</div>
+                              <div className="text-[11px] sm:text-xs text-muted truncate mt-0.5">
+                                Post jobs & join alumni directory
+                              </div>
                             </div>
                           </button>
                         </div>
@@ -607,13 +611,13 @@ export default function AuthPage() {
                       {registerRole === "student" ? (
                         <form onSubmit={handleRegisterSubmit} noValidate className="space-y-5">
                           <div className="border-b border-line pb-3">
-                            <h3 className="text-lg font-serif font-bold text-navy-950 flex items-center gap-2">
+                            <h3 className="text-base sm:text-lg font-serif font-bold text-navy-950 flex items-center gap-2 flex-wrap">
                               <span>Student Registration</span>
-                              <span className="text-xs font-normal text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                              <span className="text-[11px] sm:text-xs font-normal text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full shrink-0">
                                 Instant Access • No Admin Waiting
                               </span>
                             </h3>
-                            <p className="text-xs text-muted mt-0.5">
+                            <p className="text-xs text-muted mt-1 leading-relaxed">
                               Enrolled students gain immediate access to search jobs, apply with resumes, and connect with alumni mentors.
                             </p>
                           </div>

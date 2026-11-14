@@ -338,7 +338,7 @@ export default function JobsPage() {
   return (
     <div className="min-h-screen bg-[#F6F4EF] text-slate-800 font-sans">
       {/* 1. HERO SECTION (Desktop Clearance for Fixed Header, Responsive Left / Right, Deep Navy #101A30) */}
-      <div className="relative bg-[#101A30] text-white overflow-hidden pt-20 sm:pt-24 lg:pt-[88px] pb-12 sm:pb-14 lg:pb-12 min-h-[380px] lg:min-h-[420px] h-auto flex items-center">
+      <div className="relative bg-[#101A30] text-white overflow-hidden pt-16 sm:pt-24 lg:pt-[88px] pb-6 sm:pb-14 lg:pb-12 min-h-[250px] sm:min-h-[380px] lg:min-h-[420px] h-auto flex items-center">
         {/* Right side: Authentic Poddar Campus Photograph (Full building visible without clipping) */}
         <div className="hidden lg:block absolute top-0 right-0 bottom-0 w-[50%] xl:w-[52%] z-0 overflow-hidden pointer-events-none select-none bg-white">
           <img
@@ -377,32 +377,32 @@ export default function JobsPage() {
         </div>
 
         {/* Mobile / Tablet Campus Banner (Stacked, 16:9 ratio, contained without cropping) */}
-        <div className="lg:hidden w-full container mx-auto px-4 mb-4">
-          <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-[#D5B568]/30 shadow-md bg-white">
+        <div className="lg:hidden w-full container mx-auto px-3.5 mb-3">
+          <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden border border-[#D5B568]/30 shadow-md bg-white">
             <img
               src="/assets/poddar-campus-main.jpg?v=3"
               alt="Poddar Group of Institutions Main Campus"
               className="w-full h-full object-contain object-center p-2"
             />
-            <div className="absolute bottom-2 left-3 text-[11px] text-[#101A30] font-semibold bg-white/90 backdrop-blur-xs px-2 py-0.5 rounded shadow-xs">
+            <div className="absolute bottom-2 left-2.5 text-[10px] text-[#101A30] font-semibold bg-white/90 backdrop-blur-xs px-1.5 py-0.5 rounded shadow-xs">
               Poddar Group of Institutions • Jaipur
             </div>
           </div>
         </div>
 
         {/* Hero Content Left (Fluid responsive width & padding for all laptops) */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 max-w-[1328px] relative z-10 w-full py-4 lg:py-0">
+        <div className="container mx-auto px-3.5 sm:px-6 lg:px-8 xl:px-12 max-w-[1328px] relative z-10 w-full py-2 sm:py-4 lg:py-0">
           <div className="w-full lg:w-[50%] xl:w-[48%] max-w-xl">
             {/* Label: CAREER HUB */}
-            <div className="flex items-center gap-3 mb-2.5 sm:mb-3">
-              <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#D5B568]">
+            <div className="flex items-center gap-2.5 mb-1.5 sm:mb-3">
+              <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.16em] text-[#D5B568]">
                 CAREER HUB
               </span>
-              <div className="h-[1px] w-12 bg-[#D5B568]/60" />
+              <div className="h-[1px] w-8 sm:w-12 bg-[#D5B568]/60" />
             </div>
 
             {/* Heading: Jobs & Internships for Poddar Alumni (Fluid responsive font) */}
-            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[36px] xl:text-[42px] font-bold text-white tracking-tight leading-[1.14] mb-3">
+            <h1 className="font-serif text-xl sm:text-3xl md:text-4xl lg:text-[36px] xl:text-[42px] font-bold text-white tracking-tight leading-[1.16] mb-2 sm:mb-3">
               Jobs & Internships <br />
               <span className="font-serif italic font-normal text-[#D5B568]">
                 for Poddar Alumni
@@ -410,39 +410,39 @@ export default function JobsPage() {
             </h1>
 
             {/* Description */}
-            <p className="text-slate-300 text-xs sm:text-sm lg:text-base leading-relaxed mb-5 sm:mb-6 max-w-lg">
+            <p className="text-slate-300 text-xs sm:text-sm lg:text-base leading-relaxed mb-3.5 sm:mb-6 max-w-lg">
               Explore meaningful career opportunities, connect with fellow alumni and take the next step in your professional journey.
             </p>
 
             {/* Two CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <button
                 type="button"
                 onClick={() => {
                   const el = document.getElementById("search-filters-panel");
                   el?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="inline-flex items-center gap-2 h-[42px] sm:h-[46px] px-4 sm:px-5 rounded-xl bg-[#D5B568] hover:bg-[#c6a350] text-[#101A30] font-semibold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-[46px] px-3.5 sm:px-5 rounded-lg sm:rounded-xl bg-[#D5B568] hover:bg-[#c6a350] text-[#101A30] font-semibold text-xs sm:text-sm transition-all shadow-md active:scale-95 cursor-pointer"
               >
-                <Search className="h-4 w-4" />
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 <span>Explore Opportunities</span>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </button>
 
               {currentUser?.role !== "student" ? (
                 <Link
                   href="/career-hub/post"
-                  className="inline-flex items-center gap-2 h-[42px] sm:h-[46px] px-4 sm:px-5 rounded-xl border border-[#D5B568]/60 hover:border-[#D5B568] text-white hover:text-[#D5B568] bg-[#101A30]/60 hover:bg-[#101A30] font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-95"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-[46px] px-3.5 sm:px-5 rounded-lg sm:rounded-xl border border-[#D5B568]/60 hover:border-[#D5B568] text-white hover:text-[#D5B568] bg-[#101A30]/60 hover:bg-[#101A30] font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-95"
                 >
-                  <Upload className="h-4 w-4 text-[#D5B568]" />
+                  <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#D5B568]" />
                   <span>Post an Opportunity</span>
                 </Link>
               ) : (
                 <Link
                   href="/dashboard/applications"
-                  className="inline-flex items-center gap-2 h-[42px] sm:h-[46px] px-4 sm:px-5 rounded-xl border border-slate-600 hover:border-slate-400 text-white hover:text-slate-200 bg-white/5 font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-95"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 h-9 sm:h-[46px] px-3.5 sm:px-5 rounded-lg sm:rounded-xl border border-slate-600 hover:border-slate-400 text-white hover:text-slate-200 bg-white/5 font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-95"
                 >
-                  <Briefcase className="h-4 w-4 text-[#D5B568]" />
+                  <Briefcase className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#D5B568]" />
                   <span>My Applications</span>
                 </Link>
               )}
@@ -452,18 +452,18 @@ export default function JobsPage() {
       </div>
 
       {/* 2. SEARCH AND FILTERS SECTION (Max-width ~1328px, White background, 14px radius, 20px padding) */}
-      <div id="search-filters-panel" className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1328px] -mt-8 sm:-mt-10 relative z-20">
-        <div className="bg-white rounded-[14px] shadow-lg border border-[#E8E1D2] p-5">
-          {/* Top Row: Search Input (50px height) + Search Button + Saved Jobs */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 mb-3.5">
+      <div id="search-filters-panel" className="container mx-auto px-3.5 sm:px-6 lg:px-8 max-w-[1328px] -mt-5 sm:-mt-10 relative z-20">
+        <div className="bg-white rounded-xl sm:rounded-[14px] shadow-lg border border-[#E8E1D2] p-3 sm:p-5">
+          {/* Top Row: Search Input (42px mobile / 50px desktop) + Search Button + Saved Jobs */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-3.5">
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+              <Search className="absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search by role, company, skills, or location..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-[50px] pl-11 pr-10 rounded-xl border border-slate-200 bg-slate-50/50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D5B568]/40 focus:border-[#D5B568] transition-all"
+                className="w-full h-10 sm:h-[50px] pl-9.5 sm:pl-11 pr-9 sm:pr-10 rounded-lg sm:rounded-xl border border-slate-200 bg-slate-50/50 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D5B568]/40 focus:border-[#D5B568] transition-all"
               />
               {searchQuery && (
                 <button
@@ -631,7 +631,7 @@ export default function JobsPage() {
               return (
                 <div
                   key={job.id}
-                  className="bg-white rounded-[14px] border border-[#E8E1D2] hover:border-[#D5B568]/60 hover:shadow-md transition-all duration-200 p-4 sm:p-5 xl:p-[22px] flex flex-col justify-between group"
+                  className="bg-white rounded-xl sm:rounded-[14px] border border-[#E8E1D2] hover:border-[#D5B568]/60 hover:shadow-md transition-all duration-200 p-3 sm:p-5 xl:p-[22px] flex flex-col justify-between group"
                 >
                   <div>
                     {/* Top Row: Employment Type & Work Mode badges + Bookmark */}

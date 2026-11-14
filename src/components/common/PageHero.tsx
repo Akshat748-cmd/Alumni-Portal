@@ -36,7 +36,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-[#101A30] text-white pt-20 sm:pt-24 lg:pt-[88px] pb-9 sm:pb-11 lg:pb-12 border-b border-navy-800 min-h-[290px] lg:min-h-[330px] flex items-center",
+        "relative overflow-hidden bg-[#101A30] text-white pt-16 sm:pt-20 lg:pt-[88px] pb-5 sm:pb-8 lg:pb-12 border-b border-navy-800 min-h-[190px] sm:min-h-[250px] lg:min-h-[330px] flex items-center",
         className
       )}
     >
@@ -45,14 +45,14 @@ export function PageHero({
       <div className="absolute -top-20 right-1/4 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 xl:gap-10">
+      <div className="container relative z-10 mx-auto px-3.5 sm:px-6 lg:px-8 max-w-7xl w-full">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 lg:gap-8 xl:gap-10">
           {/* Left Content Column */}
           <div className="w-full lg:w-[58%] xl:w-[56%] max-w-2xl">
             {/* Breadcrumb nav in real HTML text */}
             <nav
               aria-label="Breadcrumb"
-              className="flex items-center gap-1.5 text-[12px] sm:text-[13px] text-ivory/70 mb-2.5 flex-wrap"
+              className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-[12.5px] text-ivory/70 mb-1.5 sm:mb-2.5 flex-wrap"
             >
               <Link
                 href="/"
@@ -92,28 +92,28 @@ export function PageHero({
 
             {/* Eyebrow in real HTML text with Champagne Gold accent line */}
             {eyebrow && (
-              <div className="flex items-center gap-2.5 mb-2.5">
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.12em] text-[#D5B568]">
+              <div className="flex items-center gap-2 mb-1.5 sm:mb-2.5">
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.12em] text-[#D5B568]">
                   {eyebrow}
                 </span>
-                <div className="h-[1px] w-10 bg-[#D5B568]/60" />
+                <div className="h-[1px] w-8 sm:w-10 bg-[#D5B568]/60" />
               </div>
             )}
 
             {/* Title in real HTML text */}
-            <h1 className="font-serif font-bold text-white tracking-tight text-2xl sm:text-3xl lg:text-[32px] xl:text-[38px] leading-[1.18] text-balance mb-2.5">
+            <h1 className="font-serif font-bold text-white tracking-tight text-xl sm:text-2xl lg:text-[32px] xl:text-[38px] leading-[1.2] text-balance mb-1.5 sm:mb-2.5">
               {title}
             </h1>
 
             {/* Subtitle in real HTML text */}
             {subtitle && (
-              <p className="text-[13.5px] sm:text-[14.5px] text-slate-300 max-w-[60ch] leading-relaxed text-pretty">
+              <p className="text-[12px] sm:text-[13.5px] lg:text-[14.5px] text-slate-300 max-w-[60ch] leading-relaxed text-pretty">
                 {subtitle}
               </p>
             )}
 
             {/* Action buttons if supplied */}
-            {actions && <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-2.5">{actions}</div>}
+            {actions && <div className="mt-3 sm:mt-5 flex flex-wrap items-center gap-2 sm:gap-2.5">{actions}</div>}
           </div>
 
           {/* Right Column: Modern 3D Isometric Campus & Alumni Hub Illustration */}

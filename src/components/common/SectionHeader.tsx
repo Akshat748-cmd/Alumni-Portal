@@ -8,7 +8,7 @@ interface SectionHeaderProps {
   title: string;
   subtitle?: string;
   description?: string;
-  align?: "center" | "left" | "right";
+  align?: "center" | "left" | "right" | "left-on-desktop";
   theme?: "light" | "navy";
   className?: string;
 }
@@ -29,20 +29,22 @@ export function SectionHeader({
     center: "text-center items-center mx-auto",
     left: "text-left items-start mr-auto",
     right: "text-right items-end ml-auto",
+    "left-on-desktop": "text-center items-center mx-auto md:text-left md:items-start md:mr-auto md:mx-0",
   }[align];
 
   const lineAlignClasses = {
     center: "mx-auto",
     left: "mr-auto",
     right: "ml-auto",
+    "left-on-desktop": "mx-auto md:mr-auto md:mx-0",
   }[align];
 
   return (
-    <div className={cn("flex flex-col mb-5 md:mb-7 max-w-2xl", alignClasses, className)}>
+    <div className={cn("flex flex-col mb-3.5 sm:mb-5 md:mb-7 max-w-2xl", alignClasses, className)}>
       {eyebrow && (
         <span
           className={cn(
-            "text-[11px] sm:text-xs font-semibold uppercase tracking-[0.08em] mb-2 px-2.5 py-0.5 rounded-full border",
+            "text-[10px] sm:text-xs font-semibold uppercase tracking-[0.08em] mb-1.5 sm:mb-2 px-2 sm:px-2.5 py-0.5 rounded-full border",
             isNavy
               ? "bg-gold-500/10 text-gold-400 border-gold-500/20"
               : "bg-gold-500/15 text-gold-700 border-gold-500/30"
@@ -54,7 +56,7 @@ export function SectionHeader({
 
       <h2
         className={cn(
-          "font-serif font-semibold tracking-[-0.01em] text-[22px] md:text-[28px] leading-[1.25] text-balance",
+          "font-serif font-semibold tracking-[-0.01em] text-[18px] sm:text-[22px] md:text-[28px] leading-[1.2] sm:leading-[1.25] text-balance",
           isNavy ? "text-ivory" : "text-navy-950"
         )}
       >
@@ -64,7 +66,7 @@ export function SectionHeader({
       {/* Signature gold underline */}
       <div
         className={cn(
-          "h-0.5 w-10 rounded-full bg-gradient-to-r from-gold-300 via-gold-500 to-gold-600 my-2.5",
+          "h-0.5 w-8 sm:w-10 rounded-full bg-gradient-to-r from-gold-300 via-gold-500 to-gold-600 my-1.5 sm:my-2.5",
           lineAlignClasses
         )}
       />
@@ -72,7 +74,7 @@ export function SectionHeader({
       {displaySubtitle && (
         <p
           className={cn(
-            "text-[15px] md:text-[16px] leading-relaxed max-w-[62ch] text-pretty",
+            "text-[12.5px] sm:text-[14px] md:text-[15.5px] leading-relaxed max-w-[62ch] text-pretty",
             isNavy ? "text-ivory/70" : "text-muted"
           )}
         >
