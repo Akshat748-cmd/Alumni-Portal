@@ -17,6 +17,7 @@ import {
   Building,
   TrendingUp,
   Bookmark,
+  LogIn,
 } from "lucide-react";
 import { PageHero } from "@/components/common/PageHero";
 import { StatCard } from "@/components/common/StatCard";
@@ -48,44 +49,114 @@ export default function DashboardPage() {
             { label: "Dashboard" },
           ]}
         />
-        <section className="py-16">
-          <div className="container mx-auto px-4 max-w-xl text-center">
-            <div className="bg-white rounded-3xl p-8 sm:p-12 border border-line shadow-xl">
-              <div className="h-16 w-16 mx-auto rounded-2xl bg-navy-950 flex items-center justify-center text-gold-300 mb-6">
-                <User className="h-8 w-8 text-gold-300" />
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 max-w-2xl text-center">
+            <div className="bg-white rounded-3xl p-6 sm:p-10 border border-line shadow-xl">
+              {/* Institutional Avatar / Icon */}
+              <div className="h-14 w-14 sm:h-16 sm:w-16 mx-auto rounded-2xl bg-navy-950 border border-gold-500/30 flex items-center justify-center text-gold-300 mb-5 shadow-xs">
+                <User className="h-7 w-7 sm:h-8 sm:w-8 text-gold-300" />
               </div>
-              <h2 className="text-2xl font-sans font-bold text-navy-950 mb-3">
+
+              <h2 className="text-2xl sm:text-3xl font-sans font-bold text-navy-950 mb-2">
                 Member Session Required
               </h2>
-              <p className="text-xs sm:text-sm text-muted mb-8">
-                Please sign in with your credentials or try our 1-click evaluator demo accounts to explore student applications and alumni referrals.
+              <p className="text-xs sm:text-sm text-muted max-w-md mx-auto mb-8 leading-relaxed">
+                Sign in with your account credentials, or explore the platform instantly using our evaluator demo personas.
               </p>
 
-              <div className="space-y-3">
+              {/* Primary Action: Standard Sign In */}
+              <Link
+                href="/join/auth?tab=login"
+                className="w-full py-3.5 px-6 rounded-xl bg-navy-950 hover:bg-navy-900 text-gold-300 font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2 group mb-6 cursor-pointer"
+              >
+                <LogIn className="h-4 w-4 text-gold-400 group-hover:scale-110 transition-transform" />
+                <span>Sign In with Account Credentials</span>
+                <ArrowRight className="h-4 w-4 text-gold-400 group-hover:translate-x-1 transition-transform ml-auto sm:ml-0" />
+              </Link>
+
+              {/* Subtle Divider */}
+              <div className="relative flex items-center justify-center mb-6">
+                <div className="border-t border-line w-full" />
+                <span className="bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-muted shrink-0">
+                  Or 1-Click Evaluator Access
+                </span>
+                <div className="border-t border-line w-full" />
+              </div>
+
+              {/* Two Sleek Persona Tiles */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left mb-6">
+                {/* 1. Alumnus Persona Tile */}
                 <button
                   type="button"
                   onClick={() => switchDemoUser("alumnus")}
-                  className="w-full py-3 px-4 rounded-xl bg-navy-950 text-gold-300 font-bold text-sm hover:bg-navy-900 transition-colors flex items-center justify-center gap-2"
+                  className="p-4 rounded-2xl border border-line bg-[#FAF8F5] hover:bg-gold-500/10 hover:border-gold-400/80 transition-all duration-200 group text-left cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md"
                 >
-                  <Briefcase className="h-4 w-4" />
-                  <span>1-Click Sign In as Alumnus (Vikramaditya)</span>
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="h-10 w-10 rounded-xl bg-navy-950 border border-gold-400/30 flex items-center justify-center text-gold-300 group-hover:scale-105 transition-transform">
+                        <Briefcase className="h-5 w-5 text-gold-400" />
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold-500/15 text-navy-950 border border-gold-500/30">
+                        Alumni Role
+                      </span>
+                    </div>
+                    <div className="font-bold text-sm text-navy-950 group-hover:text-gold-700 transition-colors">
+                      Vikramaditya Rathore
+                    </div>
+                    <div className="text-[11px] text-muted font-medium mt-0.5">
+                      MD @ Apex Capital • Class of 2008
+                    </div>
+                    <p className="text-[11px] text-muted/80 mt-2 line-clamp-2 leading-relaxed">
+                      Post vacancies, review applicants & endorse candidate referrals.
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-line/60 flex items-center justify-between text-xs font-bold text-navy-950 group-hover:text-gold-700 transition-colors">
+                    <span>Enter as Alumnus</span>
+                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </button>
+
+                {/* 2. Student Persona Tile */}
                 <button
                   type="button"
                   onClick={() => switchDemoUser("student")}
-                  className="w-full py-3 px-4 rounded-xl bg-amber-600 text-white font-bold text-sm hover:bg-amber-700 transition-colors flex items-center justify-center gap-2"
+                  className="p-4 rounded-2xl border border-line bg-[#FAF8F5] hover:bg-emerald-500/10 hover:border-emerald-400/80 transition-all duration-200 group text-left cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md"
                 >
-                  <GraduationCap className="h-4 w-4" />
-                  <span>1-Click Sign In as Student (Aarav)</span>
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="h-10 w-10 rounded-xl bg-emerald-950 border border-emerald-400/30 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform">
+                        <GraduationCap className="h-5 w-5 text-emerald-400" />
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-800 border border-emerald-500/30">
+                        Student Role
+                      </span>
+                    </div>
+                    <div className="font-bold text-sm text-navy-950 group-hover:text-emerald-700 transition-colors">
+                      Aarav Mehta
+                    </div>
+                    <div className="text-[11px] text-muted font-medium mt-0.5">
+                      B.Tech CS • Class of 2026
+                    </div>
+                    <p className="text-[11px] text-muted/80 mt-2 line-clamp-2 leading-relaxed">
+                      Apply to internships, track statuses & request alumni referrals.
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-line/60 flex items-center justify-between text-xs font-bold text-navy-950 group-hover:text-emerald-700 transition-colors">
+                    <span>Enter as Student</span>
+                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </button>
-                <div className="pt-2">
-                  <Link
-                    href="/join/auth"
-                    className="text-xs text-muted hover:text-navy-950 font-medium underline"
-                  >
-                    Go to Standard Sign In / Registration Form →
-                  </Link>
-                </div>
+              </div>
+
+              {/* Registration Link */}
+              <div className="text-center pt-1">
+                <Link
+                  href="/join/auth?tab=register"
+                  className="text-xs text-muted hover:text-navy-950 font-medium inline-flex items-center gap-1 transition-colors"
+                >
+                  <span>New graduate or student? Register for portal access</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </div>
           </div>
