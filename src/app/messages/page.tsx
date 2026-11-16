@@ -126,14 +126,21 @@ function MessagesContent() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const urlParamConsumedRef = useRef<string | null>(null);
 
+  const isStudent = currentUser?.role === "student";
+
   // Helper to determine if a participant is the logged-in user (handles ID mismatch or name variations)
-  const isMeMatch = (p: { id: string; name: string }) => {
+  const isMeMatch = (p: { id: string; name: string; role?: string }) => {
     if (!currentUser) return false;
     if (p.id === currentUser.id) return true;
-    const curName = currentUser.name.toLowerCase().replace(/[^a-z]/g, "");
-    const pName = p.name.toLowerCase().replace(/[^a-z]/g, "");
-    if (curName && pName && (curName === pName || (curName.includes("vikram") && pName.includes("vikram")) || (curName.includes("aarav") && pName.includes("aarav")))) {
-      return true;
+
+    const curName = currentUser.name?.toLowerCase().replace(/[^a-z]/g, "") || "";
+    const pName = p.name?.toLowerCase().replace(/[^a-z]/g, "") || "";
+    if (curName && pName && curName === pName) return true;
+
+    if (isStudent) {
+      if (p.id === "stu-1") return curName.includes("aarav") || pName.includes("aarav");
+    } else {
+      if (p.id === "alm-1") return curName.includes("vikram") || pName.includes("vikram");
     }
     return false;
   };
@@ -145,17 +152,28 @@ function MessagesContent() {
     return conv.participants[1] || conv.participants[0];
   };
 
-  // User's own conversations (conversations where the current user is an active participant)
+  // User's own conversations strictly separated by role:
+  // Alumnus: ONLY alumnus conversations (employer / sponsor chats with applicants or peers)
+  // Student: ONLY student conversations (student applicant chats with alumni mentors/recruiters)
   const myConversations = useMemo(() => {
     if (!currentUser) return [];
-    const matched = conversations.filter(
-      (c) => c.participantIds?.includes(currentUser.id) || c.participants?.some((p) => isMeMatch(p))
-    );
-    // If current user has conversations, show their own
-    if (matched.length > 0) return matched;
-    // Fallback: If user is new and has no conversations yet, return empty list (showing friendly prompt)
-    return [];
-  }, [conversations, currentUser]);
+    return conversations.filter((c) => {
+      // Must contain current user (or demo counterpart)
+      const hasMe = c.participantIds?.includes(currentUser.id) || c.participants?.some((p) => isMeMatch(p));
+      if (!hasMe) return false;
+
+      // Strict role isolation:
+      if (isStudent) {
+        // Must contain at least one alumnus contact they are talking to
+        const other = c.participants.find((p) => !isMeMatch(p));
+        return other?.role === "alumnus" || other?.id.startsWith("alm-");
+      } else {
+        // Alumnus view: must be an alumnus conversation
+        const other = c.participants.find((p) => !isMeMatch(p));
+        return other !== undefined;
+      }
+    });
+  }, [conversations, currentUser, isStudent]);
 
   // Filter conversations by search
   const filteredConversations = useMemo(() => {
@@ -258,8 +276,6 @@ function MessagesContent() {
       </div>
     );
   }
-
-  const isStudent = currentUser.role === "student";
 
   const handleSendMessage = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -422,7 +438,10 @@ function MessagesContent() {
               ) : (
                 filteredConversations.map((conv) => {
                   const other = getOtherParticipant(conv);
-                  const unread = conv.unreadCount[currentUser.id] || 0;
+                  const unread =
+                    conv.unreadCount[currentUser.id] ||
+                    (isStudent ? conv.unreadCount["stu-1"] : conv.unreadCount["alm-1"]) ||
+                    0;
                   const isSelected = conv.id === activeConvId;
 
                   return (
@@ -621,16 +640,8 @@ function MessagesContent() {
                       // If the message is from the other participant -> INCOMING (Left side, White bubble)
                       const isOutgoing =
                         msg.senderId === currentUser.id ||
-                        Boolean(
-                          currentUser.name &&
-                            msg.senderName &&
-                            (currentUser.name.toLowerCase().replace(/[^a-z]/g, "") ===
-                              msg.senderName.toLowerCase().replace(/[^a-z]/g, "") ||
-                              (currentUser.name.toLowerCase().includes("vikram") &&
-                                msg.senderName.toLowerCase().includes("vikram")) ||
-                              (currentUser.name.toLowerCase().includes("aarav") &&
-                                msg.senderName.toLowerCase().includes("aarav")))
-                        );
+                        (isStudent && (msg.senderId === "stu-1" || msg.senderRole === "student" || msg.senderName?.toLowerCase().includes("aarav"))) ||
+                        (!isStudent && (msg.senderId === "alm-1" || msg.senderRole === "alumnus" || msg.senderName?.toLowerCase().includes("vikram")));
 
                       const prevMsg = activeMessages[index - 1];
                       const showDateDivider =

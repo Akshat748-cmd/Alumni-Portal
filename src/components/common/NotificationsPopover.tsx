@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   CheckCheck,
@@ -19,18 +19,57 @@ import {
 } from "@/components/ui/popover";
 import { usePortalStore } from "@/store/portal";
 import { cn } from "@/lib/utils";
+import { PortalNotification } from "@/data/types";
 
 export function NotificationsPopover({ className = "" }: { className?: string }) {
+  const router = useRouter();
   const { currentUser, notifications, markNotificationsRead, markNotificationAsRead } = usePortalStore();
   const [open, setOpen] = useState(false);
 
   if (!currentUser) return null;
 
-  // Filter notifications relevant to current user (or broadcast)
-  const userNotifs = notifications.filter(
-    (n) => n.userId === currentUser.id || n.userId === "all"
-  );
+  const isStudent = currentUser.role === "student";
+
+  // Strict role separation:
+  // Alumnus portal: ONLY alumnus notifications (never student applications/referrals meant for students)
+  // Student portal: ONLY student notifications (never employer candidate alerts)
+  const userNotifs = notifications.filter((n) => {
+    if (isStudent) {
+      if (n.targetRole === "alumnus" || n.userId === "alm-1" || n.userId?.startsWith("alm-")) {
+        return false;
+      }
+      return (
+        n.userId === currentUser.id ||
+        n.userId === "stu-1" ||
+        n.userId?.startsWith("stu-") ||
+        n.targetRole === "student" ||
+        n.userId === "all"
+      );
+    } else {
+      if (n.targetRole === "student" || n.userId === "stu-1" || n.userId?.startsWith("stu-")) {
+        return false;
+      }
+      return (
+        n.userId === currentUser.id ||
+        n.userId === "alm-1" ||
+        n.userId?.startsWith("alm-") ||
+        n.targetRole === "alumnus" ||
+        n.userId === "all"
+      );
+    }
+  });
+
   const unreadCount = userNotifs.filter((n) => !n.read).length;
+
+  const handleNotifClick = (notif: PortalNotification) => {
+    if (!notif.read) {
+      markNotificationAsRead(notif.id);
+    }
+    setOpen(false);
+    if (notif.link) {
+      router.push(notif.link);
+    }
+  };
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -72,7 +111,9 @@ export function NotificationsPopover({ className = "" }: { className?: string })
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-navy-800 bg-navy-950/80">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-ivory">Notifications</span>
+            <span className="text-xs font-bold text-ivory">
+              {isStudent ? "Student Notifications" : "Alumni Notifications"}
+            </span>
             {unreadCount > 0 && (
               <span className="rounded-full bg-gold-500/20 text-gold-300 text-[10px] font-semibold px-2 py-0.5 border border-gold-500/30">
                 {unreadCount} new
@@ -96,7 +137,9 @@ export function NotificationsPopover({ className = "" }: { className?: string })
               <Bell className="h-8 w-8 text-navy-700 mx-auto mb-2" />
               <p className="text-xs font-medium text-ivory/60">No notifications yet</p>
               <p className="text-[11px] text-ivory/40 mt-0.5">
-                Updates on applications, referrals, and messages will appear here.
+                {isStudent
+                  ? "Updates on your applications, mentorship, and referrals will appear here."
+                  : "Updates on candidate applications, student referrals, and messages will appear here."}
               </p>
             </div>
           ) : (
@@ -104,18 +147,17 @@ export function NotificationsPopover({ className = "" }: { className?: string })
               <div
                 key={notif.id}
                 className={cn(
-                  "p-3.5 transition-colors flex items-start gap-3 hover:bg-navy-800/60 cursor-pointer",
-                  !notif.read && "bg-navy-800/30"
+                  "p-3.5 transition-colors flex items-start gap-3 hover:bg-navy-800/80 cursor-pointer group",
+                  !notif.read && "bg-navy-800/40"
                 )}
-                onClick={() => {
-                  if (!notif.read) markNotificationAsRead(notif.id);
-                  if (notif.link) setOpen(false);
-                }}
+                onClick={() => handleNotifClick(notif)}
               >
                 <div className="mt-0.5">{getIcon(notif.type)}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <h5 className="text-xs font-bold text-ivory truncate">{notif.title}</h5>
+                    <h5 className="text-xs font-bold text-ivory truncate group-hover:text-gold-300 transition-colors">
+                      {notif.title}
+                    </h5>
                     {!notif.read && (
                       <span className="h-1.5 w-1.5 rounded-full bg-gold-400 shrink-0" />
                     )}
@@ -124,13 +166,10 @@ export function NotificationsPopover({ className = "" }: { className?: string })
                     {notif.message}
                   </p>
                   {notif.link && (
-                    <Link
-                      href={notif.link}
-                      className="inline-flex items-center gap-1 text-[10px] font-semibold text-gold-400 hover:text-gold-300 mt-1.5"
-                    >
+                    <div className="inline-flex items-center gap-1 text-[10px] font-bold text-gold-400 group-hover:text-gold-300 mt-2 transition-colors">
                       <span>View details</span>
-                      <ChevronRight className="h-3 w-3" />
-                    </Link>
+                      <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                    </div>
                   )}
                 </div>
               </div>

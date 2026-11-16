@@ -965,6 +965,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-1",
     userId: "alm-1",
+    targetRole: "alumnus",
     title: "New Application Received",
     message: "Sneha Pareek applied for Private Equity Investment Analyst at Apex Capital Advisory.",
     type: "application",
@@ -975,6 +976,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-2",
     userId: "alm-1",
+    targetRole: "alumnus",
     title: "New Message from Sneha Pareek",
     message: "Thank you so much Vikramaditya Sir! I have submitted my case study model.",
     type: "message",
@@ -985,6 +987,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-3",
     userId: "alm-1",
+    targetRole: "alumnus",
     title: "Referral Request Pending",
     message: "Aarav Mehta requested an alumni referral for Private Equity Investment Analyst.",
     type: "referral",
@@ -995,6 +998,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-4",
     userId: "stu-1",
+    targetRole: "student",
     title: "Application Shortlisted!",
     message: "Your application for Senior Full-Stack Cloud Engineer at NovaCrest has been shortlisted.",
     type: "application",
@@ -1005,6 +1009,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-5",
     userId: "stu-1",
+    targetRole: "student",
     title: "Referral Accepted",
     message: "Ananya Deshmukh accepted your referral request for NovaCrest Cloud Solutions.",
     type: "referral",
@@ -1015,6 +1020,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-6",
     userId: "stu-1",
+    targetRole: "student",
     title: "New Message from Vikramaditya Rathore",
     message: "I saw your application Aarav. What motivated you to apply for an analyst role...",
     type: "message",
@@ -1025,6 +1031,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-7",
     userId: "alm-1",
+    targetRole: "alumnus",
     title: "Posting Live",
     message: "Your opportunity 'Private Equity Investment Analyst' is now live on Career Hub.",
     type: "job",
@@ -1035,6 +1042,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-8",
     userId: "stu-2",
+    targetRole: "student",
     title: "Interview Scheduled",
     message: "You have been invited for a Partner interview at Apex Capital Advisory on Nov 15.",
     type: "application",
@@ -1045,6 +1053,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-9",
     userId: "stu-5",
+    targetRole: "student",
     title: "Congratulations! Selected",
     message: "Zenith AgriVentures has selected you for Graduate AgriTech Operations Internship.",
     type: "application",
@@ -1055,6 +1064,7 @@ export const INITIAL_NOTIFICATIONS: PortalNotification[] = [
   {
     id: "notif-10",
     userId: "alm-1",
+    targetRole: "alumnus",
     title: "System Update: Opportunities Network",
     message: "Welcome to the Opportunities Network! You can now post live roles, review student applications, and provide internal referrals.",
     type: "system",

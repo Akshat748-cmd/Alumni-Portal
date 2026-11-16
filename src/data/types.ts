@@ -346,6 +346,7 @@ export interface ChatConversation {
 export interface PortalNotification {
   id: string;
   userId: string;
+  targetRole?: "alumnus" | "student" | "all";
   title: string;
   message: string;
   type: "application" | "referral" | "message" | "job" | "system";

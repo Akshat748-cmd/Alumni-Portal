@@ -51,12 +51,45 @@ export function Header() {
 
   const unreadMessagesCount = useMemo(() => {
     if (!currentUser) return 0;
-    return (conversations || []).reduce((acc, c) => acc + (c.unreadCount?.[currentUser.id] || 0), 0);
+    const isStudentUser = currentUser.role === "student";
+    return (conversations || []).reduce((acc, c) => {
+      const hasMe =
+        c.participantIds?.includes(currentUser.id) ||
+        c.participants?.some((p) => p.id === currentUser.id || (isStudentUser ? p.id === "stu-1" : p.id === "alm-1"));
+      if (!hasMe) return acc;
+
+      const unread =
+        c.unreadCount?.[currentUser.id] ||
+        (isStudentUser ? c.unreadCount?.["stu-1"] : c.unreadCount?.["alm-1"]) ||
+        0;
+      return acc + unread;
+    }, 0);
   }, [conversations, currentUser]);
 
   const unreadNotifsCount = useMemo(() => {
     if (!currentUser) return 0;
-    return (notifications || []).filter((n) => (n.userId === currentUser.id || n.userId === "all") && !n.read).length;
+    const isStudentUser = currentUser.role === "student";
+    return (notifications || []).filter((n) => {
+      if (!n || n.read) return false;
+      if (isStudentUser) {
+        if (n.targetRole === "alumnus" || n.userId === "alm-1" || n.userId?.startsWith("alm-")) return false;
+        return (
+          n.userId === currentUser.id ||
+          n.userId === "stu-1" ||
+          n.userId?.startsWith("stu-") ||
+          n.targetRole === "student" ||
+          n.userId === "all"
+        );
+      }
+      if (n.targetRole === "student" || n.userId === "stu-1" || n.userId?.startsWith("stu-")) return false;
+      return (
+        n.userId === currentUser.id ||
+        n.userId === "alm-1" ||
+        n.userId?.startsWith("alm-") ||
+        n.targetRole === "alumnus" ||
+        n.userId === "all"
+      );
+    }).length;
   }, [notifications, currentUser]);
 
   const [isScrolled, setIsScrolled] = useState(false);

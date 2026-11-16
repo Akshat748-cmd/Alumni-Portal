@@ -1789,10 +1789,14 @@ export const usePortalStore = create<PortalState>()(
       markNotificationsRead: () => {
         const user = get().currentUser;
         if (!user) return;
+        const isStudent = user.role === "student";
         set({
-          notifications: get().notifications.map((n) =>
-            n.userId === user.id ? { ...n, read: true } : n
-          ),
+          notifications: get().notifications.map((n) => {
+            const matchesRole = isStudent
+              ? (!n.userId?.startsWith("alm-") && (n.userId === user.id || n.userId === "stu-1" || n.userId?.startsWith("stu-") || n.targetRole === "student" || n.userId === "all"))
+              : (!n.userId?.startsWith("stu-") && (n.userId === user.id || n.userId === "alm-1" || n.userId?.startsWith("alm-") || n.targetRole === "alumnus" || n.userId === "all"));
+            return matchesRole ? { ...n, read: true } : n;
+          }),
         });
       },
 

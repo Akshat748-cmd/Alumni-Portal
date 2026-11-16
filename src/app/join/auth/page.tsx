@@ -295,7 +295,7 @@ export default function AuthPage() {
           ? "Vikramaditya Rathore"
           : loginEmail.split("@")[0].replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Alumni Member",
         email: loginEmail.trim(),
-        role: "alumni",
+        role: "alumnus",
         batch: isVikram ? 2008 : 2018,
         course: "MBA (Finance & Strategy)",
         company: isVikram ? "Apex Capital Advisory" : undefined,
