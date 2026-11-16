@@ -18,7 +18,7 @@ export const IMAGES = {
       blurDataURL: DEFAULT_BLUR_DATA_URL,
     },
     convocation: {
-      src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1920&q=80",
+      src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920&q=80",
       alt: "Poddar Alumni Annual Convocation and Graduation Day",
       category: "graduation" as const,
       blurDataURL: DEFAULT_BLUR_DATA_URL,

@@ -188,7 +188,7 @@ export default function NewslettersPage() {
 
       {/* Issue Summary Dialog */}
       <Dialog open={!!selectedIssue} onOpenChange={(open) => !open && setSelectedIssue(null)}>
-        <DialogContent className="max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+        <DialogContent className="sm:max-w-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 shadow-2xl">
           {selectedIssue && (
             <>
               <DialogHeader>

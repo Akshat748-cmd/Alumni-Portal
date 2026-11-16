@@ -43,7 +43,7 @@ export function AdminContentManager() {
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
   const [location, setLocation] = useState("Main Campus Auditorium");
-  const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800");
+  const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800");
 
   const currentList = publishedContent[activeKind] || [];
 
@@ -54,7 +54,7 @@ export function AdminContentManager() {
     setSummary("");
     setContent("");
     setLocation("Auditorium / Campus");
-    setImageUrl("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800");
+    setImageUrl("https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800");
     setIsCreateOpen(true);
   };
 
@@ -355,7 +355,7 @@ export function AdminContentManager() {
                     alt="Preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as any).src = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800";
+                      (e.target as any).src = "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800";
                     }}
                   />
                   <Badge className="absolute top-2 left-2 bg-navy-950/80 text-gold-300 text-[10px] backdrop-blur-xs">

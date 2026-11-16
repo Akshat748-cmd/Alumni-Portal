@@ -48,6 +48,7 @@ export default function ReferralCenterPage() {
   const [activeTab, setActiveTab] = useState<"made" | "received">(
     currentUser?.role === "student" ? "made" : "received"
   );
+  const [receivedFilter, setReceivedFilter] = useState<"all" | "pending" | "handled">("all");
 
   // Decline dialog state
   const [declineRefId, setDeclineRefId] = useState<string | null>(null);
@@ -80,6 +81,13 @@ export default function ReferralCenterPage() {
 
   const requestsMade = referrals.filter((r) => r.requesterId === currentUser.id);
   const requestsReceived = referrals.filter((r) => r.referrerId === currentUser.id);
+
+  const pendingReceivedCount = requestsReceived.filter((r) => r.status === "Requested").length;
+  const filteredReceived = requestsReceived.filter((r) => {
+    if (receivedFilter === "pending") return r.status === "Requested";
+    if (receivedFilter === "handled") return r.status === "Referred" || r.status === "Accepted" || r.status === "Declined";
+    return true;
+  });
 
   const getStatusBadge = (status: ReferralStatus) => {
     switch (status) {
@@ -135,28 +143,48 @@ export default function ReferralCenterPage() {
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
           {/* TAB CONTROLS */}
-          <div className="grid grid-cols-2 p-1.5 rounded-2xl bg-ivory border border-line mb-8 max-w-md mx-auto">
+          <div className="grid grid-cols-2 p-1.5 rounded-2xl bg-ivory border border-line mb-8 max-w-lg mx-auto gap-1">
             <button
               type="button"
               onClick={() => setActiveTab("made")}
-              className={`py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer ${
+              className={`py-2.5 px-3 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 flex-wrap ${
                 activeTab === "made"
                   ? "bg-navy-950 text-gold-300 shadow-sm"
                   : "text-muted hover:text-navy-950"
               }`}
             >
-              Requests I Made ({requestsMade.length})
+              <span>Requests I Made</span>
+              <span
+                className={`px-2 py-0.5 text-[11px] font-bold rounded-full ${
+                  activeTab === "made"
+                    ? "bg-navy-900 text-gold-300 border border-gold-500/30"
+                    : "bg-slate-200/80 text-slate-700"
+                }`}
+              >
+                {requestsMade.length}
+              </span>
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("received")}
-              className={`py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer ${
+              className={`py-2.5 px-3 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 flex-wrap ${
                 activeTab === "received"
                   ? "bg-navy-950 text-gold-300 shadow-sm"
                   : "text-muted hover:text-navy-950"
               }`}
             >
-              Requests I Received ({requestsReceived.length})
+              <span>Requests I Received</span>
+              {pendingReceivedCount > 0 ? (
+                <span className="px-2 py-0.5 text-[10px] sm:text-[11px] font-extrabold rounded-full bg-amber-400 text-navy-950 flex items-center gap-1 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-700 animate-pulse" />
+                  {pendingReceivedCount} Pending
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  0 Pending
+                </span>
+              )}
             </button>
           </div>
 
@@ -248,108 +276,184 @@ export default function ReferralCenterPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {requestsReceived.map((ref) => {
-                    const isPending = ref.status === "Requested";
-                    const isAccepted = ref.status === "Accepted";
-                    const isReferred = ref.status === "Referred";
-
-                    return (
-                      <div
-                        key={ref.id}
-                        className="bg-white rounded-2xl border border-line p-5 sm:p-6 shadow-sm space-y-4"
+                  {/* Status sub-filter & summary */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-line mb-4 shadow-2xs">
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                      <span className="text-xs font-bold text-muted mr-1">Filter:</span>
+                      <button
+                        type="button"
+                        onClick={() => setReceivedFilter("all")}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          receivedFilter === "all"
+                            ? "bg-navy-950 text-gold-300 shadow-xs"
+                            : "bg-ivory text-muted hover:text-navy-950 border border-line"
+                        }`}
                       >
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                          <div className="flex items-start gap-3 min-w-0">
-                            <AvatarInitials name={ref.requesterName} size="md" className="shrink-0" />
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                <span className="font-bold text-sm sm:text-base text-navy-950 truncate">
-                                  {ref.requesterName}
-                                </span>
-                                <span
-                                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                                    ref.requesterRole === "student"
-                                      ? "bg-amber-100 text-amber-900 border border-amber-300"
-                                      : "bg-navy-100 text-navy-900"
-                                  }`}
-                                >
-                                  {ref.requesterRole}
-                                </span>
-                                <span
-                                  className={`text-xs px-2.5 py-0.5 rounded-full border ${getStatusBadge(
-                                    ref.status
-                                  )}`}
-                                >
-                                  {ref.status}
-                                </span>
+                        All ({requestsReceived.length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReceivedFilter("pending")}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                          receivedFilter === "pending"
+                            ? "bg-navy-950 text-gold-300 shadow-xs"
+                            : "bg-ivory text-muted hover:text-navy-950 border border-line"
+                        }`}
+                      >
+                        Pending ({pendingReceivedCount})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReceivedFilter("handled")}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                          receivedFilter === "handled"
+                            ? "bg-navy-950 text-gold-300 shadow-xs"
+                            : "bg-ivory text-muted hover:text-navy-950 border border-line"
+                        }`}
+                      >
+                        Handled / Referred ({requestsReceived.length - pendingReceivedCount})
+                      </button>
+                    </div>
+
+                    {pendingReceivedCount === 0 ? (
+                      <div className="text-xs text-emerald-800 font-semibold flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>All {requestsReceived.length} requests addressed (0 pending)</span>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-amber-800 font-semibold flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
+                        <Clock className="w-3.5 h-3.5 text-amber-600" />
+                        <span>{pendingReceivedCount} candidate request awaiting review</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {filteredReceived.length === 0 ? (
+                    <div className="bg-white rounded-3xl p-8 border border-line shadow-sm text-center">
+                      <p className="text-sm font-semibold text-muted">
+                        No requests matching filter &quot;{receivedFilter}&quot;.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setReceivedFilter("all")}
+                        className="mt-3 text-xs font-bold text-navy-950 underline"
+                      >
+                        Show all requests
+                      </button>
+                    </div>
+                  ) : (
+                    filteredReceived.map((ref) => {
+                      const isPending = ref.status === "Requested";
+                      const isAccepted = ref.status === "Accepted";
+                      const isReferred = ref.status === "Referred";
+
+                      return (
+                        <div
+                          key={ref.id}
+                          className={`bg-white rounded-2xl border p-5 sm:p-6 shadow-sm space-y-4 transition-all ${
+                            isPending ? "border-amber-300/80 bg-amber-500/[0.02]" : "border-line"
+                          }`}
+                        >
+                          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div className="flex items-start gap-3 min-w-0">
+                              <AvatarInitials name={ref.requesterName} size="md" className="shrink-0" />
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                  <span className="font-bold text-sm sm:text-base text-navy-950 truncate">
+                                    {ref.requesterName}
+                                  </span>
+                                  <span
+                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                                      ref.requesterRole === "student"
+                                        ? "bg-amber-100 text-amber-900 border border-amber-300"
+                                        : "bg-navy-100 text-navy-900"
+                                    }`}
+                                  >
+                                    {ref.requesterRole}
+                                  </span>
+                                  <span
+                                    className={`text-xs px-2.5 py-0.5 rounded-full border ${getStatusBadge(
+                                      ref.status
+                                    )}`}
+                                  >
+                                    {ref.status}
+                                  </span>
+                                </div>
+                                <div className="text-xs text-muted">
+                                  For <strong className="text-navy-950 font-semibold">{ref.jobTitle}</strong> ({ref.company}) • {ref.requesterCourseOrCompany}
+                                </div>
                               </div>
-                              <div className="text-xs text-muted">
-                                For <strong className="text-navy-950 font-semibold">{ref.jobTitle}</strong> ({ref.company}) • {ref.requesterCourseOrCompany}
-                              </div>
+                            </div>
+
+                            {/* ACTION BUTTONS */}
+                            <div className="flex flex-wrap items-center gap-2 shrink-0">
+                              {isPending && (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleAccept(ref.id, ref.requesterName, ref.requesterId)}
+                                    className="px-3.5 py-2 rounded-xl bg-navy-950 text-gold-300 font-bold text-xs hover:bg-navy-900 transition-colors shadow-xs"
+                                  >
+                                    Accept & Chat
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setDeclineRefId(ref.id)}
+                                    className="px-3 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-semibold transition-colors"
+                                  >
+                                    Decline
+                                  </button>
+                                </>
+                              )}
+
+                              {isAccepted && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleMarkReferred(ref.id, ref.requesterName)}
+                                  className="px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition-colors flex items-center gap-1.5 shadow-xs"
+                                >
+                                  <CheckCircle2 className="h-3.5 w-3.5" />
+                                  <span>Mark as Referred</span>
+                                </button>
+                              )}
+
+                              {isReferred && (
+                                <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold text-xs flex items-center gap-1.5">
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                                  <span>Endorsement Submitted</span>
+                                </span>
+                              )}
+
+                              <Link
+                                href={`/messages?startWith=${ref.requesterId}&name=${encodeURIComponent(
+                                  ref.requesterName
+                                )}`}
+                                scroll={false}
+                                className="px-3.5 py-2 rounded-xl bg-ivory border border-line text-navy-900 font-bold text-xs hover:bg-navy-50 transition-colors flex items-center gap-1.5"
+                              >
+                                <MessageSquare className="h-3.5 w-3.5 text-gold-600" />
+                                <span>Chat</span>
+                              </Link>
                             </div>
                           </div>
 
-                          {/* ACTION BUTTONS */}
-                          <div className="flex flex-wrap items-center gap-2 shrink-0">
-                            {isPending && (
-                              <>
-                                <button
-                                  type="button"
-                                  onClick={() => handleAccept(ref.id, ref.requesterName, ref.requesterId)}
-                                  className="px-3.5 py-2 rounded-xl bg-navy-950 text-gold-300 font-bold text-xs hover:bg-navy-900 transition-colors"
-                                >
-                                  Accept & Chat
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setDeclineRefId(ref.id)}
-                                  className="px-3 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-semibold transition-colors"
-                                >
-                                  Decline
-                                </button>
-                              </>
-                            )}
-
-                            {isAccepted && (
-                              <button
-                                type="button"
-                                onClick={() => handleMarkReferred(ref.id, ref.requesterName)}
-                                className="px-3.5 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 transition-colors flex items-center gap-1.5"
-                              >
-                                <CheckCircle2 className="h-3.5 w-3.5" />
-                                <span>Mark as Referred</span>
-                              </button>
-                            )}
-
-                            <Link
-                              href={`/messages?startWith=${ref.requesterId}&name=${encodeURIComponent(
-                                ref.requesterName
-                              )}`}
-                              scroll={false}
-                              className="px-3.5 py-2 rounded-xl bg-ivory border border-line text-navy-900 font-bold text-xs hover:bg-navy-50 transition-colors flex items-center gap-1.5"
-                            >
-                              <MessageSquare className="h-3.5 w-3.5 text-gold-600" />
-                              <span>Chat</span>
-                            </Link>
+                          {/* MESSAGE & RESUME NOTE */}
+                          <div className="p-3.5 rounded-xl bg-ivory border border-line text-xs space-y-2">
+                            <p className="text-navy-950 leading-relaxed italic">
+                              &ldquo;{ref.message}&rdquo;
+                            </p>
+                            <div className="flex items-center gap-2 text-muted pt-2 border-t border-line/60">
+                              <FileText className="h-3.5 w-3.5 text-gold-600" />
+                              <span>Candidate Resume:</span>
+                              <span className="tabular-nums font-bold text-navy-950">
+                                {ref.resumeFileName}
+                              </span>
+                            </div>
                           </div>
                         </div>
-
-                        {/* MESSAGE & RESUME NOTE */}
-                        <div className="p-3.5 rounded-xl bg-ivory border border-line text-xs space-y-2">
-                          <p className="text-navy-950 leading-relaxed italic">
-                            &ldquo;{ref.message}&rdquo;
-                          </p>
-                          <div className="flex items-center gap-2 text-muted pt-2 border-t border-line/60">
-                            <FileText className="h-3.5 w-3.5 text-gold-600" />
-                            <span>Candidate Resume:</span>
-                            <span className="tabular-nums font-bold text-navy-950">
-                              {ref.resumeFileName}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               )}
             </div>

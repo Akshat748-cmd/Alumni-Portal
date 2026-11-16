@@ -112,6 +112,7 @@ export default function DashboardPage() {
     myPostings.some((j) => j.id === a.jobId)
   ).length;
   const receivedReferralRequests = referrals.filter((r) => r.referrerId === currentUser.id);
+  const pendingReferralRequests = receivedReferralRequests.filter((r) => r.status === "Requested");
 
   return (
     <div className="min-h-screen bg-ivory text-ink">
@@ -246,8 +247,8 @@ export default function DashboardPage() {
                 />
                 <StatCard
                   label="Referral Requests"
-                  value={receivedReferralRequests.length}
-                  description="Awaiting your review"
+                  value={pendingReferralRequests.length}
+                  description={pendingReferralRequests.length > 0 ? "Awaiting your review" : "All requests handled"}
                   icon={Award}
                 />
                 <StatCard
@@ -515,7 +516,7 @@ export default function DashboardPage() {
                     href="/dashboard/referrals"
                     className="text-xs font-bold text-navy-950 hover:text-gold-600 transition-colors"
                   >
-                    Manage ({receivedReferralRequests.length}) →
+                    Manage {pendingReferralRequests.length > 0 ? `(${pendingReferralRequests.length} Pending)` : `(${receivedReferralRequests.length})`} →
                   </Link>
                 </div>
 
@@ -542,12 +543,18 @@ export default function DashboardPage() {
                             &ldquo;{ref.message}&rdquo;
                           </p>
                         </div>
-                        <Link
-                          href="/dashboard/referrals"
-                          className="px-3 py-1.5 rounded-xl bg-amber-100 text-amber-900 font-bold text-xs hover:bg-amber-200 shrink-0"
-                        >
-                          Review
-                        </Link>
+                        {ref.status === "Requested" ? (
+                          <Link
+                            href="/dashboard/referrals"
+                            className="px-3 py-1.5 rounded-xl bg-amber-400 text-navy-950 font-bold text-xs hover:bg-amber-300 shrink-0"
+                          >
+                            Review
+                          </Link>
+                        ) : (
+                          <span className="px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-xs shrink-0 flex items-center gap-1">
+                            ✓ {ref.status}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>

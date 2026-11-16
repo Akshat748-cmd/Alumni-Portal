@@ -695,6 +695,59 @@ export const INITIAL_CONVERSATIONS: ChatConversation[] = [
       "alm-4": 0,
     },
   },
+  {
+    id: "conv-7",
+    participantIds: ["stu-1", "alm-2"],
+    participants: [
+      {
+        id: "stu-1",
+        name: "Aarav Mehta",
+        role: "student",
+        courseOrCompany: "B.Tech Computer Science",
+      },
+      {
+        id: "alm-2",
+        name: "Priya Sharma",
+        role: "alumnus",
+        courseOrCompany: "CloudScale Networks",
+      },
+    ],
+    jobContext: {
+      jobId: "job-3",
+      jobTitle: "Cloud Solutions Architect",
+      company: "CloudScale Networks",
+    },
+    lastMessage: "Hi Aarav! Happy to review your system design and distributed cache projects before your technical round.",
+    lastMessageAt: "2026-11-08T14:15:00Z",
+    unreadCount: {
+      "stu-1": 1,
+      "alm-2": 0,
+    },
+  },
+  {
+    id: "conv-8",
+    participantIds: ["stu-1", "alm-5"],
+    participants: [
+      {
+        id: "stu-1",
+        name: "Aarav Mehta",
+        role: "student",
+        courseOrCompany: "B.Tech Computer Science",
+      },
+      {
+        id: "alm-5",
+        name: "Harsh Vardhan",
+        role: "alumnus",
+        courseOrCompany: "DataForge Dynamics",
+      },
+    ],
+    lastMessage: "Great initiative with the Poddar Hackathon project. Let's schedule a 15-minute mentorship catchup.",
+    lastMessageAt: "2026-11-07T18:30:00Z",
+    unreadCount: {
+      "stu-1": 0,
+      "alm-5": 0,
+    },
+  },
 ];
 
 // Initial Messages mapped by conversationId
@@ -858,6 +911,50 @@ export const INITIAL_MESSAGES: Record<string, ChatMessage[]> = {
       senderRole: "alumnus",
       text: "The term sheet for Zenith's series A expansion looks solid. Let's sync over the weekend.",
       createdAt: "2026-11-02T16:00:00Z",
+      read: true,
+    },
+  ],
+  "conv-7": [
+    {
+      id: "msg-7-1",
+      conversationId: "conv-7",
+      senderId: "stu-1",
+      senderName: "Aarav Mehta",
+      senderRole: "student",
+      text: "Hello Priya Ma'am, thank you for accepting my mentorship request! I'd love your feedback on my cloud architecture project.",
+      createdAt: "2026-11-08T13:45:00Z",
+      read: true,
+    },
+    {
+      id: "msg-7-2",
+      conversationId: "conv-7",
+      senderId: "alm-2",
+      senderName: "Priya Sharma",
+      senderRole: "alumnus",
+      text: "Hi Aarav! Happy to review your system design and distributed cache projects before your technical round.",
+      createdAt: "2026-11-08T14:15:00Z",
+      read: false,
+    },
+  ],
+  "conv-8": [
+    {
+      id: "msg-8-1",
+      conversationId: "conv-8",
+      senderId: "stu-1",
+      senderName: "Aarav Mehta",
+      senderRole: "student",
+      text: "Respected Harsh Sir, looking forward to guidance on data engineering opportunities.",
+      createdAt: "2026-11-07T17:50:00Z",
+      read: true,
+    },
+    {
+      id: "msg-8-2",
+      conversationId: "conv-8",
+      senderId: "alm-5",
+      senderName: "Harsh Vardhan",
+      senderRole: "alumnus",
+      text: "Great initiative with the Poddar Hackathon project. Let's schedule a 15-minute mentorship catchup.",
+      createdAt: "2026-11-07T18:30:00Z",
       read: true,
     },
   ],

@@ -165,7 +165,7 @@ export function Header() {
           {/* 2. DESKTOP NAVIGATION (Visible ONLY at >= 1024px via lg:flex) */}
           <nav
             ref={navContainerRef}
-            className="hidden lg:flex items-center gap-0.5 xl:gap-1 2xl:gap-1.5 flex-1 justify-start min-w-0 overflow-hidden"
+            className="hidden lg:flex items-center gap-0.5 xl:gap-1 2xl:gap-1.5 flex-1 justify-start min-w-0 overflow-visible"
             aria-label="Main Navigation"
           >
             {visibleNavItems.map((item) => {
@@ -179,9 +179,9 @@ export function Header() {
                   onMouseEnter={() => setActiveDropdown(item.id)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  <Link
-                    href={item.href}
-                    onClick={() => setActiveDropdown(null)}
+                  <button
+                    type="button"
+                    onClick={() => setActiveDropdown(isOpen ? null : item.id)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
                         e.preventDefault();
@@ -189,9 +189,9 @@ export function Header() {
                       }
                     }}
                     className={cn(
-                      "flex items-center gap-1 px-1.5 xl:px-2 2xl:px-2.5 py-1.5 rounded-lg text-[12.5px] xl:text-[13.5px] font-semibold tracking-normal transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gold-400/50",
-                      isActive
-                        ? "text-gold-400 font-bold"
+                      "flex items-center gap-1 px-1.5 xl:px-2 2xl:px-2.5 py-1.5 rounded-lg text-[12.5px] xl:text-[13.5px] font-semibold tracking-normal transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-gold-400/50 cursor-pointer",
+                      isActive || isOpen
+                        ? "text-gold-400 font-bold bg-navy-900/60"
                         : "text-ivory/85 hover:text-gold-300 hover:bg-navy-900/60"
                     )}
                     aria-expanded={isOpen}
@@ -205,7 +205,7 @@ export function Header() {
                       )}
                       strokeWidth={2}
                     />
-                  </Link>
+                  </button>
 
                   {/* Mega Dropdown Panel */}
                   <AnimatePresence>
@@ -220,9 +220,14 @@ export function Header() {
                       >
                         <div className="rounded-xl border border-navy-700 bg-navy-900/95 p-3 shadow-2xl backdrop-blur-xl max-h-[calc(100vh-80px)] overflow-y-auto overscroll-contain">
                           <div className="px-3 py-1.5 border-b border-navy-800 mb-2">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-gold-400 block">
-                              {item.title}
-                            </span>
+                            <Link
+                              href={item.href}
+                              onClick={() => setActiveDropdown(null)}
+                              className="text-[11px] font-bold uppercase tracking-wider text-gold-400 hover:text-gold-300 transition-colors flex items-center justify-between group/head"
+                            >
+                              <span>{item.title}</span>
+                              <span className="transform group-hover/head:translate-x-0.5 transition-transform text-gold-400">→</span>
+                            </Link>
                             <p className="text-[11px] text-ivory/60 leading-tight mt-0.5 line-clamp-1">
                               {item.description}
                             </p>
@@ -663,6 +668,21 @@ export function Header() {
                         </span>
                         <span className="text-[10px] bg-gold-500 text-navy-950 px-1.5 py-0.2 rounded font-bold">
                           NEW
+                        </span>
+                      </Link>
+
+                      {/* My Applications Link */}
+                      <Link
+                        href="/dashboard/applications"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center justify-between w-full p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold transition-colors"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Briefcase className="h-4 w-4 text-emerald-400" />
+                          <span>My Applications & Status</span>
+                        </span>
+                        <span className="text-[10px] text-ivory/60">
+                          Track →
                         </span>
                       </Link>
 

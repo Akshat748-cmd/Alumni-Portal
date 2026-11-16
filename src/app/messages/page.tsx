@@ -126,6 +126,58 @@ function MessagesContent() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const urlParamConsumedRef = useRef<string | null>(null);
 
+  // Helper to determine if a participant is the logged-in user (handles ID mismatch or name variations)
+  const isMeMatch = (p: { id: string; name: string }) => {
+    if (!currentUser) return false;
+    if (p.id === currentUser.id) return true;
+    const curName = currentUser.name.toLowerCase().replace(/[^a-z]/g, "");
+    const pName = p.name.toLowerCase().replace(/[^a-z]/g, "");
+    if (curName && pName && (curName === pName || (curName.includes("vikram") && pName.includes("vikram")) || (curName.includes("aarav") && pName.includes("aarav")))) {
+      return true;
+    }
+    return false;
+  };
+
+  // Helper to get the OTHER person in a 2-person conversation (never the current user)
+  const getOtherParticipant = (conv: ChatConversation) => {
+    const found = conv.participants.find((p) => !isMeMatch(p));
+    if (found) return found;
+    return conv.participants[1] || conv.participants[0];
+  };
+
+  // User's own conversations (conversations where the current user is an active participant)
+  const myConversations = useMemo(() => {
+    if (!currentUser) return [];
+    const matched = conversations.filter(
+      (c) => c.participantIds?.includes(currentUser.id) || c.participants?.some((p) => isMeMatch(p))
+    );
+    // If current user has conversations, show their own
+    if (matched.length > 0) return matched;
+    // Fallback: If user is new and has no conversations yet, return empty list (showing friendly prompt)
+    return [];
+  }, [conversations, currentUser]);
+
+  // Filter conversations by search
+  const filteredConversations = useMemo(() => {
+    return myConversations.filter((c) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      const other = getOtherParticipant(c);
+      return (
+        other?.name.toLowerCase().includes(q) ||
+        other?.role.toLowerCase().includes(q) ||
+        c.jobContext?.jobTitle.toLowerCase().includes(q) ||
+        c.jobContext?.company.toLowerCase().includes(q) ||
+        (c.lastMessage && c.lastMessage.toLowerCase().includes(q))
+      );
+    });
+  }, [myConversations, searchQuery]);
+
+  const activeConversation = conversations.find((c) => c.id === activeConvId);
+  const activeOtherParticipant = activeConversation ? getOtherParticipant(activeConversation) : undefined;
+  const activeMessages = activeConvId ? messages[activeConvId] || [] : [];
+  const isBlocked = activeConversation?.isBlocked;
+
   // Ensure body scroll is locked and window stays at top when opening messages
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -160,10 +212,10 @@ function MessagesContent() {
         setActiveConvId(convParam);
         setMobileThreadOpen(true);
       }
-    } else if (!activeConvId && conversations.length > 0) {
-      setActiveConvId(conversations[0].id);
+    } else if (myConversations.length > 0 && (!activeConvId || !myConversations.some(c => c.id === activeConvId))) {
+      setActiveConvId(myConversations[0].id);
     }
-  }, [currentUser, startWithParam, convParam, conversations, activeConvId, startConversation]);
+  }, [currentUser, startWithParam, convParam, myConversations, activeConvId, startConversation]);
 
   // Mark conversation read on selection
   useEffect(() => {
@@ -208,43 +260,6 @@ function MessagesContent() {
   }
 
   const isStudent = currentUser.role === "student";
-
-  // Helper to determine if a participant is the logged-in user (handles ID mismatch or name variations)
-  const isMeMatch = (p: { id: string; name: string }) => {
-    if (!currentUser) return false;
-    if (p.id === currentUser.id) return true;
-    const curName = currentUser.name.toLowerCase().replace(/[^a-z]/g, "");
-    const pName = p.name.toLowerCase().replace(/[^a-z]/g, "");
-    if (curName && pName && (curName === pName || (curName.includes("vikram") && pName.includes("vikram")))) {
-      return true;
-    }
-    return false;
-  };
-
-  // Helper to get the OTHER person in a 2-person conversation
-  const getOtherParticipant = (conv: ChatConversation) => {
-    const found = conv.participants.find((p) => !isMeMatch(p));
-    return found || conv.participants[1] || conv.participants[0];
-  };
-
-  // Filter conversations by search
-  const filteredConversations = conversations.filter((c) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    const other = getOtherParticipant(c);
-    return (
-      other?.name.toLowerCase().includes(q) ||
-      other?.role.toLowerCase().includes(q) ||
-      c.jobContext?.jobTitle.toLowerCase().includes(q) ||
-      c.jobContext?.company.toLowerCase().includes(q) ||
-      (c.lastMessage && c.lastMessage.toLowerCase().includes(q))
-    );
-  });
-
-  const activeConversation = conversations.find((c) => c.id === activeConvId);
-  const activeOtherParticipant = activeConversation ? getOtherParticipant(activeConversation) : undefined;
-  const activeMessages = activeConvId ? messages[activeConvId] || [] : [];
-  const isBlocked = activeConversation?.isBlocked;
 
   const handleSendMessage = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -386,8 +401,23 @@ function MessagesContent() {
             {/* CONVERSATION LIST ITEMS */}
             <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-[#f0f2f5]">
               {filteredConversations.length === 0 ? (
-                <div className="p-8 text-center text-xs text-[#667781]">
-                  No chats match your search.
+                <div className="p-8 text-center text-xs text-[#667781] flex flex-col items-center justify-center">
+                  <MessageSquare className="h-8 w-8 text-[#00a884] mb-2 opacity-60" />
+                  <p className="font-semibold text-slate-800 text-sm mb-1">
+                    {searchQuery ? "No chats match your search" : "No active chats yet"}
+                  </p>
+                  <p className="text-[11px] text-[#667781] mb-3 max-w-[24ch]">
+                    {searchQuery ? "Try searching by another name or role." : "Connect with alumni mentors, batchmates, or placement partners."}
+                  </p>
+                  {!searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setNewChatModalOpen(true)}
+                      className="px-3.5 py-1.5 rounded-lg bg-[#00a884] text-white font-semibold text-xs shadow-xs hover:bg-[#008f6f] transition-colors cursor-pointer"
+                    >
+                      + Start New Chat
+                    </button>
+                  )}
                 </div>
               ) : (
                 filteredConversations.map((conv) => {
@@ -587,11 +617,20 @@ function MessagesContent() {
                   ) : (
                     activeMessages.map((msg, index) => {
                       // WhatsApp separation:
-                      // If the message is from activeOtherParticipant -> INCOMING (Left side, White bubble)
-                      // If the message is from sender / current user -> OUTGOING (Right side, WhatsApp Green bubble)
-                      const isOutgoing = activeOtherParticipant
-                        ? msg.senderId !== activeOtherParticipant.id
-                        : msg.senderId === currentUser.id;
+                      // If the message was sent by the logged-in user -> OUTGOING (Right side, WhatsApp Green bubble)
+                      // If the message is from the other participant -> INCOMING (Left side, White bubble)
+                      const isOutgoing =
+                        msg.senderId === currentUser.id ||
+                        Boolean(
+                          currentUser.name &&
+                            msg.senderName &&
+                            (currentUser.name.toLowerCase().replace(/[^a-z]/g, "") ===
+                              msg.senderName.toLowerCase().replace(/[^a-z]/g, "") ||
+                              (currentUser.name.toLowerCase().includes("vikram") &&
+                                msg.senderName.toLowerCase().includes("vikram")) ||
+                              (currentUser.name.toLowerCase().includes("aarav") &&
+                                msg.senderName.toLowerCase().includes("aarav")))
+                        );
 
                       const prevMsg = activeMessages[index - 1];
                       const showDateDivider =

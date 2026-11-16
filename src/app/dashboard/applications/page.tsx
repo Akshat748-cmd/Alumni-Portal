@@ -240,7 +240,9 @@ export default function MyApplicationsPage() {
                             Status Progression History:
                           </div>
                           <div className="relative pl-6 space-y-3 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-line">
-                            {app.statusHistory.map((h, i) => (
+                            {(app.statusHistory || [
+                              { status: app.status || "Applied", date: app.appliedDate || "Recently", note: "Application submitted through Opportunities Network." }
+                            ]).map((h, i) => (
                               <div key={i} className="relative flex items-start gap-2 text-xs">
                                 <span className="absolute -left-6 top-1 h-2.5 w-2.5 rounded-full bg-gold-500 ring-4 ring-white" />
                                 <div>

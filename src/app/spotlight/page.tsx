@@ -280,7 +280,7 @@ export default function SpotlightOverviewPage() {
 
       {/* Story Full Dialog */}
       <Dialog open={!!selectedStory} onOpenChange={(open) => !open && setSelectedStory(null)}>
-        <DialogContent className="max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+        <DialogContent className="sm:max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 shadow-2xl">
           {selectedStory && (
             <>
               <DialogHeader>

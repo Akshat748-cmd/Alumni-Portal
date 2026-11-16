@@ -199,7 +199,7 @@ export default function BatchReunionsPage() {
 
       {/* Propose Reunion Dialog */}
       <Dialog open={isProposeOpen} onOpenChange={setIsProposeOpen}>
-        <DialogContent className="max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+        <DialogContent className="sm:max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 shadow-2xl">
           <form onSubmit={handleProposeSubmit} className="space-y-4">
             <DialogHeader>
               <DialogTitle className="text-xl font-sans font-bold text-slate-900 dark:text-slate-100 text-left">
