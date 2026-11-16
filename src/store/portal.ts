@@ -1792,10 +1792,10 @@ export const usePortalStore = create<PortalState>()(
         const isStudent = user.role === "student";
         set({
           notifications: get().notifications.map((n) => {
-            const matchesRole = isStudent
-              ? (!n.userId?.startsWith("alm-") && (n.userId === user.id || n.userId === "stu-1" || n.userId?.startsWith("stu-") || n.targetRole === "student" || n.userId === "all"))
-              : (!n.userId?.startsWith("stu-") && (n.userId === user.id || n.userId === "alm-1" || n.userId?.startsWith("alm-") || n.targetRole === "alumnus" || n.userId === "all"));
-            return matchesRole ? { ...n, read: true } : n;
+            const matchesUser = isStudent
+              ? n.targetRole !== "alumnus" && (n.userId === user.id || (user.id === "stu-1" && n.userId === "stu-1") || n.userId === "all")
+              : n.targetRole !== "student" && (n.userId === user.id || (user.id === "alm-1" && n.userId === "alm-1") || n.userId === "all");
+            return matchesUser ? { ...n, read: true } : n;
           }),
         });
       },
@@ -2000,7 +2000,7 @@ export const usePortalStore = create<PortalState>()(
         }),
     }),
     {
-      name: "poddar_alumni_portal_state_v1",
+      name: "poddar_alumni_portal_state_v2",
       storage: createJSONStorage(() => localStorage),
       merge: (persistedState: any, currentState) => ({
         ...currentState,
@@ -2010,7 +2010,20 @@ export const usePortalStore = create<PortalState>()(
         referrals: persistedState?.referrals?.length ? persistedState.referrals : currentState.referrals,
         conversations: persistedState?.conversations?.length ? persistedState.conversations : currentState.conversations,
         messages: persistedState?.messages ? persistedState.messages : currentState.messages,
-        notifications: persistedState?.notifications?.length ? persistedState.notifications : currentState.notifications,
+        notifications: (persistedState?.notifications?.length ? persistedState.notifications : currentState.notifications).map(
+          (pn: any) => {
+            const seed = INITIAL_NOTIFICATIONS.find((item) => item.id === pn.id);
+            if (seed) {
+              return {
+                ...seed,
+                ...pn,
+                userId: seed.userId,
+                targetRole: seed.targetRole,
+              };
+            }
+            return pn;
+          }
+        ),
         savedJobIds: persistedState?.savedJobIds || currentState.savedJobIds,
         blockedUserIds: persistedState?.blockedUserIds || currentState.blockedUserIds,
         chatReports: persistedState?.chatReports?.length ? persistedState.chatReports : currentState.chatReports,

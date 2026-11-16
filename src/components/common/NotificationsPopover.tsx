@@ -34,15 +34,14 @@ export function NotificationsPopover({ className = "" }: { className?: string })
   // Alumnus portal: ONLY alumnus notifications (never student applications/referrals meant for students)
   // Student portal: ONLY student notifications (never employer candidate alerts)
   const userNotifs = notifications.filter((n) => {
+    if (!n) return false;
     if (isStudent) {
       if (n.targetRole === "alumnus" || n.userId === "alm-1" || n.userId?.startsWith("alm-")) {
         return false;
       }
       return (
         n.userId === currentUser.id ||
-        n.userId === "stu-1" ||
-        n.userId?.startsWith("stu-") ||
-        n.targetRole === "student" ||
+        (n.userId === "stu-1" && currentUser.id === "stu-1") ||
         n.userId === "all"
       );
     } else {
@@ -51,9 +50,7 @@ export function NotificationsPopover({ className = "" }: { className?: string })
       }
       return (
         n.userId === currentUser.id ||
-        n.userId === "alm-1" ||
-        n.userId?.startsWith("alm-") ||
-        n.targetRole === "alumnus" ||
+        (n.userId === "alm-1" && currentUser.id === "alm-1") ||
         n.userId === "all"
       );
     }

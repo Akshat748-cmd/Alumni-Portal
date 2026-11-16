@@ -17,6 +17,11 @@ import {
   RefreshCw,
   Briefcase,
   Bell,
+  CheckCheck,
+  UserCheck,
+  Sparkles,
+  Info,
+  ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -47,54 +52,65 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const { currentUser, logout, login, conversations, notifications, switchDemoUser } = usePortalStore();
+  const {
+    currentUser,
+    logout,
+    login,
+    conversations,
+    notifications,
+    switchDemoUser,
+    markNotificationsRead,
+    markNotificationAsRead,
+  } = usePortalStore();
 
   const unreadMessagesCount = useMemo(() => {
     if (!currentUser) return 0;
-    const isStudentUser = currentUser.role === "student";
     return (conversations || []).reduce((acc, c) => {
-      const hasMe =
+      const isParticipant =
         c.participantIds?.includes(currentUser.id) ||
-        c.participants?.some((p) => p.id === currentUser.id || (isStudentUser ? p.id === "stu-1" : p.id === "alm-1"));
-      if (!hasMe) return acc;
+        c.participants?.some((p) => p.id === currentUser.id);
+      if (!isParticipant) return acc;
 
-      const unread =
-        c.unreadCount?.[currentUser.id] ||
-        (isStudentUser ? c.unreadCount?.["stu-1"] : c.unreadCount?.["alm-1"]) ||
-        0;
-      return acc + unread;
+      const unread = c.unreadCount?.[currentUser.id] ?? 0;
+      return acc + (typeof unread === "number" ? unread : 0);
     }, 0);
   }, [conversations, currentUser]);
 
-  const unreadNotifsCount = useMemo(() => {
-    if (!currentUser) return 0;
+  const filteredNotifications = useMemo(() => {
+    if (!currentUser) return [];
     const isStudentUser = currentUser.role === "student";
     return (notifications || []).filter((n) => {
-      if (!n || n.read) return false;
+      if (!n) return false;
       if (isStudentUser) {
-        if (n.targetRole === "alumnus" || n.userId === "alm-1" || n.userId?.startsWith("alm-")) return false;
+        if (n.targetRole === "alumnus" || n.userId === "alm-1" || n.userId?.startsWith("alm-")) {
+          return false;
+        }
         return (
           n.userId === currentUser.id ||
-          n.userId === "stu-1" ||
-          n.userId?.startsWith("stu-") ||
-          n.targetRole === "student" ||
+          (n.userId === "stu-1" && currentUser.id === "stu-1") ||
+          n.userId === "all"
+        );
+      } else {
+        if (n.targetRole === "student" || n.userId === "stu-1" || n.userId?.startsWith("stu-")) {
+          return false;
+        }
+        return (
+          n.userId === currentUser.id ||
+          (n.userId === "alm-1" && currentUser.id === "alm-1") ||
           n.userId === "all"
         );
       }
-      if (n.targetRole === "student" || n.userId === "stu-1" || n.userId?.startsWith("stu-")) return false;
-      return (
-        n.userId === currentUser.id ||
-        n.userId === "alm-1" ||
-        n.userId?.startsWith("alm-") ||
-        n.targetRole === "alumnus" ||
-        n.userId === "all"
-      );
-    }).length;
+    });
   }, [notifications, currentUser]);
+
+  const unreadNotifsCount = useMemo(() => {
+    return filteredNotifications.filter((n) => !n.read).length;
+  }, [filteredNotifications]);
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileAlertsOpen, setMobileAlertsOpen] = useState(false);
   const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [windowWidth, setWindowWidth] = useState<number>(1440);
@@ -570,32 +586,53 @@ export function Header() {
           </div>
 
           {/* 4. MOBILE / TABLET CONTROLS (Visible ONLY at < 1024px via lg:hidden) */}
-          <div className="flex lg:hidden items-center gap-2.5 sm:gap-3 shrink-0">
-            {/* Mobile Auth Button (Login or Logout) */}
+          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Mobile Auth and Action Controls */}
             {currentUser ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <NotificationsPopover />
+                <Link
+                  href="/messages"
+                  scroll={false}
+                  className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-navy-900 border border-navy-700/80 text-ivory/80 hover:text-gold-300 hover:bg-navy-800 transition-colors focus:outline-none focus:ring-2 focus:ring-gold-400/50"
+                  aria-label="Direct Messages"
+                  title="Messages"
+                >
+                  <MessageSquare className="h-4 w-4 text-gold-400" />
+                  {unreadMessagesCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-bold text-navy-950 shadow-xs">
+                      {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
+                    </span>
+                  )}
+                </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center h-10 w-10 rounded-full bg-navy-950/60 border border-gold-400/50 text-gold-300 hover:text-white hover:border-gold-300 active:scale-95 transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-400/50"
+                  className="flex items-center justify-center h-9 w-9 rounded-xl bg-navy-900 border border-navy-700/80 text-rose-300 hover:text-white hover:bg-rose-950/60 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500/50 cursor-pointer"
                   aria-label="Logout"
                   title="Logout"
                 >
-                  <LogOut className="h-5 w-5" strokeWidth={1.75} />
+                  <LogOut className="h-3.5 w-3.5 text-rose-400" />
                 </button>
               </div>
             ) : (
               <Link
                 href="/join/auth?tab=login"
-                className="flex items-center justify-center h-10 w-10 rounded-full bg-navy-950/60 border border-gold-400/50 text-gold-300 hover:text-white hover:border-gold-300 active:scale-95 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-gold-400/50"
+                className="flex items-center justify-center h-9 w-9 rounded-xl bg-navy-900 border border-gold-500/80 text-gold-300 hover:text-white hover:bg-gold-500/20 active:scale-95 transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-gold-400/50"
                 aria-label="Login"
                 title="Login"
               >
-                <LogIn className="h-5 w-5" strokeWidth={1.75} />
+                <LogIn className="h-4 w-4 text-gold-400" strokeWidth={1.75} />
               </Link>
             )}
 
             {/* Mobile Hamburger Button with Unread Dot */}
-            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <Sheet
+              open={mobileMenuOpen}
+              onOpenChange={(isOpen) => {
+                setMobileMenuOpen(isOpen);
+                if (!isOpen) setMobileAlertsOpen(false);
+              }}
+            >
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
@@ -658,8 +695,11 @@ export function Header() {
                         <Link
                           href="/messages"
                           scroll={false}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold"
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            setMobileAlertsOpen(false);
+                          }}
+                          className="flex items-center justify-between p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold hover:border-gold-500/40 transition-colors"
                         >
                           <span className="flex items-center gap-2">
                             <MessageSquare className="h-4 w-4 text-gold-400" />
@@ -672,27 +712,133 @@ export function Header() {
                           )}
                         </Link>
 
-                        <Link
-                          href="/dashboard"
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold"
+                        <button
+                          type="button"
+                          onClick={() => setMobileAlertsOpen((prev) => !prev)}
+                          className={cn(
+                            "flex items-center justify-between p-2.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer",
+                            mobileAlertsOpen
+                              ? "bg-gold-500/20 border-gold-500/50 text-gold-300"
+                              : "bg-navy-950 border-navy-800 text-ivory hover:text-gold-300 hover:border-gold-500/40"
+                          )}
+                          aria-expanded={mobileAlertsOpen}
                         >
                           <span className="flex items-center gap-2">
-                            <Bell className="h-4 w-4 text-gold-400" />
+                            <Bell className={cn("h-4 w-4", mobileAlertsOpen ? "text-gold-300" : "text-gold-400")} />
                             <span>Alerts</span>
                           </span>
-                          {unreadNotifsCount > 0 && (
-                            <span className="bg-gold-500 text-navy-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
-                              {unreadNotifsCount}
-                            </span>
-                          )}
-                        </Link>
+                          <div className="flex items-center gap-1.5">
+                            {unreadNotifsCount > 0 && (
+                              <span className="bg-gold-500 text-navy-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">
+                                {unreadNotifsCount}
+                              </span>
+                            )}
+                            <ChevronDown
+                              className={cn(
+                                "h-3.5 w-3.5 text-ivory/60 transition-transform duration-200",
+                                mobileAlertsOpen && "rotate-180 text-gold-400"
+                              )}
+                            />
+                          </div>
+                        </button>
                       </div>
+
+                      {/* Collapsible Mobile Alerts Drawer Accordion */}
+                      <AnimatePresence>
+                        {mobileAlertsOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden rounded-xl bg-navy-950 border border-gold-500/30 divide-y divide-navy-800/80"
+                          >
+                            <div className="flex items-center justify-between px-3 py-2 bg-navy-900/90">
+                              <span className="text-[11px] font-bold text-ivory">
+                                {currentUser.role === "student" ? "Student Notifications" : "Alumni Notifications"}
+                              </span>
+                              {unreadNotifsCount > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => markNotificationsRead()}
+                                  className="flex items-center gap-1 text-[10px] font-semibold text-gold-400 hover:text-gold-300 cursor-pointer"
+                                >
+                                  <CheckCheck className="h-3 w-3" />
+                                  <span>Mark all read</span>
+                                </button>
+                              )}
+                            </div>
+
+                            <div className="max-h-64 overflow-y-auto divide-y divide-navy-800/60 overscroll-contain">
+                              {filteredNotifications.length === 0 ? (
+                                <div className="p-4 text-center">
+                                  <Bell className="h-6 w-6 text-navy-700 mx-auto mb-1.5" />
+                                  <p className="text-xs text-ivory/60">No notifications right now</p>
+                                </div>
+                              ) : (
+                                filteredNotifications.map((notif) => (
+                                  <div
+                                    key={notif.id}
+                                    onClick={() => {
+                                      if (!notif.read) markNotificationAsRead(notif.id);
+                                      setMobileMenuOpen(false);
+                                      setMobileAlertsOpen(false);
+                                      if (notif.link) {
+                                        router.push(notif.link);
+                                      }
+                                    }}
+                                    className={cn(
+                                      "p-3 text-left transition-colors cursor-pointer flex items-start gap-2.5 active:bg-navy-800/90",
+                                      !notif.read ? "bg-navy-900/70" : "hover:bg-navy-900/40 opacity-80"
+                                    )}
+                                  >
+                                    <div className="mt-0.5 shrink-0">
+                                      {notif.type === "application" ? (
+                                        <Briefcase className="h-3.5 w-3.5 text-emerald-400" />
+                                      ) : notif.type === "referral" ? (
+                                        <UserCheck className="h-3.5 w-3.5 text-gold-400" />
+                                      ) : notif.type === "message" ? (
+                                        <MessageSquare className="h-3.5 w-3.5 text-sky-400" />
+                                      ) : notif.type === "job" ? (
+                                        <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                                      ) : (
+                                        <Info className="h-3.5 w-3.5 text-slate-400" />
+                                      )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center justify-between gap-1.5">
+                                        <h5 className="text-[11.5px] font-bold text-ivory truncate">
+                                          {notif.title}
+                                        </h5>
+                                        {!notif.read && (
+                                          <span className="h-1.5 w-1.5 rounded-full bg-gold-400 shrink-0" />
+                                        )}
+                                      </div>
+                                      <p className="text-[10.5px] text-ivory/70 line-clamp-2 mt-0.5 leading-snug">
+                                        {notif.message}
+                                      </p>
+                                      {notif.link && (
+                                        <div className="inline-flex items-center gap-1 text-[10px] font-bold text-gold-400 mt-1.5">
+                                          <span>View details</span>
+                                          <ChevronRight className="h-2.5 w-2.5" />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
 
                       {/* Dashboard Link */}
                       <Link
                         href="/dashboard"
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setMobileAlertsOpen(false);
+                        }}
                         className="flex items-center justify-between w-full p-2.5 rounded-xl bg-gold-500/10 border border-gold-500/30 text-gold-300 hover:bg-gold-500/20 text-xs font-bold transition-colors"
                       >
                         <span className="flex items-center gap-2">
@@ -704,20 +850,42 @@ export function Header() {
                         </span>
                       </Link>
 
-                      {/* My Applications Link */}
-                      <Link
-                        href="/dashboard/applications"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between w-full p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold transition-colors"
-                      >
-                        <span className="flex items-center gap-2">
-                          <Briefcase className="h-4 w-4 text-emerald-400" />
-                          <span>My Applications & Status</span>
-                        </span>
-                        <span className="text-[10px] text-ivory/60">
-                          Track →
-                        </span>
-                      </Link>
+                      {/* Role-Specific Secondary Link */}
+                      {currentUser.role === "student" ? (
+                        <Link
+                          href="/dashboard/applications"
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            setMobileAlertsOpen(false);
+                          }}
+                          className="flex items-center justify-between w-full p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold transition-colors"
+                        >
+                          <span className="flex items-center gap-2">
+                            <Briefcase className="h-4 w-4 text-emerald-400" />
+                            <span>My Applications & Status</span>
+                          </span>
+                          <span className="text-[10px] text-ivory/60">
+                            Track →
+                          </span>
+                        </Link>
+                      ) : (
+                        <Link
+                          href="/dashboard/referrals"
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            setMobileAlertsOpen(false);
+                          }}
+                          className="flex items-center justify-between w-full p-2.5 rounded-xl bg-navy-950 border border-navy-800 text-ivory hover:text-gold-300 text-xs font-semibold transition-colors"
+                        >
+                          <span className="flex items-center gap-2">
+                            <UserCheck className="h-4 w-4 text-gold-400" />
+                            <span>Alumni Referral Center</span>
+                          </span>
+                          <span className="text-[10px] text-ivory/60">
+                            Review →
+                          </span>
+                        </Link>
+                      )}
 
                       {/* Quick Role Switcher */}
                       <div className="pt-2 border-t border-navy-800/80 flex items-center justify-between text-[11px]">
